@@ -195,191 +195,223 @@ function set(id, txt) { const el = document.getElementById(id); if (el) el.textC
    ============================================================ */
 
 /* ---------- G2: Radar de competencias ---------- */
+const PANORAMA_UM = '#0F4FA8';     // azul institucional para UM en Panorama
+const PANORAMA_NAT = '#2BA85E';    // verde para Nacional
 function renderRadar(d) {
   const container = document.getElementById('chartRadar');
   if (!container) return;
 
   const comps = d.institucional.competencias;
-  if (!comps || comps.length === 0) return;
+  const g = d.institucional.global;
+  if (!comps || comps.length === 0 || !g) return;
 
-  const w = 400;
-  const h = 300;
+  // 6 ejes = 5 competencias + Puntaje Global
+  const shortLabel = (name) => ({
+    'RAZONAMIENTO CUANTITATIVO': 'Razonamiento\nCuantitativo',
+    'COMPETENCIAS CIUDADANAS': 'Competencias\nCiudadanas',
+    'COMUNICACIÓN ESCRITA': 'Comunicación\nEscrita',
+    'LECTURA CRÍTICA': 'Lectura Crítica',
+    'INGLÉS': 'Inglés'
+  })[name] || name;
+
+  const axes = [
+    ...comps.map(c => ({
+      full: c.competencia,
+      label: shortLabel(c.competencia),
+      um: c.puntaje_unimag,
+      nat: c.puntaje_nacional
+    })),
+    {
+      full: 'Puntaje Global',
+      label: 'Puntaje Global',
+      um: g.puntaje_unimag,
+      nat: g.puntaje_nacional
+    }
+  ];
+
+  const w = 900;
+  const h = 500;
   const cx = w / 2;
-  const cy = h / 2;
-  const rMax = 90;
-  const totalAxes = comps.length;
+  const cy = h / 2 - 10;
+  const rMax = 170;
+  const n = axes.length;
 
   const svg = createSVGEl('svg', { viewBox: `0 0 ${w} ${h}`, class: 'svg-chart' });
 
-  // Niveles del fondo (5 círculos/polígonos concéntricos)
-  const steps = 4;
+  // Niveles concéntricos (polígonos de fondo, escala 100-160)
+  const minScale = 100;
+  const maxScale = 160;
+  const scoreToRadius = (s) => Math.max(0, Math.min(1, (s - minScale) / (maxScale - minScale))) * rMax;
+  const steps = 5;
   for (let i = 1; i <= steps; i++) {
     const ratio = i / steps;
-    const rCurrent = rMax * ratio;
+    const r = rMax * ratio;
     const pts = [];
-    for (let a = 0; a < totalAxes; a++) {
-      const angle = a * (2 * Math.PI / totalAxes) - Math.PI / 2;
-      pts.push(`${cx + rCurrent * Math.cos(angle)},${cy + rCurrent * Math.sin(angle)}`);
+    for (let a = 0; a < n; a++) {
+      const angle = a * (2 * Math.PI / n) - Math.PI / 2;
+      pts.push(`${cx + r * Math.cos(angle)},${cy + r * Math.sin(angle)}`);
     }
-    const polygon = createSVGEl('polygon', {
+    svg.appendChild(createSVGEl('polygon', {
       points: pts.join(' '),
       fill: 'none',
       stroke: 'var(--border)',
-      'stroke-width': '0.7',
-      'stroke-dasharray': '3,3'
-    });
-    svg.appendChild(polygon);
-
-    // Escribir texto de los niveles
-    const valueLabel = Math.round(200 * ratio);
-    const textAngle = -Math.PI / 2;
-    const text = createSVGEl('text', {
-      x: cx + rCurrent * Math.cos(textAngle) + 4,
-      y: cy + rCurrent * Math.sin(textAngle) - 2,
-      class: 'axis-label',
-      style: 'font-size: 8px; fill: var(--text-soft); opacity: 0.8;'
-    });
-    text.textContent = valueLabel;
-    svg.appendChild(text);
+      'stroke-width': '0.6',
+      'stroke-dasharray': i === steps ? '0' : '2,3',
+      opacity: i === steps ? '0.55' : '0.4'
+    }));
   }
 
-  // Dibujar los ejes y etiquetas de competencias
-  const labelPositions = [
-    { dx: 0, dy: -12 },   // Arriba
-    { dx: 12, dy: -4 },   // Derecha-Arriba
-    { dx: 5, dy: 15 },    // Derecha-Abajo
-    { dx: -5, dy: 15 },   // Izquierda-Abajo
-    { dx: -12, dy: -4 }   // Izquierda-Arriba
-  ];
-
-  const axesPts = [];
-  for (let a = 0; a < totalAxes; a++) {
-    const angle = a * (2 * Math.PI / totalAxes) - Math.PI / 2;
-    const targetX = cx + rMax * Math.cos(angle);
-    const targetY = cy + rMax * Math.sin(angle);
-    axesPts.push({ x: targetX, y: targetY });
-
-    // Eje line
-    const axis = createSVGEl('line', {
+  // Ejes radiales (líneas finas desde el centro)
+  for (let a = 0; a < n; a++) {
+    const angle = a * (2 * Math.PI / n) - Math.PI / 2;
+    svg.appendChild(createSVGEl('line', {
       x1: cx, y1: cy,
-      x2: targetX, y2: targetY,
+      x2: cx + rMax * Math.cos(angle),
+      y2: cy + rMax * Math.sin(angle),
       stroke: 'var(--border)',
-      'stroke-width': '0.8'
-    });
-    svg.appendChild(axis);
-
-    // Etiqueta del eje
-    const textX = cx + (rMax + 12) * Math.cos(angle);
-    const textY = cy + (rMax + 12) * Math.sin(angle);
-    
-    // Simplificar nombres largos para legibilidad
-    let label = comps[a].competencia;
-    if (label === 'RAZONAMIENTO CUANTITATIVO') label = 'Raz. Cuantitativo';
-    if (label === 'COMPETENCIAS CIUDADANAS') label = 'Ciudadanas';
-    if (label === 'COMUNICACIÓN ESCRITA') label = 'Com. Escrita';
-    if (label === 'LECTURA CRÍTICA') label = 'Lectura Crítica';
-    if (label === 'INGLÉS') label = 'Inglés';
-
-    const text = createSVGEl('text', {
-      x: textX,
-      y: textY + 3,
-      'text-anchor': Math.abs(Math.cos(angle)) < 0.1 ? 'middle' : Math.cos(angle) > 0 ? 'start' : 'end',
-      class: 'axis-label',
-      style: 'font-weight: 600; font-size: 9px; fill: var(--brand-primary-dark);'
-    });
-    text.textContent = label;
-    svg.appendChild(text);
+      'stroke-width': '0.6',
+      opacity: '0.5'
+    }));
   }
 
-  // Polígonos de Datos (UNIMAGDALENA vs País)
-  const scoreToRadius = (score) => (Math.min(Math.max(score, 0), 200) / 200) * rMax;
+  // Etiquetas de los ejes (nombres de competencias) — empujadas afuera para no chocar con los valores
+  for (let a = 0; a < n; a++) {
+    const angle = a * (2 * Math.PI / n) - Math.PI / 2;
+    const labelDist = rMax + 42;
+    const lx = cx + labelDist * Math.cos(angle);
+    const ly = cy + labelDist * Math.sin(angle);
+    const anchor = Math.abs(Math.cos(angle)) < 0.15 ? 'middle' : (Math.cos(angle) > 0 ? 'start' : 'end');
 
-  const ptsUM = [];
-  const ptsNat = [];
-
-  for (let a = 0; a < totalAxes; a++) {
-    const angle = a * (2 * Math.PI / totalAxes) - Math.PI / 2;
-    const rUM = scoreToRadius(comps[a].puntaje_unimag);
-    const rNat = scoreToRadius(comps[a].puntaje_nacional);
-
-    ptsUM.push(`${cx + rUM * Math.cos(angle)},${cy + rUM * Math.sin(angle)}`);
-    ptsNat.push(`${cx + rNat * Math.cos(angle)},${cy + rNat * Math.sin(angle)}`);
+    const lines = axes[a].label.split('\n');
+    const lineHeight = 16;
+    const startY = ly - ((lines.length - 1) * lineHeight) / 2 + 5;
+    lines.forEach((line, idx) => {
+      const t = createSVGEl('text', {
+        x: lx,
+        y: startY + idx * lineHeight,
+        'text-anchor': anchor,
+        style: 'font-family: var(--font-display); font-weight: 700; font-size: 14px; fill: var(--brand-primary-dark);'
+      });
+      t.textContent = line;
+      svg.appendChild(t);
+    });
   }
 
-  // Polígono Nacional (Naranja)
-  const polyNat = createSVGEl('polygon', {
-    points: ptsNat.join(' '),
-    fill: COLOR_REF,
-    'fill-opacity': '0.12',
-    stroke: COLOR_REF,
-    'stroke-width': '2',
-    class: 'chart-poly'
-  });
-  svg.appendChild(polyNat);
-
-  // Polígono UNIMAGDALENA (Azul)
-  const polyUM = createSVGEl('polygon', {
-    points: ptsUM.join(' '),
-    fill: COLOR_UM,
-    'fill-opacity': '0.24',
-    stroke: COLOR_UM,
-    'stroke-width': '2.5',
-    class: 'chart-poly'
-  });
-  svg.appendChild(polyUM);
-
-  // Puntos interactivos
-  const drawDots = (pts, dataKey, color, name) => {
-    for (let a = 0; a < totalAxes; a++) {
-      const angle = a * (2 * Math.PI / totalAxes) - Math.PI / 2;
-      const score = comps[a][dataKey];
-      const r = scoreToRadius(score);
-      const px = cx + r * Math.cos(angle);
-      const py = cy + r * Math.sin(angle);
-
-      const dot = createSVGEl('circle', {
-        cx: px, cy: py, r: 4.5,
-        fill: color,
-        class: 'chart-dot'
-      });
-
-      dot.addEventListener('mouseenter', (e) => {
-        showTooltip(e, `<strong>${name}</strong>${comps[a].competencia}: ${score} pts`);
-      });
-      dot.addEventListener('mousemove', moveTooltip);
-      dot.addEventListener('mouseleave', hideTooltip);
-
-      svg.appendChild(dot);
+  // Polígonos de datos
+  const buildPts = (key) => {
+    const pts = [];
+    for (let a = 0; a < n; a++) {
+      const angle = a * (2 * Math.PI / n) - Math.PI / 2;
+      const r = scoreToRadius(axes[a][key]);
+      pts.push([cx + r * Math.cos(angle), cy + r * Math.sin(angle)]);
     }
+    return pts;
   };
+  const ptsNat = buildPts('nat');
+  const ptsUM = buildPts('um');
 
-  drawDots(ptsNat, 'puntaje_nacional', COLOR_REF, 'Promedio Nacional');
-  drawDots(ptsUM, 'puntaje_unimag', COLOR_UM, 'UNIMAGDALENA');
+  // Polígono Nacional (relleno muy tenue + borde verde)
+  svg.appendChild(createSVGEl('polygon', {
+    points: ptsNat.map(p => p.join(',')).join(' '),
+    fill: PANORAMA_NAT,
+    'fill-opacity': '0.06',
+    stroke: PANORAMA_NAT,
+    'stroke-width': '2.5',
+    'stroke-linejoin': 'round'
+  }));
 
-  // Leyenda
-  const legend = createLegend([
-    { color: COLOR_UM, text: 'UNIMAGDALENA' },
-    { color: COLOR_REF, text: 'Nacional' }
-  ], cx - 110, h - 20);
-  svg.appendChild(legend);
+  // Polígono UM (relleno muy tenue + borde azul institucional)
+  svg.appendChild(createSVGEl('polygon', {
+    points: ptsUM.map(p => p.join(',')).join(' '),
+    fill: PANORAMA_UM,
+    'fill-opacity': '0.08',
+    stroke: PANORAMA_UM,
+    'stroke-width': '2.9',
+    'stroke-linejoin': 'round'
+  }));
+
+  // Puntos y etiquetas numéricas
+  // Estrategia: los puntos van en su vértice real del polígono; las etiquetas
+  // se posicionan a una distancia FIJA del centro (justo afuera del polígono)
+  // y se separan perpendicularmente al eje, una a cada lado. Esto garantiza que
+  // UM y Nacional nunca se peguen aunque sus valores coincidan.
+  for (let a = 0; a < n; a++) {
+    const angle = a * (2 * Math.PI / n) - Math.PI / 2;
+    const cosA = Math.cos(angle);
+    const sinA = Math.sin(angle);
+    const perpX = -sinA;
+    const perpY = cosA;
+
+    const [umX, umY] = ptsUM[a];
+    const [natX, natY] = ptsNat[a];
+
+    // Círculos en los vértices reales (sí siguen el polígono)
+    svg.appendChild(createSVGEl('circle', {
+      cx: umX, cy: umY, r: 4.8,
+      fill: '#fff', stroke: PANORAMA_UM, 'stroke-width': '2.6'
+    }));
+    svg.appendChild(createSVGEl('circle', {
+      cx: natX, cy: natY, r: 4.2,
+      fill: '#fff', stroke: PANORAMA_NAT, 'stroke-width': '2.2'
+    }));
+
+    // Posición base de las etiquetas: a una distancia fija del centro
+    const valueLabelDist = rMax + 20;
+    const baseX = cx + valueLabelDist * cosA;
+    const baseY = cy + valueLabelDist * sinA;
+    const tangentSep = 26;
+
+    // UM a un lado, Nacional al otro — separados ~52 px perpendicularmente
+    const umLx = baseX + tangentSep * perpX;
+    const umLy = baseY + tangentSep * perpY;
+    const umLabel = createSVGEl('text', {
+      x: umLx, y: umLy + 5,
+      'text-anchor': 'middle',
+      style: `font-family: var(--font-display); font-weight: 800; font-size: 16px; fill: ${PANORAMA_UM};`
+    });
+    umLabel.textContent = axes[a].um;
+    svg.appendChild(umLabel);
+
+    const natLx = baseX - tangentSep * perpX;
+    const natLy = baseY - tangentSep * perpY;
+    const natLabel = createSVGEl('text', {
+      x: natLx, y: natLy + 5,
+      'text-anchor': 'middle',
+      style: `font-family: var(--font-display); font-weight: 800; font-size: 16px; fill: ${PANORAMA_NAT};`
+    });
+    natLabel.textContent = axes[a].nat;
+    svg.appendChild(natLabel);
+  }
+
+  // Leyenda inferior unificada (grande)
+  svg.appendChild(createLegend([
+    { color: PANORAMA_UM, text: 'Unimagdalena' },
+    { color: PANORAMA_NAT, text: 'Nacional' }
+  ], cx - 150, h - 18, { fontSize: 16, rectW: 24, rectH: 12, gap: 200, textGap: 34, fontWeight: 700 }));
 
   container.innerHTML = '';
   container.appendChild(svg);
 }
 
-// Leyendas dinámicas para SVGs
-function createLegend(items, startX, startY) {
+// Leyendas dinámicas para SVGs (con tamaño configurable)
+function createLegend(items, startX, startY, opts = {}) {
+  const fontSize = opts.fontSize || 9;
+  const rectW = opts.rectW || 14;
+  const rectH = opts.rectH || 8;
+  const gap = opts.gap || 110;
+  const textGap = opts.textGap || 20;
+  const fontWeight = opts.fontWeight || 600;
+
   const g = createSVGEl('g', { class: 'legend' });
   items.forEach((item, idx) => {
-    const x = startX + idx * 110;
+    const x = startX + idx * gap;
     const rect = createSVGEl('rect', {
-      x: x, y: startY - 8, width: 14, height: 8, rx: 2,
+      x: x, y: startY - rectH, width: rectW, height: rectH, rx: 2,
       fill: item.color
     });
     const text = createSVGEl('text', {
-      x: x + 20, y: startY - 1,
-      class: 'axis-label',
-      style: 'font-size: 9px; font-weight: 600;'
+      x: x + textGap, y: startY - 1,
+      style: `font-family: var(--font-display); font-size: ${fontSize}px; font-weight: ${fontWeight}; fill: var(--brand-primary-dark);`
     });
     text.textContent = item.text;
     g.appendChild(rect);
@@ -396,123 +428,163 @@ function renderEvolLine(d) {
   const hist = d.institucional.historico;
   if (!hist || hist.length === 0) return;
 
-  const w = 400;
-  const h = 300;
-  const margin = { top: 30, right: 20, bottom: 45, left: 45 };
+  const w = 900;
+  const h = 460;
+  const margin = { top: 28, right: 36, bottom: 78, left: 60 };
 
   const svg = createSVGEl('svg', { viewBox: `0 0 ${w} ${h}`, class: 'svg-chart' });
 
-  const years = hist.map(h => h.anio);
-  const minVal = 135;
-  const maxVal = 155;
+  const years = hist.map(p => p.anio);
+  // Calcular rango Y a partir de los datos con un padding
+  const allVals = hist.flatMap(p => [p.puntaje_unimag, p.puntaje_nacional]);
+  const dataMin = Math.min(...allVals);
+  const dataMax = Math.max(...allVals);
+  const span = dataMax - dataMin;
+  const pad = Math.max(4, Math.ceil(span * 0.35));
+  let minVal = Math.floor((dataMin - pad) / 5) * 5;
+  let maxVal = Math.ceil((dataMax + pad) / 5) * 5;
+  if (maxVal - minVal < 20) maxVal = minVal + 20;
 
-  const getX = (idx) => margin.left + (idx / (years.length - 1)) * (w - margin.left - margin.right);
-  const getY = (val) => h - margin.bottom - ((val - minVal) / (maxVal - minVal)) * (h - margin.top - margin.bottom);
+  const innerW = w - margin.left - margin.right;
+  const innerH = h - margin.top - margin.bottom;
+  const getX = (idx) => margin.left + (idx / (years.length - 1)) * innerW;
+  const getY = (val) => h - margin.bottom - ((val - minVal) / (maxVal - minVal)) * innerH;
 
-  // Líneas de rejilla Y
-  const yTicks = 5;
-  for (let i = 0; i <= yTicks; i++) {
-    const val = minVal + (i / yTicks) * (maxVal - minVal);
-    const y = getY(val);
-
-    const line = createSVGEl('line', {
+  // Rejilla horizontal con tickValues múltiplos de 5
+  const tickStep = 5;
+  for (let v = minVal; v <= maxVal; v += tickStep) {
+    const y = getY(v);
+    svg.appendChild(createSVGEl('line', {
       x1: margin.left, y1: y,
       x2: w - margin.right, y2: y,
-      class: 'grid-line'
-    });
-    const label = createSVGEl('text', {
-      x: margin.left - 8, y: y + 4,
+      stroke: 'var(--border)',
+      'stroke-width': '0.6',
+      'stroke-dasharray': '2,4',
+      opacity: '0.7'
+    }));
+    const lbl = createSVGEl('text', {
+      x: margin.left - 12, y: y + 5,
       'text-anchor': 'end',
-      class: 'axis-label'
+      style: 'font-family: var(--font-display); font-size: 13px; font-weight: 500; fill: var(--text-soft);'
     });
-    label.textContent = Math.round(val);
-
-    svg.appendChild(line);
-    svg.appendChild(label);
+    lbl.textContent = v;
+    svg.appendChild(lbl);
   }
 
-  // Eje X marcas
+  // Línea base del eje X
+  svg.appendChild(createSVGEl('line', {
+    x1: margin.left, y1: h - margin.bottom,
+    x2: w - margin.right, y2: h - margin.bottom,
+    stroke: 'var(--border)',
+    'stroke-width': '1'
+  }));
+
+  // Etiquetas eje X
   years.forEach((yr, idx) => {
     const x = getX(idx);
-    const label = createSVGEl('text', {
-      x: x, y: h - margin.bottom + 18,
+    const lbl = createSVGEl('text', {
+      x: x, y: h - margin.bottom + 26,
       'text-anchor': 'middle',
-      class: 'axis-label',
-      style: 'font-weight: 600;'
+      style: 'font-family: var(--font-display); font-size: 14px; font-weight: 600; fill: var(--brand-primary-dark);'
     });
-    label.textContent = yr;
-    svg.appendChild(label);
-
-    const tick = createSVGEl('line', {
-      x1: x, y1: h - margin.bottom,
-      x2: x, y2: h - margin.bottom + 4,
-      stroke: 'var(--border)'
-    });
-    svg.appendChild(tick);
+    lbl.textContent = yr;
+    svg.appendChild(lbl);
   });
 
-  // Construir caminos
-  let dPathUM = '';
-  let dPathNat = '';
+  // Path con curvas suaves (Catmull-Rom → Bézier)
+  const smoothPath = (points) => {
+    if (points.length < 2) return '';
+    const tension = 0.35;
+    let d = `M ${points[0][0]} ${points[0][1]}`;
+    for (let i = 0; i < points.length - 1; i++) {
+      const p0 = points[i - 1] || points[i];
+      const p1 = points[i];
+      const p2 = points[i + 1];
+      const p3 = points[i + 2] || p2;
+      const cp1x = p1[0] + (p2[0] - p0[0]) * tension / 2;
+      const cp1y = p1[1] + (p2[1] - p0[1]) * tension / 2;
+      const cp2x = p2[0] - (p3[0] - p1[0]) * tension / 2;
+      const cp2y = p2[1] - (p3[1] - p1[1]) * tension / 2;
+      d += ` C ${cp1x} ${cp1y}, ${cp2x} ${cp2y}, ${p2[0]} ${p2[1]}`;
+    }
+    return d;
+  };
 
+  const ptsUM = hist.map((p, i) => [getX(i), getY(p.puntaje_unimag)]);
+  const ptsNat = hist.map((p, i) => [getX(i), getY(p.puntaje_nacional)]);
+
+  // Trayectoria Nacional
+  svg.appendChild(createSVGEl('path', {
+    d: smoothPath(ptsNat),
+    fill: 'none',
+    stroke: PANORAMA_NAT,
+    'stroke-width': '2.8',
+    'stroke-linecap': 'round',
+    'stroke-linejoin': 'round',
+    opacity: '0.95'
+  }));
+
+  // Trayectoria UM (línea verde institucional, más gruesa)
+  svg.appendChild(createSVGEl('path', {
+    d: smoothPath(ptsUM),
+    fill: 'none',
+    stroke: PANORAMA_UM,
+    'stroke-width': '3.4',
+    'stroke-linecap': 'round',
+    'stroke-linejoin': 'round'
+  }));
+
+  // Puntos + etiquetas numéricas (UM arriba/abajo según comparativo)
   hist.forEach((pt, idx) => {
     const x = getX(idx);
     const yUM = getY(pt.puntaje_unimag);
     const yNat = getY(pt.puntaje_nacional);
+    const umAbove = pt.puntaje_unimag >= pt.puntaje_nacional;
 
-    dPathUM += `${idx === 0 ? 'M' : 'L'} ${x} ${yUM} `;
-    dPathNat += `${idx === 0 ? 'M' : 'L'} ${x} ${yNat} `;
-  });
-
-  // Dibujar caminos
-  const pathNat = createSVGEl('path', {
-    d: dPathNat,
-    stroke: COLOR_REF,
-    class: 'chart-line',
-    style: 'stroke-width: 2.5; stroke-dasharray: 2,2; opacity: 0.85;'
-  });
-  const pathUM = createSVGEl('path', {
-    d: dPathUM,
-    stroke: COLOR_UM,
-    class: 'chart-line',
-    style: 'stroke-width: 3.5;'
-  });
-
-  svg.appendChild(pathNat);
-  svg.appendChild(pathUM);
-
-  // Dibujar círculos y tooltips
-  const drawDots = (dataKey, color, name) => {
-    hist.forEach((pt, idx) => {
-      const x = getX(idx);
-      const val = pt[dataKey];
-      const y = getY(val);
-
-      const circle = createSVGEl('circle', {
-        cx: x, cy: y, r: 5,
-        fill: color,
-        class: 'chart-dot'
-      });
-
-      circle.addEventListener('mouseenter', (e) => {
-        showTooltip(e, `<strong>${name} (${pt.anio})</strong>Puntaje: ${val} pts${dataKey === 'puntaje_unimag' && pt.n_unimag ? `<br>Evaluados: ${NUM.format(pt.n_unimag)}` : ''}`);
-      });
-      circle.addEventListener('mousemove', moveTooltip);
-      circle.addEventListener('mouseleave', hideTooltip);
-
-      svg.appendChild(circle);
+    const cNat = createSVGEl('circle', {
+      cx: x, cy: yNat, r: 4.8,
+      fill: '#fff', stroke: PANORAMA_NAT, 'stroke-width': '2.4',
+      class: 'chart-dot'
     });
-  };
+    cNat.addEventListener('mouseenter', (e) => showTooltip(e, `<strong>Nacional (${pt.anio})</strong>${pt.puntaje_nacional} pts`));
+    cNat.addEventListener('mousemove', moveTooltip);
+    cNat.addEventListener('mouseleave', hideTooltip);
+    svg.appendChild(cNat);
 
-  drawDots('puntaje_nacional', COLOR_REF, 'Promedio Nacional');
-  drawDots('puntaje_unimag', COLOR_UM, 'UNIMAGDALENA');
+    const cUM = createSVGEl('circle', {
+      cx: x, cy: yUM, r: 5.2,
+      fill: '#fff', stroke: PANORAMA_UM, 'stroke-width': '2.8',
+      class: 'chart-dot'
+    });
+    cUM.addEventListener('mouseenter', (e) => showTooltip(e, `<strong>Unimagdalena (${pt.anio})</strong>${pt.puntaje_unimag} pts${pt.n_unimag ? `<br>Evaluados: ${NUM.format(pt.n_unimag)}` : ''}`));
+    cUM.addEventListener('mousemove', moveTooltip);
+    cUM.addEventListener('mouseleave', hideTooltip);
+    svg.appendChild(cUM);
 
-  // Leyenda
-  const legend = createLegend([
-    { color: COLOR_UM, text: 'UNIMAGDALENA' },
-    { color: COLOR_REF, text: 'Nacional' }
-  ], margin.left + 50, margin.top - 12);
-  svg.appendChild(legend);
+    // Etiqueta UM
+    const lblUM = createSVGEl('text', {
+      x: x, y: yUM + (umAbove ? -14 : 22),
+      'text-anchor': 'middle',
+      style: `font-family: var(--font-display); font-weight: 800; font-size: 16px; fill: ${PANORAMA_UM};`
+    });
+    lblUM.textContent = pt.puntaje_unimag;
+    svg.appendChild(lblUM);
+
+    // Etiqueta Nacional
+    const lblNat = createSVGEl('text', {
+      x: x, y: yNat + (umAbove ? 22 : -14),
+      'text-anchor': 'middle',
+      style: `font-family: var(--font-display); font-weight: 800; font-size: 16px; fill: ${PANORAMA_NAT};`
+    });
+    lblNat.textContent = pt.puntaje_nacional;
+    svg.appendChild(lblNat);
+  });
+
+  // Leyenda inferior unificada (grande)
+  svg.appendChild(createLegend([
+    { color: PANORAMA_UM, text: 'Unimagdalena' },
+    { color: PANORAMA_NAT, text: 'Nacional' }
+  ], (w / 2) - 150, h - 18, { fontSize: 16, rectW: 24, rectH: 12, gap: 200, textGap: 34, fontWeight: 700 }));
 
   container.innerHTML = '';
   container.appendChild(svg);
