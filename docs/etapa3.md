@@ -48,7 +48,7 @@ programa). Aquí se sustituyen por **un único componente filtrable** (G9).
 | G9 | 6 | Explorador de programas (componente filtrable) | Compuesto | Esencial |
 | G10 | 7 | Top 10 por competencia | Barras horizontales | Recomendado |
 | G11 | 7 | Niveles de desempeño institucional | Barras apiladas 100% | Recomendado |
-| G12 | 2/7 | Mapa de calor competencias × facultad | Heatmap | Opcional |
+| G12 | 5 | Mapa de calor competencias × facultad (filtrable por año) | Heatmap | Esencial |
 
 ---
 
@@ -143,18 +143,34 @@ programa). Aquí se sustituyen por **un único componente filtrable** (G9).
 ## SECCIÓN 5 — Facultades
 
 ### G8 · Desempeño por facultad (filtrable por año y por competencia) — **Esencial**
-- **Tipo:** barras horizontales ordenadas, con **dos selectores** (año + competencia).
-- **Datos:** `facultades_historico[<año>]` (6 facultades por año con `puntaje_global`, `n` y las 5 competencias genéricas, todas con promedio ponderado por evaluados). Para el año vigente cae sobre `facultades[]` que es el mismo cálculo verificado en línea.
+- **Tipo:** barras horizontales ordenadas, con un **selector de año** (dropdown) + **tabs de competencia** (píldoras estilo Top 10).
+- **Datos:** `facultades_historico[<año>]` (6 facultades por año con `puntaje_global`, `n` y las 5 competencias genéricas, todas con promedio ponderado por evaluados). Para el año vigente cae sobre `facultades[]`.
 - **Mensaje:** "Cómo le fue a cada facultad en el puntaje global y en cada competencia genérica, año a año."
-- **Decisión:** focaliza apoyo institucional por facultad. El decano puede ver tanto el desempeño global como la evolución de una competencia específica (por ejemplo, "¿Cómo está mi facultad en Inglés en 2024?").
-- **Por qué barras horizontales con selectores:**
+- **Decisión:** focaliza apoyo institucional por facultad. El decano puede ver el desempeño global y switchear rápido entre las 5 competencias.
+- **Por qué barras horizontales con tabs:**
   - Horizontales para que los nombres largos de facultad quepan a la izquierda.
-  - Selectores separados para evitar 30+ barras (6 facultades × 5 competencias) y mantener la lectura simple.
+  - Tabs visuales (en lugar de un segundo dropdown) hacen la comparación entre competencias 1-clic; el usuario ve en qué tab está parado.
 - **Diseño:**
   - Cada barra con su propio color (paleta indexada de 6 tonos coherentes con el informe).
-  - Las barras se re-ordenan según el valor de la competencia seleccionada (la facultad mejor en Inglés sube al tope cuando seleccionas Inglés).
-  - Tooltip aclara explícitamente "Promedio ponderado por evaluados" y, en vista global, lista las 5 competencias del año.
-  - Título dinámico: "Lectura Crítica promedio por facultad 2024" cambia con los selectores.
+  - Las barras se reordenan según el valor de la competencia seleccionada (la facultad mejor en Inglés sube al tope cuando se elige Inglés).
+  - Tooltip aclara "Promedio ponderado por evaluados" sin listar las demás competencias (esas se ven cambiando de tab).
+  - Título dinámico: "Lectura Crítica promedio por facultad 2024" cambia al instante.
+
+### G12 · Matriz de calor competencias × facultad (filtrable por año) — **Esencial** (sección 5)
+- **Tipo:** heatmap tabular HTML (6 facultades × 5 competencias) con **selector de año** (2020-2025).
+- **Datos:** `facultades_historico[<año>][].competencias[]`.
+- **Mensaje:** "Vista panorámica de qué facultad domina qué competencia en cada año."
+- **Decisión:** complementa a G8 mostrando todas las competencias de todas las facultades a la vez. Útil para vicerrectoría y planeación cuando hay que detectar patrones (ej. "todas las facultades flojean en Razonamiento Cuantitativo").
+- **Por qué heatmap:** densidad informativa (30 celdas en un golpe de vista) imposible de transmitir con G8 sin saturar el chart.
+- **Diseño:**
+  - Gradiente de azul claro (`#E8F1FB`) a azul institucional (`#0F4FA8`) mapeado al rango min–max del año seleccionado.
+  - Texto blanco automático en celdas con porcentaje > 0.55 del rango para mantener legibilidad.
+  - Esquina `FACULTAD` y headers de columna con tratamiento editorial (mayúsculas + letter-spacing + acento bajo).
+  - Columna de facultades como tarjetas blancas con borde lateral azul brillante.
+  - Marcadores ★ en el valor máximo y ◇ en el mínimo del año.
+  - Leyenda al pie con barra-gradiente y los valores mín/máx etiquetados como `BAJO` / `ALTO`.
+  - Tooltip al hover con facultad + competencia + puntaje + año.
+- **Nota de ubicación:** este gráfico estaba en la sección 7 (Síntesis) hasta v2.5; en v2.6 se mueve a la sección 5 (Facultades) porque es donde más sentido tiene narrativamente (el lector que examina facultades necesita esta vista panorámica). La sección 7 ahora se enfoca solo en la DOFA estratégica.
 
 ---
 

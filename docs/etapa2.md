@@ -76,12 +76,12 @@ directo** a su facultad o programa vía la navegación lateral.
 - **Perfil:** vicerrectoría / planeación.
 
 ### Sección 5 — Facultades
-- **Objetivo:** comparar el desempeño agregado entre las 6 facultades.
-- **Historia:** "Estas facultades lideran; estas requieren acompañamiento; así han evolucionado."
-- **Preguntas:** ¿Qué facultad tiene mejor desempeño? ¿Cuál muestra mayor mejora/caída en el tiempo?
-- **Indicadores:** barras/heatmap por facultad; evolución por facultad.
-- **Fuente:** agregados, usando el mapeo programa→facultad del YML.
-- **Perfil:** decanos.
+- **Objetivo:** comparar el desempeño agregado entre las 6 facultades, tanto en el global como en cada competencia genérica.
+- **Historia:** "Estas facultades lideran en cada competencia; estas requieren acompañamiento focalizado en X o Y; así han evolucionado año a año."
+- **Preguntas:** ¿Qué facultad tiene mejor desempeño global? ¿En qué competencia destaca cada una? ¿Cuál muestra mayor mejora/caída en el tiempo? ¿Hay patrones transversales (todas flojean en Razonamiento)?
+- **Indicadores:** (1) barras horizontales por facultad con selector de año + tabs de competencia; (2) mapa de calor (6 facultades × 5 competencias) con selector de año.
+- **Fuente:** agregados, usando el mapeo programa→facultad del YML y `facultades_historico` por año.
+- **Perfil:** decanos y vicerrectoría académica.
 
 ### Sección 6 — Programas
 - **Objetivo:** permitir a cada director ver su programa frente a su NBC nacional.
@@ -103,7 +103,7 @@ directo** a su facultad o programa vía la navegación lateral.
 - **Objetivo:** cerrar con una lectura estratégica y acciones.
 - **Historia:** "Esto es lo que los datos nos dicen, y esto es lo que sugieren hacer."
 - **Preguntas:** ¿Cuáles son nuestras fortalezas, debilidades, oportunidades y amenazas? ¿Qué decisiones priorizar?
-- **Indicadores:** matriz DOFA derivada de los datos; resumen de hallazgos clave.
+- **Indicadores:** matriz DOFA derivada de los datos; resumen de hallazgos clave. (El mapa de calor competencias×facultad vivió en esta sección hasta v2.5; en v2.6 se movió a la sección 5 — Facultades — donde es narrativamente más natural.)
 - **Fuente:** ambas (síntesis de todo el informe).
 - **Perfil:** alta dirección / planeación.
 

@@ -2,7 +2,7 @@
 
 ## Universidad del Magdalena - Oficina Asesora de Planeación
 
-**Versión:** 2.5
+**Versión:** 2.6
 **Fecha de actualización:** Junio 2026
 **Stack:** Python para procesamiento; HTML, CSS y JavaScript puro para el informe.
 **Arquitectura:** `datos crudos -> scripts Python -> JSON maestro -> informe HTML`.
@@ -57,7 +57,7 @@ informe/informe/index.html
 | 2 | Arquitectura narrativa | Mapa de secciones y perfiles de lector | Completada |
 | 3 | Catálogo de visualizaciones | 12 visualizaciones priorizadas | Completada |
 | 4 | Diseño y maquetación | Informe HTML, tokens CSS, navegación y KPIs | Completada — rediseño v2.2 (sidebar flotante permanente, hero con identidad ejecutiva y 3 KPIs incrustados) |
-| 5 | Visualizaciones | Gráficos interactivos en JavaScript puro | Completada — v2.5: selector de año en G2 (radar), G4 (ranking SUE rediseñado en columnas verticales con paleta tri-color), G5 (comparativo con universidades del departamento) y G8 (facultades con selector de año + competencia). G6 (cuadrantes) ahora distingue 4 capas: Unimagdalena, NBC, otras universidades del Magdalena, otras IES. |
+| 5 | Visualizaciones | Gráficos interactivos en JavaScript puro | Completada — v2.6: G8 (facultades) usa tabs estilo píldora para cambiar de competencia + selector de año; G12 (mapa de calor) se movió de la sección 7 (Síntesis) a la sección 5 (Facultades) con selector de año, gradiente azul claro→azul institucional, texto blanco automático en celdas oscuras, marcadores ★/◇ para max/min y leyenda de rango al pie. v2.5: G2 (radar) con año, G4 (SUE vertical tri-color), G5 (universidades del Magdalena), G6 (cuadrantes con 4 capas: Unimagdalena, NBC, otras univ. del Magdalena, otras IES). |
 | 6 | Narrativa y síntesis | Leads dinámicos y DOFA derivada de datos | Completada (ver §7 para revisión editorial pendiente) |
 | 7 | Actualización y entrega | Guía operativa, documentación técnica y `ejecutar_proyecto.bat` | Completada |
 

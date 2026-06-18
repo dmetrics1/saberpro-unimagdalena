@@ -167,11 +167,20 @@
           <div class="card__header-flex">
             <h3 class="card__title"><span id="facultadCompLbl">Puntaje global</span> promedio por facultad <span id="facultadYearLbl">2025</span></h3>
             <div class="card__controls">
-              <select id="selCompFacultad" class="control-select"></select>
               <select id="selAnioFacultad" class="control-select"></select>
             </div>
           </div>
+          <div class="tabs tabs--facultad" id="facultadCompTabs"></div>
           <div class="chart-container" id="chartFacultades"></div>
+        </div>
+        <div class="card">
+          <div class="card__header-flex">
+            <h3 class="card__title">Matriz de calor: competencias por facultad <span id="heatmapYearLbl">2025</span></h3>
+            <div class="select-wrapper">
+              <select id="selAnioHeatmap" class="control-select"></select>
+            </div>
+          </div>
+          <div class="chart-container" id="chartHeatmap"></div>
         </div>
       </div>
     </section>
@@ -255,14 +264,6 @@
       <div class="section__eyebrow">07 · Síntesis</div>
       <h2 class="section__title">Lectura estratégica y recomendaciones</h2>
       <p class="section__lead" id="leadSint"></p>
-      
-      <div class="charts-grid">
-        <div class="card card--full">
-          <h3 class="card__title">Matriz de Calor: Competencias por Facultad</h3>
-          <p class="card__subtitle">Desempeño relativo en las 5 competencias genéricas.</p>
-          <div class="chart-container" id="chartHeatmap"></div>
-        </div>
-      </div>
 
       <div class="dofa-container">
         <div class="dofa-grid">

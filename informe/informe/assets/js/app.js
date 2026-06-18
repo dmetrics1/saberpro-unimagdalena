@@ -53,6 +53,7 @@ async function init() {
   renderProgramExplorer(d);
   renderTop10(d);
   renderNivelesInstitucional(d);
+  initHeatmapYearPicker(d);
   renderHeatmapAndDofa(d);
 }
 
@@ -1577,9 +1578,18 @@ const FAC_PALETTE = [
 // Selector de competencia: 'global' o el nombre canónico de una competencia genérica
 let activeFacultadComp = 'global';
 
+// Etiquetas cortas para los tabs (caben mejor)
+const COMP_SHORT_LABEL = {
+  'LECTURA CRÍTICA': 'Lectura Crítica',
+  'RAZONAMIENTO CUANTITATIVO': 'Raz. Cuantitativo',
+  'COMPETENCIAS CIUDADANAS': 'Ciudadanas',
+  'COMUNICACIÓN ESCRITA': 'Com. Escrita',
+  'INGLÉS': 'Inglés'
+};
+
 function initFacultadYearPicker(d) {
   const selY = document.getElementById('selAnioFacultad');
-  const selC = document.getElementById('selCompFacultad');
+  const tabsEl = document.getElementById('facultadCompTabs');
 
   // Selector de año
   if (selY) {
@@ -1597,34 +1607,41 @@ function initFacultadYearPicker(d) {
     }
   }
 
-  // Selector de competencia (Global + las 5 genéricas)
-  if (selC) {
+  // Tabs de competencia (Global + las 5 genéricas)
+  if (tabsEl) {
     const facsSample = (d.facultades && d.facultades.length > 0) ? d.facultades[0] : null;
     const comps = facsSample && Array.isArray(facsSample.competencias)
       ? facsSample.competencias.map(c => c.competencia)
       : [];
-    const opciones = ['global', ...comps];
-    selC.innerHTML = opciones.map(o => {
-      const label = o === 'global' ? 'Puntaje global' : titleCase(o);
-      return `<option value="${o}">${label}</option>`;
+    const opciones = [
+      { value: 'global', label: 'Global' },
+      ...comps.map(c => ({ value: c, label: COMP_SHORT_LABEL[c] || titleCase(c) }))
+    ];
+
+    tabsEl.innerHTML = opciones.map(o => {
+      const isActive = o.value === activeFacultadComp;
+      return `<button type="button" class="tab-btn ${isActive ? 'is-active' : ''}" data-comp="${o.value}">${o.label}</button>`;
     }).join('');
-    selC.value = 'global';
-    selC.addEventListener('change', () => {
-      activeFacultadComp = selC.value;
-      const yr = selY ? parseInt(selY.value, 10) : (d.meta?.anio_vigente ?? null);
-      renderFacultades(d, yr);
+
+    tabsEl.querySelectorAll('.tab-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        activeFacultadComp = btn.dataset.comp;
+        tabsEl.querySelectorAll('.tab-btn').forEach(b => b.classList.toggle('is-active', b === btn));
+        const yr = selY ? parseInt(selY.value, 10) : (d.meta?.anio_vigente ?? null);
+        renderFacultades(d, yr);
+      });
     });
   }
 }
 
 function titleCase(s) {
-  return s.toLowerCase().replace(/(?:^|\s|í|ó|á|é|ú)\S/g, c => c.toUpperCase())
-    .replace(/Critica/i, 'Crítica')
-    .replace(/Cuantitativo/i, 'Cuantitativo')
-    .replace(/Ciudadanas/i, 'Ciudadanas')
-    .replace(/Escrita/i, 'Escrita')
-    .replace(/Ingles/i, 'Inglés')
-    .replace(/Comunicacion/i, 'Comunicación');
+  if (!s) return '';
+  // Convertir a minúsculas y capitalizar solo la primera letra de cada palabra,
+  // preservando los acentos que ya vienen en el dato fuente.
+  return s.toLowerCase()
+    .split(' ')
+    .map(w => w ? w.charAt(0).toUpperCase() + w.slice(1) : w)
+    .join(' ');
 }
 
 function renderFacultades(d, yearOverride) {
@@ -1663,8 +1680,8 @@ function renderFacultades(d, yearOverride) {
   const sortedFacs = sorted(dataWithValue, key => valueOf(key), true);
 
   const w = 1000;
-  const h = 360;
-  const margin = { top: 20, right: 60, bottom: 36, left: 240 };
+  const h = 400;
+  const margin = { top: 14, right: 60, bottom: 32, left: 240 };
   const innerW = w - margin.left - margin.right;
   const innerH = h - margin.top - margin.bottom;
 
@@ -1725,12 +1742,7 @@ function renderFacultades(d, yearOverride) {
     // Tooltip: aclara que es promedio ponderado
     rect.addEventListener('mouseenter', (e) => {
       const compTitle = compKey === 'global' ? 'Puntaje global' : titleCase(compKey);
-      let compsHtml = '';
-      if (Array.isArray(fac.competencias) && fac.competencias.length > 0 && compKey === 'global') {
-        compsHtml = '<br><strong>Por competencia (' + targetYear + '):</strong>' +
-          fac.competencias.map(c => `<br>  • ${c.competencia}: ${c.puntaje ?? '—'} pts`).join('');
-      }
-      showTooltip(e, `<strong>${fac.facultad}</strong>${compTitle} (promedio ponderado por evaluados): <strong>${v} pts</strong><br>Evaluados en ${targetYear}: ${NUM.format(fac.n)}${compsHtml}`);
+      showTooltip(e, `<strong>${fac.facultad}</strong>${compTitle} (promedio ponderado por evaluados): <strong>${v} pts</strong><br>Evaluados en ${targetYear}: ${NUM.format(fac.n)}`);
     });
     rect.addEventListener('mousemove', moveTooltip);
     rect.addEventListener('mouseleave', hideTooltip);
@@ -2565,15 +2577,54 @@ function renderNivelesInstitucional(d) {
   container.appendChild(svg);
 }
 
-/* ---------- G12: Mapa de calor & Storytelling (DOFA) ---------- */
+/* ---------- G12: Mapa de calor (filtrable por año) ---------- */
+function initHeatmapYearPicker(d) {
+  const sel = document.getElementById('selAnioHeatmap');
+  if (!sel) return;
+  const hist = d.facultades_historico || {};
+  const years = Object.keys(hist).filter(y => Array.isArray(hist[y]) && hist[y].length > 0);
+  if (years.length === 0) return;
+
+  sel.innerHTML = years
+    .map(y => parseInt(y, 10))
+    .sort((a, b) => b - a)
+    .map(y => `<option value="${y}">${y}</option>`)
+    .join('');
+  const defaultYear = String(d.meta?.anio_vigente ?? years[years.length - 1]);
+  sel.value = defaultYear;
+  sel.addEventListener('change', () => renderHeatmap(d, parseInt(sel.value, 10)));
+}
+
 function renderHeatmapAndDofa(d) {
+  renderHeatmap(d);
+  buildDofaDetails(d);
+}
+
+function renderHeatmap(d, yearOverride) {
   const container = document.getElementById('chartHeatmap');
   if (!container) return;
 
-  const facs = d.facultades;
+  const currentYear = d.meta?.anio_vigente ?? null;
+  const targetYear = yearOverride ?? currentYear;
+
+  // Para el año vigente preferimos d.facultades (verificado en línea)
+  let facs;
+  if (targetYear === currentYear && Array.isArray(d.facultades) && d.facultades.length > 0) {
+    facs = d.facultades;
+  } else {
+    facs = (d.facultades_historico || {})[String(targetYear)] || [];
+  }
   if (!facs || facs.length === 0) return;
 
+  // Etiqueta del año en el título
+  const lbl = document.getElementById('heatmapYearLbl');
+  if (lbl) lbl.textContent = targetYear;
+
+  // Competencias del modelo institucional (orden consistente)
   const comps = d.institucional.competencias.map(c => c.competencia);
+
+  // Etiquetas cortas reutilizando el mapping de los tabs de Facultades
+  const labelOf = (name) => COMP_SHORT_LABEL[name] || titleCase(name);
 
   // Crear la tabla
   const table = document.createElement('table');
@@ -2582,18 +2633,13 @@ function renderHeatmapAndDofa(d) {
   // Cabecera
   const thead = document.createElement('thead');
   const trHeader = document.createElement('tr');
-  trHeader.appendChild(document.createElement('th')); // Esquina vacía
+  const thCorner = document.createElement('th');
+  thCorner.textContent = 'Facultad';
+  thCorner.className = 'heatmap__corner';
+  trHeader.appendChild(thCorner);
   comps.forEach(c => {
     const th = document.createElement('th');
-    
-    let label = c;
-    if (label === 'RAZONAMIENTO CUANTITATIVO') label = 'Raz. Cuantitativo';
-    if (label === 'COMPETENCIAS CIUDADANAS') label = 'Ciudadanas';
-    if (label === 'COMUNICACIÓN ESCRITA') label = 'Com. Escrita';
-    if (label === 'LECTURA CRÍTICA') label = 'Lectura Crítica';
-    if (label === 'INGLÉS') label = 'Inglés';
-
-    th.textContent = label;
+    th.textContent = labelOf(c);
     trHeader.appendChild(th);
   });
   thead.appendChild(trHeader);
@@ -2602,44 +2648,58 @@ function renderHeatmapAndDofa(d) {
   // Cuerpo
   const tbody = document.createElement('tbody');
 
-  // Encontrar mínimos y máximos para la escala de color
-  let minScore = 200;
-  let maxScore = 0;
+  // Mín y máx globales para escalar el color
+  let minScore = Infinity;
+  let maxScore = -Infinity;
   facs.forEach(f => {
-    f.competencias.forEach(c => {
+    (f.competencias || []).forEach(c => {
+      if (c.puntaje == null) return;
       if (c.puntaje < minScore) minScore = c.puntaje;
       if (c.puntaje > maxScore) maxScore = c.puntaje;
     });
   });
 
+  // Función de color: del azul claro al azul institucional
+  // Devuelve background + color de texto contrastado para celdas oscuras
+  const colorFor = (val) => {
+    const pct = (maxScore === minScore) ? 0.5 : (val - minScore) / (maxScore - minScore);
+    // Gradiente azul: claro #E8F1FB → oscuro #0F4FA8
+    const start = [232, 241, 251];
+    const end = [15, 79, 168];
+    const rgb = start.map((s, i) => Math.round(s + (end[i] - s) * pct));
+    const bg = `rgb(${rgb.join(',')})`;
+    const textColor = pct > 0.55 ? '#fff' : 'var(--brand-primary-dark)';
+    return { bg, textColor, pct };
+  };
+
   facs.forEach(f => {
     const tr = document.createElement('tr');
-
     const tdFac = document.createElement('td');
     tdFac.textContent = f.facultad.replace('Facultad de ', '');
     tr.appendChild(tdFac);
 
     comps.forEach(compName => {
       const tdVal = document.createElement('td');
-      const compObj = f.competencias.find(c => c.competencia === compName);
-      
+      const compObj = (f.competencias || []).find(c => c.competencia === compName);
+
       if (compObj && compObj.puntaje !== null) {
         tdVal.textContent = Math.round(compObj.puntaje);
         tdVal.className = 'heatmap__cell';
+        const { bg, textColor, pct } = colorFor(compObj.puntaje);
+        tdVal.style.background = bg;
+        tdVal.style.color = textColor;
+        // Marca leve a los extremos
+        if (compObj.puntaje === maxScore) tdVal.classList.add('heatmap__cell--top');
+        if (compObj.puntaje === minScore) tdVal.classList.add('heatmap__cell--bottom');
 
-        // Escalar opacidad del fondo azul de acuerdo con el rendimiento
-        const pct = (compObj.puntaje - minScore) / (maxScore - minScore);
-        const opacityVal = 0.05 + 0.55 * pct;
-        tdVal.style.background = `rgba(1, 131, 239, ${opacityVal})`;
-
-        // Tooltip
         tdVal.addEventListener('mouseenter', (e) => {
-          showTooltip(e, `<strong>${f.facultad}</strong>${compName}: ${compObj.puntaje} pts`);
+          showTooltip(e, `<strong>${f.facultad}</strong>${compName}: <strong>${compObj.puntaje} pts</strong> · año ${targetYear}`);
         });
         tdVal.addEventListener('mousemove', moveTooltip);
         tdVal.addEventListener('mouseleave', hideTooltip);
       } else {
         tdVal.textContent = '—';
+        tdVal.className = 'heatmap__cell heatmap__cell--empty';
       }
 
       tr.appendChild(tdVal);
@@ -2649,11 +2709,21 @@ function renderHeatmapAndDofa(d) {
   });
 
   table.appendChild(tbody);
+
+  // Pie con leyenda min/max
+  const tfoot = document.createElement('div');
+  tfoot.className = 'heatmap__legend';
+  tfoot.innerHTML = `
+    <span class="heatmap__legend-label">Bajo</span>
+    <span class="heatmap__legend-min">${Math.round(minScore)}</span>
+    <span class="heatmap__legend-bar" aria-hidden="true"></span>
+    <span class="heatmap__legend-max">${Math.round(maxScore)}</span>
+    <span class="heatmap__legend-label">Alto</span>
+  `;
+
   container.innerHTML = '';
   container.appendChild(table);
-
-  // ---------- STORYTELLING / DOFA DINÁMICA ----------
-  buildDofaDetails(d);
+  container.appendChild(tfoot);
 }
 
 function buildDofaDetails(d) {
