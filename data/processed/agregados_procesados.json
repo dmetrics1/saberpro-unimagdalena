@@ -43,37 +43,229 @@
         "anio": 2020,
         "puntaje_unimag": 142,
         "puntaje_nacional": 149,
-        "n_unimag": 3030
+        "n_unimag": 3030,
+        "competencias": [
+          {
+            "competencia": "LECTURA CRÍTICA",
+            "puntaje_unimag": 146,
+            "puntaje_nacional": 152,
+            "n_unimag": 3030
+          },
+          {
+            "competencia": "RAZONAMIENTO CUANTITATIVO",
+            "puntaje_unimag": 140,
+            "puntaje_nacional": 149,
+            "n_unimag": 3030
+          },
+          {
+            "competencia": "COMPETENCIAS CIUDADANAS",
+            "puntaje_unimag": 147,
+            "puntaje_nacional": 152,
+            "n_unimag": 3030
+          },
+          {
+            "competencia": "COMUNICACIÓN ESCRITA",
+            "puntaje_unimag": 133,
+            "puntaje_nacional": 137,
+            "n_unimag": 3030
+          },
+          {
+            "competencia": "INGLÉS",
+            "puntaje_unimag": 146,
+            "puntaje_nacional": 156,
+            "n_unimag": 3030
+          }
+        ]
       },
       {
         "anio": 2021,
         "puntaje_unimag": 142,
         "puntaje_nacional": 145,
-        "n_unimag": 2598
+        "n_unimag": 2598,
+        "competencias": [
+          {
+            "competencia": "LECTURA CRÍTICA",
+            "puntaje_unimag": 146,
+            "puntaje_nacional": 146,
+            "n_unimag": 2598
+          },
+          {
+            "competencia": "RAZONAMIENTO CUANTITATIVO",
+            "puntaje_unimag": 140,
+            "puntaje_nacional": 144,
+            "n_unimag": 2598
+          },
+          {
+            "competencia": "COMPETENCIAS CIUDADANAS",
+            "puntaje_unimag": 142,
+            "puntaje_nacional": 143,
+            "n_unimag": 2598
+          },
+          {
+            "competencia": "COMUNICACIÓN ESCRITA",
+            "puntaje_unimag": 136,
+            "puntaje_nacional": 137,
+            "n_unimag": 2598
+          },
+          {
+            "competencia": "INGLÉS",
+            "puntaje_unimag": 149,
+            "puntaje_nacional": 154,
+            "n_unimag": 2598
+          }
+        ]
       },
       {
         "anio": 2022,
         "puntaje_unimag": 146,
         "puntaje_nacional": 145,
-        "n_unimag": 1888
+        "n_unimag": 1888,
+        "competencias": [
+          {
+            "competencia": "LECTURA CRÍTICA",
+            "puntaje_unimag": 155,
+            "puntaje_nacional": 150,
+            "n_unimag": 1888
+          },
+          {
+            "competencia": "RAZONAMIENTO CUANTITATIVO",
+            "puntaje_unimag": 148,
+            "puntaje_nacional": 145,
+            "n_unimag": 1888
+          },
+          {
+            "competencia": "COMPETENCIAS CIUDADANAS",
+            "puntaje_unimag": 146,
+            "puntaje_nacional": 144,
+            "n_unimag": 1888
+          },
+          {
+            "competencia": "COMUNICACIÓN ESCRITA",
+            "puntaje_unimag": 127,
+            "puntaje_nacional": 129,
+            "n_unimag": 1888
+          },
+          {
+            "competencia": "INGLÉS",
+            "puntaje_unimag": 155,
+            "puntaje_nacional": 155,
+            "n_unimag": 1888
+          }
+        ]
       },
       {
         "anio": 2023,
         "puntaje_unimag": 146,
         "puntaje_nacional": 145,
-        "n_unimag": 2536
+        "n_unimag": 2536,
+        "competencias": [
+          {
+            "competencia": "LECTURA CRÍTICA",
+            "puntaje_unimag": 152,
+            "puntaje_nacional": 149,
+            "n_unimag": 2536
+          },
+          {
+            "competencia": "RAZONAMIENTO CUANTITATIVO",
+            "puntaje_unimag": 144,
+            "puntaje_nacional": 143,
+            "n_unimag": 2536
+          },
+          {
+            "competencia": "COMPETENCIAS CIUDADANAS",
+            "puntaje_unimag": 142,
+            "puntaje_nacional": 140,
+            "n_unimag": 2536
+          },
+          {
+            "competencia": "COMUNICACIÓN ESCRITA",
+            "puntaje_unimag": 139,
+            "puntaje_nacional": 141,
+            "n_unimag": 2536
+          },
+          {
+            "competencia": "INGLÉS",
+            "puntaje_unimag": 152,
+            "puntaje_nacional": 153,
+            "n_unimag": 2536
+          }
+        ]
       },
       {
         "anio": 2024,
         "puntaje_unimag": 146,
         "puntaje_nacional": 146,
-        "n_unimag": 2809
+        "n_unimag": 2809,
+        "competencias": [
+          {
+            "competencia": "LECTURA CRÍTICA",
+            "puntaje_unimag": 153,
+            "puntaje_nacional": 153,
+            "n_unimag": 2809
+          },
+          {
+            "competencia": "RAZONAMIENTO CUANTITATIVO",
+            "puntaje_unimag": 143,
+            "puntaje_nacional": 144,
+            "n_unimag": 2809
+          },
+          {
+            "competencia": "COMPETENCIAS CIUDADANAS",
+            "puntaje_unimag": 147,
+            "puntaje_nacional": 146,
+            "n_unimag": 2809
+          },
+          {
+            "competencia": "COMUNICACIÓN ESCRITA",
+            "puntaje_unimag": 133,
+            "puntaje_nacional": 134,
+            "n_unimag": 2809
+          },
+          {
+            "competencia": "INGLÉS",
+            "puntaje_unimag": 151,
+            "puntaje_nacional": 155,
+            "n_unimag": 2809
+          }
+        ]
       },
       {
         "anio": 2025,
         "puntaje_unimag": 150,
         "puntaje_nacional": 148,
-        "n_unimag": 2982
+        "n_unimag": 2982,
+        "competencias": [
+          {
+            "competencia": "LECTURA CRÍTICA",
+            "puntaje_unimag": 155,
+            "puntaje_nacional": 152,
+            "n_unimag": 2982
+          },
+          {
+            "competencia": "RAZONAMIENTO CUANTITATIVO",
+            "puntaje_unimag": 143,
+            "puntaje_nacional": 143,
+            "n_unimag": 2982
+          },
+          {
+            "competencia": "COMPETENCIAS CIUDADANAS",
+            "puntaje_unimag": 148,
+            "puntaje_nacional": 144,
+            "n_unimag": 2982
+          },
+          {
+            "competencia": "COMUNICACIÓN ESCRITA",
+            "puntaje_unimag": 151,
+            "puntaje_nacional": 149,
+            "n_unimag": 2982
+          },
+          {
+            "competencia": "INGLÉS",
+            "puntaje_unimag": 153,
+            "puntaje_nacional": 153,
+            "n_unimag": 2982
+          }
+        ]
       }
     ]
   },
@@ -559,6 +751,506 @@
       "es_caribe": false
     }
   ],
+  "universidades_dept_historico": {
+    "2020": [
+      {
+        "nombre": "UNIMAGDALENA",
+        "puntaje_global": 142,
+        "n": 3030,
+        "competencias": [
+          {
+            "competencia": "LECTURA CRÍTICA",
+            "puntaje": 146
+          },
+          {
+            "competencia": "RAZONAMIENTO CUANTITATIVO",
+            "puntaje": 140
+          },
+          {
+            "competencia": "COMPETENCIAS CIUDADANAS",
+            "puntaje": 147
+          },
+          {
+            "competencia": "COMUNICACIÓN ESCRITA",
+            "puntaje": 133
+          },
+          {
+            "competencia": "INGLÉS",
+            "puntaje": 146
+          }
+        ]
+      },
+      {
+        "nombre": "U. Sergio Arboleda - Santa Marta",
+        "puntaje_global": 153,
+        "n": 241,
+        "competencias": [
+          {
+            "competencia": "LECTURA CRÍTICA",
+            "puntaje": 155
+          },
+          {
+            "competencia": "RAZONAMIENTO CUANTITATIVO",
+            "puntaje": 144
+          },
+          {
+            "competencia": "COMPETENCIAS CIUDADANAS",
+            "puntaje": 157
+          },
+          {
+            "competencia": "COMUNICACIÓN ESCRITA",
+            "puntaje": 146
+          },
+          {
+            "competencia": "INGLÉS",
+            "puntaje": 163
+          }
+        ]
+      },
+      {
+        "nombre": "U. Cooperativa de Colombia - Santa Marta",
+        "puntaje_global": 139,
+        "n": 821,
+        "competencias": [
+          {
+            "competencia": "LECTURA CRÍTICA",
+            "puntaje": 142
+          },
+          {
+            "competencia": "RAZONAMIENTO CUANTITATIVO",
+            "puntaje": 138
+          },
+          {
+            "competencia": "COMPETENCIAS CIUDADANAS",
+            "puntaje": 141
+          },
+          {
+            "competencia": "COMUNICACIÓN ESCRITA",
+            "puntaje": 128
+          },
+          {
+            "competencia": "INGLÉS",
+            "puntaje": 145
+          }
+        ]
+      }
+    ],
+    "2021": [
+      {
+        "nombre": "UNIMAGDALENA",
+        "puntaje_global": 142,
+        "n": 2598,
+        "competencias": [
+          {
+            "competencia": "LECTURA CRÍTICA",
+            "puntaje": 146
+          },
+          {
+            "competencia": "RAZONAMIENTO CUANTITATIVO",
+            "puntaje": 140
+          },
+          {
+            "competencia": "COMPETENCIAS CIUDADANAS",
+            "puntaje": 142
+          },
+          {
+            "competencia": "COMUNICACIÓN ESCRITA",
+            "puntaje": 136
+          },
+          {
+            "competencia": "INGLÉS",
+            "puntaje": 149
+          }
+        ]
+      },
+      {
+        "nombre": "U. Sergio Arboleda - Santa Marta",
+        "puntaje_global": 149,
+        "n": 297,
+        "competencias": [
+          {
+            "competencia": "LECTURA CRÍTICA",
+            "puntaje": 152
+          },
+          {
+            "competencia": "RAZONAMIENTO CUANTITATIVO",
+            "puntaje": 133
+          },
+          {
+            "competencia": "COMPETENCIAS CIUDADANAS",
+            "puntaje": 150
+          },
+          {
+            "competencia": "COMUNICACIÓN ESCRITA",
+            "puntaje": 150
+          },
+          {
+            "competencia": "INGLÉS",
+            "puntaje": 158
+          }
+        ]
+      },
+      {
+        "nombre": "U. Cooperativa de Colombia - Santa Marta",
+        "puntaje_global": 137,
+        "n": 941,
+        "competencias": [
+          {
+            "competencia": "LECTURA CRÍTICA",
+            "puntaje": 139
+          },
+          {
+            "competencia": "RAZONAMIENTO CUANTITATIVO",
+            "puntaje": 134
+          },
+          {
+            "competencia": "COMPETENCIAS CIUDADANAS",
+            "puntaje": 136
+          },
+          {
+            "competencia": "COMUNICACIÓN ESCRITA",
+            "puntaje": 130
+          },
+          {
+            "competencia": "INGLÉS",
+            "puntaje": 147
+          }
+        ]
+      }
+    ],
+    "2022": [
+      {
+        "nombre": "UNIMAGDALENA",
+        "puntaje_global": 146,
+        "n": 1888,
+        "competencias": [
+          {
+            "competencia": "LECTURA CRÍTICA",
+            "puntaje": 155
+          },
+          {
+            "competencia": "RAZONAMIENTO CUANTITATIVO",
+            "puntaje": 148
+          },
+          {
+            "competencia": "COMPETENCIAS CIUDADANAS",
+            "puntaje": 146
+          },
+          {
+            "competencia": "COMUNICACIÓN ESCRITA",
+            "puntaje": 127
+          },
+          {
+            "competencia": "INGLÉS",
+            "puntaje": 155
+          }
+        ]
+      },
+      {
+        "nombre": "U. Sergio Arboleda - Santa Marta",
+        "puntaje_global": 148,
+        "n": 275,
+        "competencias": [
+          {
+            "competencia": "LECTURA CRÍTICA",
+            "puntaje": 151
+          },
+          {
+            "competencia": "RAZONAMIENTO CUANTITATIVO",
+            "puntaje": 135
+          },
+          {
+            "competencia": "COMPETENCIAS CIUDADANAS",
+            "puntaje": 147
+          },
+          {
+            "competencia": "COMUNICACIÓN ESCRITA",
+            "puntaje": 145
+          },
+          {
+            "competencia": "INGLÉS",
+            "puntaje": 161
+          }
+        ]
+      },
+      {
+        "nombre": "U. Cooperativa de Colombia - Santa Marta",
+        "puntaje_global": 139,
+        "n": 747,
+        "competencias": [
+          {
+            "competencia": "LECTURA CRÍTICA",
+            "puntaje": 146
+          },
+          {
+            "competencia": "RAZONAMIENTO CUANTITATIVO",
+            "puntaje": 136
+          },
+          {
+            "competencia": "COMPETENCIAS CIUDADANAS",
+            "puntaje": 139
+          },
+          {
+            "competencia": "COMUNICACIÓN ESCRITA",
+            "puntaje": 126
+          },
+          {
+            "competencia": "INGLÉS",
+            "puntaje": 151
+          }
+        ]
+      }
+    ],
+    "2023": [
+      {
+        "nombre": "UNIMAGDALENA",
+        "puntaje_global": 146,
+        "n": 2536,
+        "competencias": [
+          {
+            "competencia": "LECTURA CRÍTICA",
+            "puntaje": 152
+          },
+          {
+            "competencia": "RAZONAMIENTO CUANTITATIVO",
+            "puntaje": 144
+          },
+          {
+            "competencia": "COMPETENCIAS CIUDADANAS",
+            "puntaje": 142
+          },
+          {
+            "competencia": "COMUNICACIÓN ESCRITA",
+            "puntaje": 139
+          },
+          {
+            "competencia": "INGLÉS",
+            "puntaje": 152
+          }
+        ]
+      },
+      {
+        "nombre": "U. Sergio Arboleda - Santa Marta",
+        "puntaje_global": 149,
+        "n": 382,
+        "competencias": [
+          {
+            "competencia": "LECTURA CRÍTICA",
+            "puntaje": 155
+          },
+          {
+            "competencia": "RAZONAMIENTO CUANTITATIVO",
+            "puntaje": 136
+          },
+          {
+            "competencia": "COMPETENCIAS CIUDADANAS",
+            "puntaje": 149
+          },
+          {
+            "competencia": "COMUNICACIÓN ESCRITA",
+            "puntaje": 148
+          },
+          {
+            "competencia": "INGLÉS",
+            "puntaje": 155
+          }
+        ]
+      },
+      {
+        "nombre": "U. Cooperativa de Colombia - Santa Marta",
+        "puntaje_global": 138,
+        "n": 906,
+        "competencias": [
+          {
+            "competencia": "LECTURA CRÍTICA",
+            "puntaje": 144
+          },
+          {
+            "competencia": "RAZONAMIENTO CUANTITATIVO",
+            "puntaje": 135
+          },
+          {
+            "competencia": "COMPETENCIAS CIUDADANAS",
+            "puntaje": 133
+          },
+          {
+            "competencia": "COMUNICACIÓN ESCRITA",
+            "puntaje": 133
+          },
+          {
+            "competencia": "INGLÉS",
+            "puntaje": 147
+          }
+        ]
+      }
+    ],
+    "2024": [
+      {
+        "nombre": "UNIMAGDALENA",
+        "puntaje_global": 146,
+        "n": 2809,
+        "competencias": [
+          {
+            "competencia": "LECTURA CRÍTICA",
+            "puntaje": 153
+          },
+          {
+            "competencia": "RAZONAMIENTO CUANTITATIVO",
+            "puntaje": 143
+          },
+          {
+            "competencia": "COMPETENCIAS CIUDADANAS",
+            "puntaje": 147
+          },
+          {
+            "competencia": "COMUNICACIÓN ESCRITA",
+            "puntaje": 133
+          },
+          {
+            "competencia": "INGLÉS",
+            "puntaje": 151
+          }
+        ]
+      },
+      {
+        "nombre": "U. Sergio Arboleda - Santa Marta",
+        "puntaje_global": 147,
+        "n": 360,
+        "competencias": [
+          {
+            "competencia": "LECTURA CRÍTICA",
+            "puntaje": 155
+          },
+          {
+            "competencia": "RAZONAMIENTO CUANTITATIVO",
+            "puntaje": 130
+          },
+          {
+            "competencia": "COMPETENCIAS CIUDADANAS",
+            "puntaje": 151
+          },
+          {
+            "competencia": "COMUNICACIÓN ESCRITA",
+            "puntaje": 145
+          },
+          {
+            "competencia": "INGLÉS",
+            "puntaje": 155
+          }
+        ]
+      },
+      {
+        "nombre": "U. Cooperativa de Colombia - Santa Marta",
+        "puntaje_global": 144,
+        "n": 869,
+        "competencias": [
+          {
+            "competencia": "LECTURA CRÍTICA",
+            "puntaje": 152
+          },
+          {
+            "competencia": "RAZONAMIENTO CUANTITATIVO",
+            "puntaje": 139
+          },
+          {
+            "competencia": "COMPETENCIAS CIUDADANAS",
+            "puntaje": 144
+          },
+          {
+            "competencia": "COMUNICACIÓN ESCRITA",
+            "puntaje": 131
+          },
+          {
+            "competencia": "INGLÉS",
+            "puntaje": 154
+          }
+        ]
+      }
+    ],
+    "2025": [
+      {
+        "nombre": "UNIMAGDALENA",
+        "puntaje_global": 150,
+        "n": 2982,
+        "competencias": [
+          {
+            "competencia": "LECTURA CRÍTICA",
+            "puntaje": 155
+          },
+          {
+            "competencia": "RAZONAMIENTO CUANTITATIVO",
+            "puntaje": 143
+          },
+          {
+            "competencia": "COMPETENCIAS CIUDADANAS",
+            "puntaje": 148
+          },
+          {
+            "competencia": "COMUNICACIÓN ESCRITA",
+            "puntaje": 151
+          },
+          {
+            "competencia": "INGLÉS",
+            "puntaje": 153
+          }
+        ]
+      },
+      {
+        "nombre": "U. Sergio Arboleda - Santa Marta",
+        "puntaje_global": 149,
+        "n": 357,
+        "competencias": [
+          {
+            "competencia": "LECTURA CRÍTICA",
+            "puntaje": 153
+          },
+          {
+            "competencia": "RAZONAMIENTO CUANTITATIVO",
+            "puntaje": 131
+          },
+          {
+            "competencia": "COMPETENCIAS CIUDADANAS",
+            "puntaje": 147
+          },
+          {
+            "competencia": "COMUNICACIÓN ESCRITA",
+            "puntaje": 159
+          },
+          {
+            "competencia": "INGLÉS",
+            "puntaje": 156
+          }
+        ]
+      },
+      {
+        "nombre": "U. Cooperativa de Colombia - Santa Marta",
+        "puntaje_global": 143,
+        "n": 884,
+        "competencias": [
+          {
+            "competencia": "LECTURA CRÍTICA",
+            "puntaje": 148
+          },
+          {
+            "competencia": "RAZONAMIENTO CUANTITATIVO",
+            "puntaje": 135
+          },
+          {
+            "competencia": "COMPETENCIAS CIUDADANAS",
+            "puntaje": 139
+          },
+          {
+            "competencia": "COMUNICACIÓN ESCRITA",
+            "puntaje": 146
+          },
+          {
+            "competencia": "INGLÉS",
+            "puntaje": 148
+          }
+        ]
+      }
+    ]
+  },
   "facultades": [
     {
       "facultad": "Facultad de Ciencias Básicas",
