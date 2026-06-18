@@ -1,4 +1,5 @@
 polars
+fastexcel
 pymupdf
 openpyxl
 pyarrow

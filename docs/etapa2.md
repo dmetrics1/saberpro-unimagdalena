@@ -63,8 +63,8 @@ directo** a su facultad o programa vía la navegación lateral.
 - **Objetivo:** ubicar a la universidad frente a sus pares públicos del SUE y frente a las universidades privadas del propio territorio (Departamento del Magdalena).
 - **Historia:** "Entre las universidades del SUE ocupamos la posición X; en el Magdalena lideramos frente a la oferta privada en estas competencias…"
 - **Preguntas:** ¿Dónde estamos en el ranking de universidades del SUE? ¿Cómo nos comparamos con las universidades privadas que operan en Santa Marta (Sergio Arboleda, Cooperativa de Colombia)? ¿En qué competencias somos mejores y en cuáles nos ganan?
-- **Indicadores:** comparativo con universidades del Departamento (barras agrupadas, filtrable por año, 5 competencias + global); ranking SUE (barras horizontales, con UM y Caribe resaltadas).
-- **Fuente:** agregados (`INSTITUCIÓN` para UNIMAGDALENA y la lista SUE; `SEDE` para las universidades privadas de Santa Marta, filtrando por la lista `universidades_dept_magdalena` del YML).
+- **Indicadores:** comparativo con universidades del Departamento (barras agrupadas, filtrable por año, 5 competencias + global); ranking SUE (barras verticales, filtrable por año, con Unimagdalena, Caribe y otras SUE en paleta tri-color y abreviaturas).
+- **Fuente:** agregados (`INSTITUCIÓN` para Unimagdalena y la lista SUE; `SEDE` para las universidades privadas de Santa Marta, filtrando por la lista `universidades_dept_magdalena` del YML).
 - **Perfil:** rector / consejo superior.
 
 ### Sección 4 — Valor agregado (cuadrantes)

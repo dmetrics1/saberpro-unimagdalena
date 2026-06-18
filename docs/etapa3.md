@@ -6,7 +6,7 @@ Catálogo completo de gráficos del informe, diseñado sobre los **campos reales
 campos del JSON que consume, mensaje principal, decisión que habilita, por qué se
 prefiere a otras alternativas y prioridad (**Esencial / Recomendado / Opcional**).
 
-**Convención de color (fija):** azul `#0183EF` = UNIMAGDALENA · naranja `#FF9400` =
+**Convención de color (fija):** azul `#0183EF` = Unimagdalena / UNIMAGDALENA · naranja `#FF9400` =
 referencia (nacional/NBC) · verde `#00A50B` = sobre la media · rojo `#D10500` = bajo
 la media · primario `#004A87` = estructura.
 
@@ -40,11 +40,11 @@ programa). Aquí se sustituyen por **un único componente filtrable** (G9).
 | G1 | 1 | Tarjetas KPI ejecutivas | KPI cards | Esencial |
 | G2 | 2 | Radar competencias UM vs. nacional (6 ejes, filtrable por año) | Radar | Esencial |
 | G3 | 2 | Evolución histórica global UM vs. nacional | Línea suave | Esencial |
-| G4 | 3 | Ranking SUE | Barras horizontales | Esencial |
+| G4 | 3 | Ranking SUE (filtrable por año) | Barras verticales | Esencial |
 | G5 | 3 | Comparativo con universidades del Departamento (filtrable por año) | Barras agrupadas | Esencial |
 | G6 | 4 | Cuadrantes de valor agregado (filtrable por año) | Dispersión | Esencial |
-| G7 | 4 | Trayectoria histórica de UNIMAGDALENA | Recorrido temporal | Esencial |
-| G8 | 5 | Desempeño por facultad | Barras / heatmap | Recomendado |
+| G7 | 4 | Trayectoria histórica de Unimagdalena | Recorrido temporal | Esencial |
+| G8 | 5 | Desempeño por facultad (filtrable por año y competencia) | Barras horizontales | Esencial |
 | G9 | 6 | Explorador de programas (componente filtrable) | Compuesto | Esencial |
 | G10 | 7 | Top 10 por competencia | Barras horizontales | Recomendado |
 | G11 | 7 | Niveles de desempeño institucional | Barras apiladas 100% | Recomendado |
@@ -76,7 +76,7 @@ programa). Aquí se sustituyen por **un único componente filtrable** (G9).
 ### G2 · Radar de competencias UM vs. nacional (filtrable por año) — **Esencial**
 - **Tipo:** radar de **6 ejes** (5 competencias genéricas + Puntaje Global) con **selector de año** (2020-2025).
 - **Datos:** `institucional.historico[<año>].competencias` para las 5 competencias y `institucional.historico[<año>].puntaje_unimag/nacional` para el eje Puntaje Global.
-- **Mensaje:** "Cómo se compara UNIMAGDALENA con el promedio nacional en cada competencia, en el año seleccionado."
+- **Mensaje:** "Cómo se compara Unimagdalena con el promedio nacional en cada competencia, en el año seleccionado."
 - **Decisión:** identifica fortalezas/brechas transversales y permite revisar la evolución de esas brechas cambiando el año.
 - **Por qué radar:** muestra las 6 dimensiones y la forma global del perfil en una sola figura, comparando dos series sin saturar.
 - **Diseño:** polígono azul (UM) sobre polígono verde (nacional) con relleno tenue; etiquetas numéricas a cada lado del eje (UM hacia un lado, Nacional hacia el otro) para que nunca se peguen aunque los valores coincidan. Marcadores sólidos de color, tooltip con la competencia y el valor al hacer hover.
@@ -93,21 +93,29 @@ programa). Aquí se sustituyen por **un único componente filtrable** (G9).
 
 ## SECCIÓN 3 — Posicionamiento externo
 
-### G4 · Ranking SUE — **Esencial**
-- **Tipo:** barras horizontales ordenadas (37 universidades).
-- **Datos:** `sue_ranking` (rank, nombre, puntaje, es_unimagdalena, es_caribe).
-- **Mensaje:** "Posición de UNIMAGDALENA entre las universidades públicas del país."
-- **Decisión:** ubica a la institución frente a sus pares directos (clave para el consejo superior).
-- **Por qué barras horizontales:** permiten 37 etiquetas legibles y ranking claro; un scatter no comunica orden.
-- **Diseño:** barra de UM en azul destacado, Caribe en color secundario, resto en gris; etiqueta de posición.
+### G4 · Ranking SUE (filtrable por año) — **Esencial**
+- **Tipo:** barras **verticales** ordenadas de mayor a menor puntaje (37 universidades), con **selector de año** (2020-2025).
+- **Datos:** `sue_ranking_historico[<año>]` (rank, nombre, abrev, puntaje, n, es_unimagdalena, es_caribe).
+- **Mensaje:** "Posición de Unimagdalena entre las universidades públicas del país en el año seleccionado."
+- **Decisión:** ubica a la institución frente a sus pares directos en el SUE y muestra cómo ha cambiado de posición año a año.
+- **Por qué barras verticales:** comunica mejor el ranking comparado al ojo (vista de "perfil" de la cohorte SUE) y permite usar el eje X para etiquetas cortas con todas las 37 universidades visibles a la vez. La etiqueta de valor encima de cada barra elimina la necesidad de un eje numérico denso.
+- **Diseño:**
+  - **Tres categorías de color** (paleta alineada con Posicionamiento):
+    - **Unimagdalena** → verde institucional (`#2BA85E`)
+    - **Región Caribe** → naranja (`#FF9400`)
+    - **Otras del SUE** → azul institucional (`#0F4FA8`)
+  - Etiquetas X cortas (UNAL, UIS, Distrital, etc.) tomadas de `parametros.yml` bajo `sue_abreviaturas`, rotadas -45° para que las 37 quepan sin solaparse.
+  - Tooltip al hover con el **nombre completo**, posición (`22 de 37`), puntaje y evaluados.
+  - Etiqueta de valor encima de cada barra (la de Unimagdalena un poco más grande y en su color).
+  - Leyenda inferior con las 3 categorías.
 
 ### G5 · Comparativo con universidades del Departamento (filtrable por año) — **Esencial**
 - **Tipo:** barras agrupadas (6 grupos de barras: 5 competencias genéricas + Puntaje Global), con **selector de año** (2020-2025).
-- **Datos:** `universidades_dept_historico[<año>]`. Universidades incluidas: UNIMAGDALENA (a nivel `INSTITUCION`), U. Sergio Arboleda – Santa Marta y U. Cooperativa de Colombia – Santa Marta (ambas a nivel `SEDE`). La lista es configurable en `parametros.yml` bajo `universidades_dept_magdalena`.
-- **Mensaje:** "Cómo se compara UNIMAGDALENA con las universidades privadas del mismo territorio en cada competencia y en el global."
+- **Datos:** `universidades_dept_historico[<año>]`. Universidades incluidas: Unimagdalena (a nivel `INSTITUCION`), U. Sergio Arboleda – Santa Marta y U. Cooperativa de Colombia – Santa Marta (ambas a nivel `SEDE`). La lista es configurable en `parametros.yml` bajo `universidades_dept_magdalena`.
+- **Mensaje:** "Cómo se compara Unimagdalena con las universidades privadas del mismo territorio en cada competencia y en el global."
 - **Decisión:** posicionamiento regional frente a la competencia directa por matrícula. Permite ver evolución cambiando el año.
 - **Por qué barras agrupadas y no scatter o radar:** las barras agrupadas son el formato estándar para comparar pocas categorías × pocas series, fácil de leer para alta dirección. Cada competencia se lee independientemente sin la complejidad geométrica del radar.
-- **Diseño:** UNIMAGDALENA en azul institucional, Sergio Arboleda en verde, Cooperativa en naranja (paleta alineada con el resto del informe). Valor sobre cada barra con el color de la serie. Tooltip al hover con universidad + competencia + valor + evaluados. Leyenda inferior con los 3 nombres acortados; el tooltip muestra el nombre completo.
+- **Diseño:** Unimagdalena en azul institucional, Sergio Arboleda en verde, Cooperativa en naranja (paleta alineada con el resto del informe). Valor sobre cada barra con el color de la serie. Tooltip al hover con universidad + competencia + valor + evaluados. Leyenda inferior con los 3 nombres acortados; el tooltip muestra el nombre completo.
 - **Nota:** la lista de 3 universidades es la cobertura efectiva del Icfes en Magdalena (verificado 2020-2025); UNICARIBE no reporta en las bases del Icfes para Magdalena.
 
 ---
@@ -122,7 +130,7 @@ programa). Aquí se sustituyen por **un único componente filtrable** (G9).
 - **Por qué dispersión:** es el único formato que cruza entrada (X=Saber 11) y salida (Y=Saber Pro) simultáneamente; los 4 cuadrantes dan lectura instantánea.
 - **Diseño:** ejes con líneas de media; cuadrantes coloreados suaves (verde=Alto Aporte/Desempeño, rojo=Alerta); otras IES en gris, UM en rojo destacado, NBC de UM en azul. **Nota visible: datos hasta 2024.**
 
-### G7 · Trayectoria histórica de UNIMAGDALENA — **Esencial**
+### G7 · Trayectoria histórica de Unimagdalena — **Esencial**
 - **Tipo:** recorrido temporal sobre el plano de cuadrantes (línea con puntos por año, **2020-2024**).
 - **Datos:** `trayectoria_unimag` (limites, puntos[] con anio, sb11, sbpro, cuadrante). **Filtrar puntos a 2020-2024 en el front-end.**
 - **Mensaje:** "La historia de evolución: de 'Alto aporte' (2020) a 'Alto desempeño' (2024)."
@@ -134,13 +142,19 @@ programa). Aquí se sustituyen por **un único componente filtrable** (G9).
 
 ## SECCIÓN 5 — Facultades
 
-### G8 · Desempeño por facultad — **Recomendado**
-- **Tipo:** barras ordenadas + opción heatmap de competencias.
-- **Datos:** `facultades` (6 ítems: facultad, puntaje_global, n, competencias[]).
-- **Mensaje:** "Qué facultad lidera y cuál requiere acompañamiento."
-- **Decisión:** focaliza apoyo institucional por facultad (vista para decanos).
-- **Por qué recomendado:** nivel intermedio entre institución y programa; valioso pero el rector lo ve después del panorama.
-- **Diseño:** barras de puntaje global por facultad (azul), con mini-heatmap opcional de las 5 competencias por facultad.
+### G8 · Desempeño por facultad (filtrable por año y por competencia) — **Esencial**
+- **Tipo:** barras horizontales ordenadas, con **dos selectores** (año + competencia).
+- **Datos:** `facultades_historico[<año>]` (6 facultades por año con `puntaje_global`, `n` y las 5 competencias genéricas, todas con promedio ponderado por evaluados). Para el año vigente cae sobre `facultades[]` que es el mismo cálculo verificado en línea.
+- **Mensaje:** "Cómo le fue a cada facultad en el puntaje global y en cada competencia genérica, año a año."
+- **Decisión:** focaliza apoyo institucional por facultad. El decano puede ver tanto el desempeño global como la evolución de una competencia específica (por ejemplo, "¿Cómo está mi facultad en Inglés en 2024?").
+- **Por qué barras horizontales con selectores:**
+  - Horizontales para que los nombres largos de facultad quepan a la izquierda.
+  - Selectores separados para evitar 30+ barras (6 facultades × 5 competencias) y mantener la lectura simple.
+- **Diseño:**
+  - Cada barra con su propio color (paleta indexada de 6 tonos coherentes con el informe).
+  - Las barras se re-ordenan según el valor de la competencia seleccionada (la facultad mejor en Inglés sube al tope cuando seleccionas Inglés).
+  - Tooltip aclara explícitamente "Promedio ponderado por evaluados" y, en vista global, lista las 5 competencias del año.
+  - Título dinámico: "Lectura Crítica promedio por facultad 2024" cambia con los selectores.
 
 ---
 

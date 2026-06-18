@@ -2,7 +2,7 @@
 
 ## Universidad del Magdalena - Oficina Asesora de Planeación
 
-**Versión:** 2.3
+**Versión:** 2.5
 **Fecha de actualización:** Junio 2026
 **Stack:** Python para procesamiento; HTML, CSS y JavaScript puro para el informe.
 **Arquitectura:** `datos crudos -> scripts Python -> JSON maestro -> informe HTML`.
@@ -57,7 +57,7 @@ informe/informe/index.html
 | 2 | Arquitectura narrativa | Mapa de secciones y perfiles de lector | Completada |
 | 3 | Catálogo de visualizaciones | 12 visualizaciones priorizadas | Completada |
 | 4 | Diseño y maquetación | Informe HTML, tokens CSS, navegación y KPIs | Completada — rediseño v2.2 (sidebar flotante permanente, hero con identidad ejecutiva y 3 KPIs incrustados) |
-| 5 | Visualizaciones | Gráficos interactivos en JavaScript puro | Completada — v2.3 agrega selector de año en G2 (radar) y G5 (comparativo con universidades del departamento, sustituye al G5 anterior por departamento) |
+| 5 | Visualizaciones | Gráficos interactivos en JavaScript puro | Completada — v2.5: selector de año en G2 (radar), G4 (ranking SUE rediseñado en columnas verticales con paleta tri-color), G5 (comparativo con universidades del departamento) y G8 (facultades con selector de año + competencia). G6 (cuadrantes) ahora distingue 4 capas: Unimagdalena, NBC, otras universidades del Magdalena, otras IES. |
 | 6 | Narrativa y síntesis | Leads dinámicos y DOFA derivada de datos | Completada (ver §7 para revisión editorial pendiente) |
 | 7 | Actualización y entrega | Guía operativa, documentación técnica y `ejecutar_proyecto.bat` | Completada |
 
@@ -65,10 +65,10 @@ informe/informe/index.html
 
 | Componente | Ubicación | Estado | Comentario |
 |---|---|---|---|
-| Parámetros del pipeline | `data/config/parametros.yml` | Activo | Controla año vigente, umbrales, fuentes, mapeo programa-facultad y la lista de universidades del Departamento del Magdalena (`universidades_dept_magdalena`) para el comparativo de Posicionamiento. |
+| Parámetros del pipeline | `data/config/parametros.yml` | Activo | Controla año vigente, umbrales, fuentes, mapeo programa-facultad, la lista de universidades del Departamento del Magdalena (`universidades_dept_magdalena`) y las abreviaturas del ranking SUE (`sue_abreviaturas`). |
 | Normalización de IES | `data/config/normalizacion_ies.csv` | Activo | Alinea nombres de instituciones entre fuentes. |
 | Pipeline de cuadrantes | `scripts/01_construir_cuadrantes.py` | Activo | Genera valor agregado desde la Fuente A. |
-| Pipeline de agregados | `scripts/02_construir_agregados.py` | Activo | Genera indicadores agregados desde la Fuente B. |
+| Pipeline de agregados | `scripts/02_construir_agregados.py` | Activo | Genera indicadores agregados desde la Fuente B. **v2.5:** lee con `polars` + `fastexcel` (motor calamine en Rust) y cachea cada Excel a `*.cache.parquet` al lado. Speedup ~4x: corrida en caliente ~30s (antes ~120s con openpyxl). El segundo recorrido (histórico) reutiliza el mismo cache, eliminando la doble lectura. |
 | Consolidación | `scripts/03_consolidar_json.py` | Activo | Produce el JSON maestro. |
 | Gráficos estáticos auxiliares | `scripts/16_*.py`, `scripts/17_*.py` | Activo, opcional | Generan PNG/SVG/HTML en `resultados/`. No forman parte del pipeline 01-03 ni del informe HTML. |
 | Informe HTML | `informe/informe/index.html` | Activo | Consume `data/datos_informe.json`. |

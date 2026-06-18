@@ -610,6 +610,114 @@ a { color: var(--brand-accent); }
   margin-bottom: 4px;
 }
 
+/* Valor agregado: misma estructura compacta que Panorama */
+#valor-agregado .charts-grid {
+  max-width: 1080px;
+  margin-left: auto;
+  margin-right: auto;
+}
+#valor-agregado .card {
+  padding: 18px 24px 14px;
+}
+#valor-agregado .card__title {
+  margin-bottom: 4px;
+}
+
+/* Facultades: misma estructura compacta */
+#facultades .charts-grid {
+  max-width: 1080px;
+  margin-left: auto;
+  margin-right: auto;
+}
+#facultades .card {
+  padding: 18px 24px 14px;
+}
+#facultades .card__title {
+  margin-bottom: 4px;
+}
+
+/* Contenedor de 2 selectores side by side en el header de la card */
+.card__controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+/* Tarjetas explicativas de los 4 cuadrantes */
+.cuadrante-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 14px;
+  max-width: 1080px;
+  margin: 0 auto var(--sp-5);
+}
+.cuadrante-card {
+  --cq-tone: var(--brand-accent);
+  --cq-tone-soft: rgba(1,131,239,.10);
+  background: #fff;
+  border: 1px solid var(--border);
+  border-left: 4px solid var(--cq-tone);
+  border-radius: 14px;
+  padding: 14px 16px 12px;
+  box-shadow: 0 4px 14px rgba(0,41,75,.06);
+  transition: transform .15s ease, box-shadow .15s ease;
+}
+.cuadrante-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 22px rgba(0,41,75,.10);
+}
+.cuadrante-card__head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+.cuadrante-card__icon {
+  font-size: 1.15rem;
+  line-height: 1;
+}
+.cuadrante-card h4 {
+  font-family: var(--font-display);
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--cq-tone);
+  margin: 0;
+  letter-spacing: -.005em;
+}
+.cuadrante-card p {
+  font-size: .82rem;
+  color: var(--text-soft);
+  margin: 0;
+  line-height: 1.45;
+}
+.cuadrante-card--desempeno {
+  --cq-tone: #0F4FA8;
+  --cq-tone-soft: rgba(15,79,168,.08);
+  background: linear-gradient(180deg, rgba(15,79,168,.04) 0%, #fff 100%);
+}
+.cuadrante-card--aporte {
+  --cq-tone: #2BA85E;
+  --cq-tone-soft: rgba(43,168,94,.08);
+  background: linear-gradient(180deg, rgba(43,168,94,.05) 0%, #fff 100%);
+}
+.cuadrante-card--base {
+  --cq-tone: #8295AB;
+  --cq-tone-soft: rgba(130,149,171,.10);
+  background: linear-gradient(180deg, rgba(130,149,171,.06) 0%, #fff 100%);
+}
+.cuadrante-card--alerta {
+  --cq-tone: #D17900;
+  --cq-tone-soft: rgba(209,121,0,.10);
+  background: linear-gradient(180deg, rgba(255,148,0,.06) 0%, #fff 100%);
+}
+
+/* Año "soft" en titulares de cards (ej. "Trayectoria de valor agregado 2020 – 2024") */
+.card__title-soft {
+  color: var(--text-soft);
+  font-weight: 500;
+}
+
 /* Controles de Selección e Interactividad */
 .control-select {
   font-family: var(--font-display);

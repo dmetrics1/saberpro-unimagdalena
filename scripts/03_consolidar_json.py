@@ -55,11 +55,13 @@ def main() -> None:
         "meta": meta,
         "institucional": agregados_data["institucional"],
         "sue_ranking": agregados_data["sue_ranking"],
+        "sue_ranking_historico": agregados_data.get("sue_ranking_historico", {}),
         "departamento": agregados_data["departamento"],
         "universidades_dept_historico": agregados_data.get("universidades_dept_historico", {}),
         "cuadrantes_por_anio": cuadrantes_data["cuadrantes_por_anio"],
         "trayectoria_unimag": cuadrantes_data["trayectoria_unimag"],
         "facultades": agregados_data["facultades"],
+        "facultades_historico": agregados_data.get("facultades_historico", {}),
         "programas": agregados_data["programas"],
         "top10": agregados_data["top10"],
         "niveles_desempeno": agregados_data["niveles_desempeno"]

@@ -567,6 +567,2000 @@
       "es_caribe": false
     }
   ],
+  "sue_ranking_historico": {
+    "2020": [
+      {
+        "rank": 1,
+        "nombre": "UNIVERSIDAD NACIONAL DE COLOMBIA",
+        "abrev": "UNAL",
+        "puntaje": 181,
+        "n": 4830,
+        "es_unimagdalena": false,
+        "es_caribe": false
+      },
+      {
+        "rank": 2,
+        "nombre": "UNIVERSIDAD INDUSTRIAL DE SANTANDER",
+        "abrev": "UIS",
+        "puntaje": 172,
+        "n": 2262,
+        "es_unimagdalena": false,
+        "es_caribe": false
+      },
+      {
+        "rank": 3,
+        "nombre": "UNIVERSIDAD DISTRITAL FRANCISCO JOSE DE CALDAS",
+        "abrev": "Distrital",
+        "puntaje": 171,
+        "n": 2142,
+        "es_unimagdalena": false,
+        "es_caribe": false
+      },
+      {
+        "rank": 4,
+        "nombre": "UNIVERSIDAD DE ANTIOQUIA",
+        "abrev": "Antioquia",
+        "puntaje": 169,
+        "n": 3145,
+        "es_unimagdalena": false,
+        "es_caribe": false
+      },
+      {
+        "rank": 5,
+        "nombre": "UNIVERSIDAD DEL VALLE",
+        "abrev": "Valle",
+        "puntaje": 162,
+        "n": 2000,
+        "es_unimagdalena": false,
+        "es_caribe": false
+      },
+      {
+        "rank": 6,
+        "nombre": "UNIVERSIDAD PEDAGOGICA NACIONAL",
+        "abrev": "UPN",
+        "puntaje": 160,
+        "n": 1130,
+        "es_unimagdalena": false,
+        "es_caribe": false
+      },
+      {
+        "rank": 7,
+        "nombre": "UNIVERSIDAD DEL CAUCA",
+        "abrev": "Cauca",
+        "puntaje": 160,
+        "n": 1169,
+        "es_unimagdalena": false,
+        "es_caribe": false
+      },
+      {
+        "rank": 8,
+        "nombre": "UNIVERSIDAD-COLEGIO MAYOR DE CUNDINAMARCA",
+        "abrev": "Col. Mayor C/marca",
+        "puntaje": 159,
+        "n": 742,
+        "es_unimagdalena": false,
+        "es_caribe": false
+      },
+      {
+        "rank": 9,
+        "nombre": "UNIVERSIDAD DE CALDAS",
+        "abrev": "Caldas",
+        "puntaje": 158,
+        "n": 1157,
+        "es_unimagdalena": false,
+        "es_caribe": false
+      },
+      {
+        "rank": 10,
+        "nombre": "UNIVERSIDAD TECNOLOGICA DE PEREIRA",
+        "abrev": "Pereira",
+        "puntaje": 158,
+        "n": 1710,
+        "es_unimagdalena": false,
+        "es_caribe": false
+      },
+      {
+        "rank": 11,
+        "nombre": "UNIVERSIDAD DE NARINO",
+        "abrev": "Nariño",
+        "puntaje": 156,
+        "n": 1502,
+        "es_unimagdalena": false,
+        "es_caribe": false
+      },
+      {
+        "rank": 12,
+        "nombre": "UNIVERSIDAD PEDAGOGICA Y TECNOLOGICA DE COLOMBIA",
+        "abrev": "UPTC",
+        "puntaje": 154,
+        "n": 2420,
+        "es_unimagdalena": false,
+        "es_caribe": false
+      },
+      {
+        "rank": 13,
+        "nombre": "UNIVERSIDAD DE LOS LLANOS",
+        "abrev": "Llanos",
+        "puntaje": 154,
+        "n": 442,
+        "es_unimagdalena": false,
+        "es_caribe": false
+      },
+      {
+        "rank": 14,
+        "nombre": "UNIVERSIDAD SURCOLOMBIANA",
+        "abrev": "Surcolombiana",
+        "puntaje": 153,
+        "n": 1508,
+        "es_unimagdalena": false,
+        "es_caribe": false
+      },
+      {
+        "rank": 15,
+        "nombre": "UNIVERSIDAD DEL ATLANTICO",
+        "abrev": "Atlántico",
+        "puntaje": 152,
+        "n": 2341,
+        "es_unimagdalena": false,
+        "es_caribe": true
+      },
+      {
+        "rank": 16,
+        "nombre": "UNIDAD CENTRAL DEL VALLE DEL CAUCA",
+        "abrev": "UCEVA",
+        "puntaje": 151,
+        "n": 558,
+        "es_unimagdalena": false,
+        "es_caribe": false
+      },
+      {
+        "rank": 17,
+        "nombre": "INSTITUTO TECNOLOGICO METROPOLITANO",
+        "abrev": "ITM",
+        "puntaje": 150,
+        "n": 1003,
+        "es_unimagdalena": false,
+        "es_caribe": false
+      },
+      {
+        "rank": 18,
+        "nombre": "COLEGIO MAYOR DE ANTIOQUIA",
+        "abrev": "Col. M. Antioquia",
+        "puntaje": 149,
+        "n": 487,
+        "es_unimagdalena": false,
+        "es_caribe": false
+      },
+      {
+        "rank": 19,
+        "nombre": "UNIVERSIDAD DEL QUINDIO",
+        "abrev": "Quindío",
+        "puntaje": 148,
+        "n": 2149,
+        "es_unimagdalena": false,
+        "es_caribe": false
+      },
+      {
+        "rank": 20,
+        "nombre": "UNIVERSIDAD DE CARTAGENA",
+        "abrev": "Cartagena",
+        "puntaje": 148,
+        "n": 2016,
+        "es_unimagdalena": false,
+        "es_caribe": true
+      },
+      {
+        "rank": 21,
+        "nombre": "ESCUELA TECNOLOGICA INSTITUTO TECNICO CENTRAL",
+        "abrev": "ETITC",
+        "puntaje": 147,
+        "n": 178,
+        "es_unimagdalena": false,
+        "es_caribe": false
+      },
+      {
+        "rank": 22,
+        "nombre": "UNIVERSIDAD DE SUCRE",
+        "abrev": "Sucre",
+        "puntaje": 147,
+        "n": 832,
+        "es_unimagdalena": false,
+        "es_caribe": true
+      },
+      {
+        "rank": 23,
+        "nombre": "UNIVERSIDAD FRANCISCO DE PAULA SANTANDER",
+        "abrev": "Fco. Paula Sant.",
+        "puntaje": 145,
+        "n": 2691,
+        "es_unimagdalena": false,
+        "es_caribe": false
+      },
+      {
+        "rank": 24,
+        "nombre": "UNIVERSIDAD DEL TOLIMA",
+        "abrev": "Tolima",
+        "puntaje": 144,
+        "n": 2349,
+        "es_unimagdalena": false,
+        "es_caribe": false
+      },
+      {
+        "rank": 25,
+        "nombre": "TECNOLOGICO DE ANTIOQUIA",
+        "abrev": "Tec. Antioquia",
+        "puntaje": 143,
+        "n": 1250,
+        "es_unimagdalena": false,
+        "es_caribe": false
+      },
+      {
+        "rank": 26,
+        "nombre": "UNIVERSIDAD DEL MAGDALENA",
+        "abrev": "Unimagdalena",
+        "puntaje": 142,
+        "n": 3030,
+        "es_unimagdalena": true,
+        "es_caribe": true
+      },
+      {
+        "rank": 27,
+        "nombre": "INSTITUTO TECNOLOGICO PASCUAL BRAVO",
+        "abrev": "Pascual Bravo",
+        "puntaje": 141,
+        "n": 281,
+        "es_unimagdalena": false,
+        "es_caribe": false
+      },
+      {
+        "rank": 28,
+        "nombre": "UNIVERSIDAD DE PAMPLONA",
+        "abrev": "Pamplona",
+        "puntaje": 141,
+        "n": 3795,
+        "es_unimagdalena": false,
+        "es_caribe": false
+      },
+      {
+        "rank": 29,
+        "nombre": "UNIVERSIDAD POPULAR DEL CESAR",
+        "abrev": "Cesar",
+        "puntaje": 140,
+        "n": 2248,
+        "es_unimagdalena": false,
+        "es_caribe": true
+      },
+      {
+        "rank": 30,
+        "nombre": "UNIVERSIDAD DE CORDOBA",
+        "abrev": "Córdoba",
+        "puntaje": 140,
+        "n": 2279,
+        "es_unimagdalena": false,
+        "es_caribe": true
+      },
+      {
+        "rank": 31,
+        "nombre": "UNIVERSIDAD DE LA AMAZONIA",
+        "abrev": "Amazonía",
+        "puntaje": 139,
+        "n": 821,
+        "es_unimagdalena": false,
+        "es_caribe": false
+      },
+      {
+        "rank": 32,
+        "nombre": "INSTITUCION UNIVERSITARIA BELLAS ARTES Y CIENCIAS DE BOLIVAR",
+        "abrev": "IU Bellas Artes",
+        "puntaje": 137,
+        "n": 232,
+        "es_unimagdalena": false,
+        "es_caribe": true
+      },
+      {
+        "rank": 33,
+        "nombre": "COLEGIO MAYOR DEL CAUCA",
+        "abrev": "Col. M. Cauca",
+        "puntaje": 136,
+        "n": 279,
+        "es_unimagdalena": false,
+        "es_caribe": false
+      },
+      {
+        "rank": 34,
+        "nombre": "UNIVERSIDAD DEL PACIFICO",
+        "abrev": "Pacífico",
+        "puntaje": 136,
+        "n": 169,
+        "es_unimagdalena": false,
+        "es_caribe": false
+      },
+      {
+        "rank": 35,
+        "nombre": "UNIVERSIDAD DE LA GUAJIRA",
+        "abrev": "Guajira",
+        "puntaje": 128,
+        "n": 1320,
+        "es_unimagdalena": false,
+        "es_caribe": true
+      },
+      {
+        "rank": 36,
+        "nombre": "UNIVERSIDAD TECNOLOGICA DEL CHOCO-DIEGO LUIS CORDOBA",
+        "abrev": "Chocó",
+        "puntaje": 116,
+        "n": 1292,
+        "es_unimagdalena": false,
+        "es_caribe": false
+      }
+    ],
+    "2021": [
+      {
+        "rank": 1,
+        "nombre": "UNIVERSIDAD NACIONAL DE COLOMBIA",
+        "abrev": "UNAL",
+        "puntaje": 178,
+        "n": 4816,
+        "es_unimagdalena": false,
+        "es_caribe": false
+      },
+      {
+        "rank": 2,
+        "nombre": "UNIVERSIDAD DISTRITAL FRANCISCO JOSE DE CALDAS",
+        "abrev": "Distrital",
+        "puntaje": 166,
+        "n": 1600,
+        "es_unimagdalena": false,
+        "es_caribe": false
+      },
+      {
+        "rank": 3,
+        "nombre": "UNIVERSIDAD INDUSTRIAL DE SANTANDER",
+        "abrev": "UIS",
+        "puntaje": 165,
+        "n": 2141,
+        "es_unimagdalena": false,
+        "es_caribe": false
+      },
+      {
+        "rank": 4,
+        "nombre": "UNIVERSIDAD DE ANTIOQUIA",
+        "abrev": "Antioquia",
+        "puntaje": 162,
+        "n": 3615,
+        "es_unimagdalena": false,
+        "es_caribe": false
+      },
+      {
+        "rank": 5,
+        "nombre": "UNIVERSIDAD DEL CAUCA",
+        "abrev": "Cauca",
+        "puntaje": 158,
+        "n": 1048,
+        "es_unimagdalena": false,
+        "es_caribe": false
+      },
+      {
+        "rank": 6,
+        "nombre": "UNIVERSIDAD PEDAGOGICA NACIONAL",
+        "abrev": "UPN",
+        "puntaje": 157,
+        "n": 1130,
+        "es_unimagdalena": false,
+        "es_caribe": false
+      },
+      {
+        "rank": 7,
+        "nombre": "UNIVERSIDAD DEL VALLE",
+        "abrev": "Valle",
+        "puntaje": 157,
+        "n": 2288,
+        "es_unimagdalena": false,
+        "es_caribe": false
+      },
+      {
+        "rank": 8,
+        "nombre": "UNIVERSIDAD-COLEGIO MAYOR DE CUNDINAMARCA",
+        "abrev": "Col. Mayor C/marca",
+        "puntaje": 155,
+        "n": 794,
+        "es_unimagdalena": false,
+        "es_caribe": false
+      },
+      {
+        "rank": 9,
+        "nombre": "UNIVERSIDAD TECNOLOGICA DE PEREIRA",
+        "abrev": "Pereira",
+        "puntaje": 155,
+        "n": 1504,
+        "es_unimagdalena": false,
+        "es_caribe": false
+      },
+      {
+        "rank": 10,
+        "nombre": "UNIVERSIDAD PEDAGOGICA Y TECNOLOGICA DE COLOMBIA",
+        "abrev": "UPTC",
+        "puntaje": 152,
+        "n": 2939,
+        "es_unimagdalena": false,
+        "es_caribe": false
+      },
+      {
+        "rank": 11,
+        "nombre": "UNIVERSIDAD DE CALDAS",
+        "abrev": "Caldas",
+        "puntaje": 151,
+        "n": 862,
+        "es_unimagdalena": false,
+        "es_caribe": false
+      },
+      {
+        "rank": 12,
+        "nombre": "UNIVERSIDAD SURCOLOMBIANA",
+        "abrev": "Surcolombiana",
+        "puntaje": 150,
+        "n": 1329,
+        "es_unimagdalena": false,
+        "es_caribe": false
+      },
+      {
+        "rank": 13,
+        "nombre": "UNIVERSIDAD DEL ATLANTICO",
+        "abrev": "Atlántico",
+        "puntaje": 150,
+        "n": 2258,
+        "es_unimagdalena": false,
+        "es_caribe": true
+      },
+      {
+        "rank": 14,
+        "nombre": "UNIVERSIDAD DE LOS LLANOS",
+        "abrev": "Llanos",
+        "puntaje": 150,
+        "n": 543,
+        "es_unimagdalena": false,
+        "es_caribe": false
+      },
+      {
+        "rank": 15,
+        "nombre": "UNIVERSIDAD DE NARINO",
+        "abrev": "Nariño",
+        "puntaje": 149,
+        "n": 1448,
+        "es_unimagdalena": false,
+        "es_caribe": false
+      },
+      {
+        "rank": 16,
+        "nombre": "COLEGIO MAYOR DE ANTIOQUIA",
+        "abrev": "Col. M. Antioquia",
+        "puntaje": 146,
+        "n": 554,
+        "es_unimagdalena": false,
+        "es_caribe": false
+      },
+      {
+        "rank": 17,
+        "nombre": "INSTITUTO TECNOLOGICO METROPOLITANO",
+        "abrev": "ITM",
+        "puntaje": 146,
+        "n": 1302,
+        "es_unimagdalena": false,
+        "es_caribe": false
+      },
+      {
+        "rank": 18,
+        "nombre": "UNIDAD CENTRAL DEL VALLE DEL CAUCA",
+        "abrev": "UCEVA",
+        "puntaje": 146,
+        "n": 508,
+        "es_unimagdalena": false,
+        "es_caribe": false
+      },
+      {
+        "rank": 19,
+        "nombre": "UNIVERSIDAD DE SUCRE",
+        "abrev": "Sucre",
+        "puntaje": 145,
+        "n": 728,
+        "es_unimagdalena": false,
+        "es_caribe": true
+      },
+      {
+        "rank": 20,
+        "nombre": "ESCUELA TECNOLOGICA INSTITUTO TECNICO CENTRAL",
+        "abrev": "ETITC",
+        "puntaje": 144,
+        "n": 240,
+        "es_unimagdalena": false,
+        "es_caribe": false
+      },
+      {
+        "rank": 21,
+        "nombre": "UNIVERSIDAD DEL QUINDIO",
+        "abrev": "Quindío",
+        "puntaje": 143,
+        "n": 1808,
+        "es_unimagdalena": false,
+        "es_caribe": false
+      },
+      {
+        "rank": 22,
+        "nombre": "UNIVERSIDAD DEL MAGDALENA",
+        "abrev": "Unimagdalena",
+        "puntaje": 142,
+        "n": 2598,
+        "es_unimagdalena": true,
+        "es_caribe": true
+      },
+      {
+        "rank": 23,
+        "nombre": "UNIVERSIDAD DE CARTAGENA",
+        "abrev": "Cartagena",
+        "puntaje": 141,
+        "n": 2203,
+        "es_unimagdalena": false,
+        "es_caribe": true
+      },
+      {
+        "rank": 24,
+        "nombre": "TECNOLOGICO DE ANTIOQUIA",
+        "abrev": "Tec. Antioquia",
+        "puntaje": 139,
+        "n": 1799,
+        "es_unimagdalena": false,
+        "es_caribe": false
+      },
+      {
+        "rank": 25,
+        "nombre": "UNIVERSIDAD FRANCISCO DE PAULA SANTANDER",
+        "abrev": "Fco. Paula Sant.",
+        "puntaje": 139,
+        "n": 2430,
+        "es_unimagdalena": false,
+        "es_caribe": false
+      },
+      {
+        "rank": 26,
+        "nombre": "UNIVERSIDAD DEL TOLIMA",
+        "abrev": "Tolima",
+        "puntaje": 139,
+        "n": 2754,
+        "es_unimagdalena": false,
+        "es_caribe": false
+      },
+      {
+        "rank": 27,
+        "nombre": "INSTITUTO TECNOLOGICO PASCUAL BRAVO",
+        "abrev": "Pascual Bravo",
+        "puntaje": 138,
+        "n": 319,
+        "es_unimagdalena": false,
+        "es_caribe": false
+      },
+      {
+        "rank": 28,
+        "nombre": "UNIVERSIDAD DE PAMPLONA",
+        "abrev": "Pamplona",
+        "puntaje": 138,
+        "n": 3729,
+        "es_unimagdalena": false,
+        "es_caribe": false
+      },
+      {
+        "rank": 29,
+        "nombre": "UNIVERSIDAD DE CORDOBA",
+        "abrev": "Córdoba",
+        "puntaje": 137,
+        "n": 1870,
+        "es_unimagdalena": false,
+        "es_caribe": true
+      },
+      {
+        "rank": 30,
+        "nombre": "UNIVERSIDAD POPULAR DEL CESAR",
+        "abrev": "Cesar",
+        "puntaje": 136,
+        "n": 2463,
+        "es_unimagdalena": false,
+        "es_caribe": true
+      },
+      {
+        "rank": 31,
+        "nombre": "UNIVERSIDAD DE LA AMAZONIA",
+        "abrev": "Amazonía",
+        "puntaje": 135,
+        "n": 832,
+        "es_unimagdalena": false,
+        "es_caribe": false
+      },
+      {
+        "rank": 32,
+        "nombre": "COLEGIO MAYOR DEL CAUCA",
+        "abrev": "Col. M. Cauca",
+        "puntaje": 134,
+        "n": 272,
+        "es_unimagdalena": false,
+        "es_caribe": false
+      },
+      {
+        "rank": 33,
+        "nombre": "INSTITUCION UNIVERSITARIA BELLAS ARTES Y CIENCIAS DE BOLIVAR",
+        "abrev": "IU Bellas Artes",
+        "puntaje": 133,
+        "n": 171,
+        "es_unimagdalena": false,
+        "es_caribe": true
+      },
+      {
+        "rank": 34,
+        "nombre": "UNIVERSIDAD DEL PACIFICO",
+        "abrev": "Pacífico",
+        "puntaje": 129,
+        "n": 273,
+        "es_unimagdalena": false,
+        "es_caribe": false
+      },
+      {
+        "rank": 35,
+        "nombre": "UNIVERSIDAD DE LA GUAJIRA",
+        "abrev": "Guajira",
+        "puntaje": 127,
+        "n": 1909,
+        "es_unimagdalena": false,
+        "es_caribe": true
+      },
+      {
+        "rank": 36,
+        "nombre": "UNIVERSIDAD TECNOLOGICA DEL CHOCO-DIEGO LUIS CORDOBA",
+        "abrev": "Chocó",
+        "puntaje": 110,
+        "n": 1532,
+        "es_unimagdalena": false,
+        "es_caribe": false
+      }
+    ],
+    "2022": [
+      {
+        "rank": 1,
+        "nombre": "UNIVERSIDAD NACIONAL DE COLOMBIA",
+        "abrev": "UNAL",
+        "puntaje": 178,
+        "n": 4024,
+        "es_unimagdalena": false,
+        "es_caribe": false
+      },
+      {
+        "rank": 2,
+        "nombre": "UNIVERSIDAD DISTRITAL FRANCISCO JOSE DE CALDAS",
+        "abrev": "Distrital",
+        "puntaje": 166,
+        "n": 2346,
+        "es_unimagdalena": false,
+        "es_caribe": false
+      },
+      {
+        "rank": 3,
+        "nombre": "UNIVERSIDAD INDUSTRIAL DE SANTANDER",
+        "abrev": "UIS",
+        "puntaje": 164,
+        "n": 1855,
+        "es_unimagdalena": false,
+        "es_caribe": false
+      },
+      {
+        "rank": 4,
+        "nombre": "UNIVERSIDAD DE ANTIOQUIA",
+        "abrev": "Antioquia",
+        "puntaje": 162,
+        "n": 3074,
+        "es_unimagdalena": false,
+        "es_caribe": false
+      },
+      {
+        "rank": 5,
+        "nombre": "UNIVERSIDAD DEL VALLE",
+        "abrev": "Valle",
+        "puntaje": 158,
+        "n": 2532,
+        "es_unimagdalena": false,
+        "es_caribe": false
+      },
+      {
+        "rank": 6,
+        "nombre": "UNIVERSIDAD-COLEGIO MAYOR DE CUNDINAMARCA",
+        "abrev": "Col. Mayor C/marca",
+        "puntaje": 156,
+        "n": 858,
+        "es_unimagdalena": false,
+        "es_caribe": false
+      },
+      {
+        "rank": 7,
+        "nombre": "UNIVERSIDAD DE CALDAS",
+        "abrev": "Caldas",
+        "puntaje": 156,
+        "n": 1087,
+        "es_unimagdalena": false,
+        "es_caribe": false
+      },
+      {
+        "rank": 8,
+        "nombre": "UNIVERSIDAD DEL CAUCA",
+        "abrev": "Cauca",
+        "puntaje": 156,
+        "n": 1646,
+        "es_unimagdalena": false,
+        "es_caribe": false
+      },
+      {
+        "rank": 9,
+        "nombre": "UNIVERSIDAD PEDAGOGICA Y TECNOLOGICA DE COLOMBIA",
+        "abrev": "UPTC",
+        "puntaje": 155,
+        "n": 3025,
+        "es_unimagdalena": false,
+        "es_caribe": false
+      },
+      {
+        "rank": 10,
+        "nombre": "UNIVERSIDAD TECNOLOGICA DE PEREIRA",
+        "abrev": "Pereira",
+        "puntaje": 155,
+        "n": 1570,
+        "es_unimagdalena": false,
+        "es_caribe": false
+      },
+      {
+        "rank": 11,
+        "nombre": "UNIVERSIDAD PEDAGOGICA NACIONAL",
+        "abrev": "UPN",
+        "puntaje": 153,
+        "n": 1189,
+        "es_unimagdalena": false,
+        "es_caribe": false
+      },
+      {
+        "rank": 12,
+        "nombre": "UNIVERSIDAD SURCOLOMBIANA",
+        "abrev": "Surcolombiana",
+        "puntaje": 151,
+        "n": 1743,
+        "es_unimagdalena": false,
+        "es_caribe": false
+      },
+      {
+        "rank": 13,
+        "nombre": "UNIVERSIDAD DEL ATLANTICO",
+        "abrev": "Atlántico",
+        "puntaje": 151,
+        "n": 2056,
+        "es_unimagdalena": false,
+        "es_caribe": true
+      },
+      {
+        "rank": 14,
+        "nombre": "UNIVERSIDAD DE LOS LLANOS",
+        "abrev": "Llanos",
+        "puntaje": 151,
+        "n": 557,
+        "es_unimagdalena": false,
+        "es_caribe": false
+      },
+      {
+        "rank": 15,
+        "nombre": "UNIVERSIDAD DE NARINO",
+        "abrev": "Nariño",
+        "puntaje": 151,
+        "n": 1339,
+        "es_unimagdalena": false,
+        "es_caribe": false
+      },
+      {
+        "rank": 16,
+        "nombre": "COLEGIO MAYOR DE ANTIOQUIA",
+        "abrev": "Col. M. Antioquia",
+        "puntaje": 147,
+        "n": 541,
+        "es_unimagdalena": false,
+        "es_caribe": false
+      },
+      {
+        "rank": 17,
+        "nombre": "UNIDAD CENTRAL DEL VALLE DEL CAUCA",
+        "abrev": "UCEVA",
+        "puntaje": 147,
+        "n": 434,
+        "es_unimagdalena": false,
+        "es_caribe": false
+      },
+      {
+        "rank": 18,
+        "nombre": "INSTITUTO TECNOLOGICO METROPOLITANO",
+        "abrev": "ITM",
+        "puntaje": 146,
+        "n": 1267,
+        "es_unimagdalena": false,
+        "es_caribe": false
+      },
+      {
+        "rank": 19,
+        "nombre": "UNIVERSIDAD DEL QUINDIO",
+        "abrev": "Quindío",
+        "puntaje": 146,
+        "n": 2087,
+        "es_unimagdalena": false,
+        "es_caribe": false
+      },
+      {
+        "rank": 20,
+        "nombre": "UNIVERSIDAD DEL MAGDALENA",
+        "abrev": "Unimagdalena",
+        "puntaje": 146,
+        "n": 1888,
+        "es_unimagdalena": true,
+        "es_caribe": true
+      },
+      {
+        "rank": 21,
+        "nombre": "UNIVERSIDAD DE SUCRE",
+        "abrev": "Sucre",
+        "puntaje": 146,
+        "n": 818,
+        "es_unimagdalena": false,
+        "es_caribe": true
+      },
+      {
+        "rank": 22,
+        "nombre": "ESCUELA TECNOLOGICA INSTITUTO TECNICO CENTRAL",
+        "abrev": "ETITC",
+        "puntaje": 144,
+        "n": 228,
+        "es_unimagdalena": false,
+        "es_caribe": false
+      },
+      {
+        "rank": 23,
+        "nombre": "UNIVERSIDAD FRANCISCO DE PAULA SANTANDER",
+        "abrev": "Fco. Paula Sant.",
+        "puntaje": 142,
+        "n": 2391,
+        "es_unimagdalena": false,
+        "es_caribe": false
+      },
+      {
+        "rank": 24,
+        "nombre": "UNIVERSIDAD DEL TOLIMA",
+        "abrev": "Tolima",
+        "puntaje": 142,
+        "n": 2236,
+        "es_unimagdalena": false,
+        "es_caribe": false
+      },
+      {
+        "rank": 25,
+        "nombre": "UNIVERSIDAD DE CARTAGENA",
+        "abrev": "Cartagena",
+        "puntaje": 142,
+        "n": 2046,
+        "es_unimagdalena": false,
+        "es_caribe": true
+      },
+      {
+        "rank": 26,
+        "nombre": "UNIVERSIDAD DE PAMPLONA",
+        "abrev": "Pamplona",
+        "puntaje": 141,
+        "n": 2765,
+        "es_unimagdalena": false,
+        "es_caribe": false
+      },
+      {
+        "rank": 27,
+        "nombre": "INSTITUTO TECNOLOGICO PASCUAL BRAVO",
+        "abrev": "Pascual Bravo",
+        "puntaje": 140,
+        "n": 270,
+        "es_unimagdalena": false,
+        "es_caribe": false
+      },
+      {
+        "rank": 28,
+        "nombre": "UNIVERSIDAD POPULAR DEL CESAR",
+        "abrev": "Cesar",
+        "puntaje": 137,
+        "n": 2112,
+        "es_unimagdalena": false,
+        "es_caribe": true
+      },
+      {
+        "rank": 29,
+        "nombre": "UNIVERSIDAD DE CORDOBA",
+        "abrev": "Córdoba",
+        "puntaje": 137,
+        "n": 2755,
+        "es_unimagdalena": false,
+        "es_caribe": true
+      },
+      {
+        "rank": 30,
+        "nombre": "TECNOLOGICO DE ANTIOQUIA",
+        "abrev": "Tec. Antioquia",
+        "puntaje": 136,
+        "n": 1075,
+        "es_unimagdalena": false,
+        "es_caribe": false
+      },
+      {
+        "rank": 31,
+        "nombre": "UNIVERSIDAD DE LA AMAZONIA",
+        "abrev": "Amazonía",
+        "puntaje": 135,
+        "n": 937,
+        "es_unimagdalena": false,
+        "es_caribe": false
+      },
+      {
+        "rank": 32,
+        "nombre": "INSTITUCION UNIVERSITARIA BELLAS ARTES Y CIENCIAS DE BOLIVAR",
+        "abrev": "IU Bellas Artes",
+        "puntaje": 134,
+        "n": 234,
+        "es_unimagdalena": false,
+        "es_caribe": true
+      },
+      {
+        "rank": 33,
+        "nombre": "COLEGIO MAYOR DEL CAUCA",
+        "abrev": "Col. M. Cauca",
+        "puntaje": 133,
+        "n": 166,
+        "es_unimagdalena": false,
+        "es_caribe": false
+      },
+      {
+        "rank": 34,
+        "nombre": "UNIVERSIDAD DE LA GUAJIRA",
+        "abrev": "Guajira",
+        "puntaje": 129,
+        "n": 2049,
+        "es_unimagdalena": false,
+        "es_caribe": true
+      },
+      {
+        "rank": 35,
+        "nombre": "UNIVERSIDAD DEL PACIFICO",
+        "abrev": "Pacífico",
+        "puntaje": 128,
+        "n": 332,
+        "es_unimagdalena": false,
+        "es_caribe": false
+      },
+      {
+        "rank": 36,
+        "nombre": "INSTITUCION UNIVERSITARIA DIGITAL DE ANTIOQUIA -IU. DIGITAL",
+        "abrev": "IU Digital",
+        "puntaje": 127,
+        "n": 17,
+        "es_unimagdalena": false,
+        "es_caribe": false
+      },
+      {
+        "rank": 37,
+        "nombre": "UNIVERSIDAD TECNOLOGICA DEL CHOCO-DIEGO LUIS CORDOBA",
+        "abrev": "Chocó",
+        "puntaje": 116,
+        "n": 1960,
+        "es_unimagdalena": false,
+        "es_caribe": false
+      }
+    ],
+    "2023": [
+      {
+        "rank": 1,
+        "nombre": "UNIVERSIDAD NACIONAL DE COLOMBIA",
+        "abrev": "UNAL",
+        "puntaje": 177,
+        "n": 5222,
+        "es_unimagdalena": false,
+        "es_caribe": false
+      },
+      {
+        "rank": 2,
+        "nombre": "UNIVERSIDAD INDUSTRIAL DE SANTANDER",
+        "abrev": "UIS",
+        "puntaje": 166,
+        "n": 2257,
+        "es_unimagdalena": false,
+        "es_caribe": false
+      },
+      {
+        "rank": 3,
+        "nombre": "UNIVERSIDAD DISTRITAL FRANCISCO JOSE DE CALDAS",
+        "abrev": "Distrital",
+        "puntaje": 165,
+        "n": 2400,
+        "es_unimagdalena": false,
+        "es_caribe": false
+      },
+      {
+        "rank": 4,
+        "nombre": "UNIVERSIDAD DE ANTIOQUIA",
+        "abrev": "Antioquia",
+        "puntaje": 162,
+        "n": 3166,
+        "es_unimagdalena": false,
+        "es_caribe": false
+      },
+      {
+        "rank": 5,
+        "nombre": "UNIVERSIDAD DEL VALLE",
+        "abrev": "Valle",
+        "puntaje": 160,
+        "n": 2903,
+        "es_unimagdalena": false,
+        "es_caribe": false
+      },
+      {
+        "rank": 6,
+        "nombre": "UNIVERSIDAD PEDAGOGICA Y TECNOLOGICA DE COLOMBIA",
+        "abrev": "UPTC",
+        "puntaje": 156,
+        "n": 2869,
+        "es_unimagdalena": false,
+        "es_caribe": false
+      },
+      {
+        "rank": 7,
+        "nombre": "UNIVERSIDAD-COLEGIO MAYOR DE CUNDINAMARCA",
+        "abrev": "Col. Mayor C/marca",
+        "puntaje": 155,
+        "n": 910,
+        "es_unimagdalena": false,
+        "es_caribe": false
+      },
+      {
+        "rank": 8,
+        "nombre": "UNIVERSIDAD DEL CAUCA",
+        "abrev": "Cauca",
+        "puntaje": 155,
+        "n": 1896,
+        "es_unimagdalena": false,
+        "es_caribe": false
+      },
+      {
+        "rank": 9,
+        "nombre": "UNIVERSIDAD PEDAGOGICA NACIONAL",
+        "abrev": "UPN",
+        "puntaje": 154,
+        "n": 893,
+        "es_unimagdalena": false,
+        "es_caribe": false
+      },
+      {
+        "rank": 10,
+        "nombre": "UNIVERSIDAD DE CALDAS",
+        "abrev": "Caldas",
+        "puntaje": 154,
+        "n": 1231,
+        "es_unimagdalena": false,
+        "es_caribe": false
+      },
+      {
+        "rank": 11,
+        "nombre": "UNIVERSIDAD TECNOLOGICA DE PEREIRA",
+        "abrev": "Pereira",
+        "puntaje": 154,
+        "n": 1477,
+        "es_unimagdalena": false,
+        "es_caribe": false
+      },
+      {
+        "rank": 12,
+        "nombre": "UNIVERSIDAD DE LOS LLANOS",
+        "abrev": "Llanos",
+        "puntaje": 152,
+        "n": 748,
+        "es_unimagdalena": false,
+        "es_caribe": false
+      },
+      {
+        "rank": 13,
+        "nombre": "UNIVERSIDAD SURCOLOMBIANA",
+        "abrev": "Surcolombiana",
+        "puntaje": 150,
+        "n": 1661,
+        "es_unimagdalena": false,
+        "es_caribe": false
+      },
+      {
+        "rank": 14,
+        "nombre": "UNIVERSIDAD DEL ATLANTICO",
+        "abrev": "Atlántico",
+        "puntaje": 150,
+        "n": 2469,
+        "es_unimagdalena": false,
+        "es_caribe": true
+      },
+      {
+        "rank": 15,
+        "nombre": "UNIVERSIDAD DE NARINO",
+        "abrev": "Nariño",
+        "puntaje": 150,
+        "n": 1667,
+        "es_unimagdalena": false,
+        "es_caribe": false
+      },
+      {
+        "rank": 16,
+        "nombre": "UNIVERSIDAD DE SUCRE",
+        "abrev": "Sucre",
+        "puntaje": 148,
+        "n": 935,
+        "es_unimagdalena": false,
+        "es_caribe": true
+      },
+      {
+        "rank": 17,
+        "nombre": "UNIDAD CENTRAL DEL VALLE DEL CAUCA",
+        "abrev": "UCEVA",
+        "puntaje": 148,
+        "n": 527,
+        "es_unimagdalena": false,
+        "es_caribe": false
+      },
+      {
+        "rank": 18,
+        "nombre": "COLEGIO MAYOR DE ANTIOQUIA",
+        "abrev": "Col. M. Antioquia",
+        "puntaje": 146,
+        "n": 491,
+        "es_unimagdalena": false,
+        "es_caribe": false
+      },
+      {
+        "rank": 19,
+        "nombre": "INSTITUTO TECNOLOGICO METROPOLITANO",
+        "abrev": "ITM",
+        "puntaje": 146,
+        "n": 1004,
+        "es_unimagdalena": false,
+        "es_caribe": false
+      },
+      {
+        "rank": 20,
+        "nombre": "ESCUELA TECNOLOGICA INSTITUTO TECNICO CENTRAL",
+        "abrev": "ETITC",
+        "puntaje": 146,
+        "n": 242,
+        "es_unimagdalena": false,
+        "es_caribe": false
+      },
+      {
+        "rank": 21,
+        "nombre": "UNIVERSIDAD DEL MAGDALENA",
+        "abrev": "Unimagdalena",
+        "puntaje": 146,
+        "n": 2536,
+        "es_unimagdalena": true,
+        "es_caribe": true
+      },
+      {
+        "rank": 22,
+        "nombre": "UNIVERSIDAD DEL QUINDIO",
+        "abrev": "Quindío",
+        "puntaje": 144,
+        "n": 1531,
+        "es_unimagdalena": false,
+        "es_caribe": false
+      },
+      {
+        "rank": 23,
+        "nombre": "UNIVERSIDAD DE CARTAGENA",
+        "abrev": "Cartagena",
+        "puntaje": 144,
+        "n": 2330,
+        "es_unimagdalena": false,
+        "es_caribe": true
+      },
+      {
+        "rank": 24,
+        "nombre": "INSTITUCION UNIVERSITARIA DIGITAL DE ANTIOQUIA -IU. DIGITAL",
+        "abrev": "IU Digital",
+        "puntaje": 143,
+        "n": 316,
+        "es_unimagdalena": false,
+        "es_caribe": false
+      },
+      {
+        "rank": 25,
+        "nombre": "INSTITUTO TECNOLOGICO PASCUAL BRAVO",
+        "abrev": "Pascual Bravo",
+        "puntaje": 142,
+        "n": 458,
+        "es_unimagdalena": false,
+        "es_caribe": false
+      },
+      {
+        "rank": 26,
+        "nombre": "UNIVERSIDAD FRANCISCO DE PAULA SANTANDER",
+        "abrev": "Fco. Paula Sant.",
+        "puntaje": 142,
+        "n": 2393,
+        "es_unimagdalena": false,
+        "es_caribe": false
+      },
+      {
+        "rank": 27,
+        "nombre": "UNIVERSIDAD DE PAMPLONA",
+        "abrev": "Pamplona",
+        "puntaje": 142,
+        "n": 2650,
+        "es_unimagdalena": false,
+        "es_caribe": false
+      },
+      {
+        "rank": 28,
+        "nombre": "UNIVERSIDAD DEL TOLIMA",
+        "abrev": "Tolima",
+        "puntaje": 141,
+        "n": 3512,
+        "es_unimagdalena": false,
+        "es_caribe": false
+      },
+      {
+        "rank": 29,
+        "nombre": "UNIVERSIDAD DE CORDOBA",
+        "abrev": "Córdoba",
+        "puntaje": 141,
+        "n": 2371,
+        "es_unimagdalena": false,
+        "es_caribe": true
+      },
+      {
+        "rank": 30,
+        "nombre": "TECNOLOGICO DE ANTIOQUIA",
+        "abrev": "Tec. Antioquia",
+        "puntaje": 139,
+        "n": 1445,
+        "es_unimagdalena": false,
+        "es_caribe": false
+      },
+      {
+        "rank": 31,
+        "nombre": "UNIVERSIDAD POPULAR DEL CESAR",
+        "abrev": "Cesar",
+        "puntaje": 138,
+        "n": 2294,
+        "es_unimagdalena": false,
+        "es_caribe": true
+      },
+      {
+        "rank": 32,
+        "nombre": "COLEGIO MAYOR DEL CAUCA",
+        "abrev": "Col. M. Cauca",
+        "puntaje": 138,
+        "n": 295,
+        "es_unimagdalena": false,
+        "es_caribe": false
+      },
+      {
+        "rank": 33,
+        "nombre": "UNIVERSIDAD DE LA AMAZONIA",
+        "abrev": "Amazonía",
+        "puntaje": 137,
+        "n": 987,
+        "es_unimagdalena": false,
+        "es_caribe": false
+      },
+      {
+        "rank": 34,
+        "nombre": "INSTITUCION UNIVERSITARIA BELLAS ARTES Y CIENCIAS DE BOLIVAR",
+        "abrev": "IU Bellas Artes",
+        "puntaje": 135,
+        "n": 192,
+        "es_unimagdalena": false,
+        "es_caribe": true
+      },
+      {
+        "rank": 35,
+        "nombre": "UNIVERSIDAD DE LA GUAJIRA",
+        "abrev": "Guajira",
+        "puntaje": 130,
+        "n": 1769,
+        "es_unimagdalena": false,
+        "es_caribe": true
+      },
+      {
+        "rank": 36,
+        "nombre": "UNIVERSIDAD DEL PACIFICO",
+        "abrev": "Pacífico",
+        "puntaje": 125,
+        "n": 253,
+        "es_unimagdalena": false,
+        "es_caribe": false
+      },
+      {
+        "rank": 37,
+        "nombre": "UNIVERSIDAD TECNOLOGICA DEL CHOCO-DIEGO LUIS CORDOBA",
+        "abrev": "Chocó",
+        "puntaje": 116,
+        "n": 1652,
+        "es_unimagdalena": false,
+        "es_caribe": false
+      }
+    ],
+    "2024": [
+      {
+        "rank": 1,
+        "nombre": "UNIVERSIDAD NACIONAL DE COLOMBIA",
+        "abrev": "UNAL",
+        "puntaje": 179,
+        "n": 5930,
+        "es_unimagdalena": false,
+        "es_caribe": false
+      },
+      {
+        "rank": 2,
+        "nombre": "UNIVERSIDAD INDUSTRIAL DE SANTANDER",
+        "abrev": "UIS",
+        "puntaje": 168,
+        "n": 2581,
+        "es_unimagdalena": false,
+        "es_caribe": false
+      },
+      {
+        "rank": 3,
+        "nombre": "UNIVERSIDAD DE ANTIOQUIA",
+        "abrev": "Antioquia",
+        "puntaje": 167,
+        "n": 4164,
+        "es_unimagdalena": false,
+        "es_caribe": false
+      },
+      {
+        "rank": 4,
+        "nombre": "UNIVERSIDAD DISTRITAL FRANCISCO JOSE DE CALDAS",
+        "abrev": "Distrital",
+        "puntaje": 167,
+        "n": 3085,
+        "es_unimagdalena": false,
+        "es_caribe": false
+      },
+      {
+        "rank": 5,
+        "nombre": "UNIVERSIDAD DEL CAUCA",
+        "abrev": "Cauca",
+        "puntaje": 162,
+        "n": 1859,
+        "es_unimagdalena": false,
+        "es_caribe": false
+      },
+      {
+        "rank": 6,
+        "nombre": "UNIVERSIDAD PEDAGOGICA Y TECNOLOGICA DE COLOMBIA",
+        "abrev": "UPTC",
+        "puntaje": 158,
+        "n": 3491,
+        "es_unimagdalena": false,
+        "es_caribe": false
+      },
+      {
+        "rank": 7,
+        "nombre": "UNIVERSIDAD DEL VALLE",
+        "abrev": "Valle",
+        "puntaje": 158,
+        "n": 3651,
+        "es_unimagdalena": false,
+        "es_caribe": false
+      },
+      {
+        "rank": 8,
+        "nombre": "UNIVERSIDAD DE CALDAS",
+        "abrev": "Caldas",
+        "puntaje": 157,
+        "n": 1321,
+        "es_unimagdalena": false,
+        "es_caribe": false
+      },
+      {
+        "rank": 9,
+        "nombre": "UNIVERSIDAD TECNOLOGICA DE PEREIRA",
+        "abrev": "Pereira",
+        "puntaje": 156,
+        "n": 1710,
+        "es_unimagdalena": false,
+        "es_caribe": false
+      },
+      {
+        "rank": 10,
+        "nombre": "UNIVERSIDAD-COLEGIO MAYOR DE CUNDINAMARCA",
+        "abrev": "Col. Mayor C/marca",
+        "puntaje": 155,
+        "n": 970,
+        "es_unimagdalena": false,
+        "es_caribe": false
+      },
+      {
+        "rank": 11,
+        "nombre": "UNIVERSIDAD PEDAGOGICA NACIONAL",
+        "abrev": "UPN",
+        "puntaje": 155,
+        "n": 1669,
+        "es_unimagdalena": false,
+        "es_caribe": false
+      },
+      {
+        "rank": 12,
+        "nombre": "UNIVERSIDAD DEL ATLANTICO",
+        "abrev": "Atlántico",
+        "puntaje": 154,
+        "n": 3092,
+        "es_unimagdalena": false,
+        "es_caribe": true
+      },
+      {
+        "rank": 13,
+        "nombre": "UNIVERSIDAD DE LOS LLANOS",
+        "abrev": "Llanos",
+        "puntaje": 154,
+        "n": 762,
+        "es_unimagdalena": false,
+        "es_caribe": false
+      },
+      {
+        "rank": 14,
+        "nombre": "UNIVERSIDAD DE SUCRE",
+        "abrev": "Sucre",
+        "puntaje": 153,
+        "n": 896,
+        "es_unimagdalena": false,
+        "es_caribe": true
+      },
+      {
+        "rank": 15,
+        "nombre": "UNIVERSIDAD SURCOLOMBIANA",
+        "abrev": "Surcolombiana",
+        "puntaje": 151,
+        "n": 1760,
+        "es_unimagdalena": false,
+        "es_caribe": false
+      },
+      {
+        "rank": 16,
+        "nombre": "UNIVERSIDAD DE NARINO",
+        "abrev": "Nariño",
+        "puntaje": 150,
+        "n": 1723,
+        "es_unimagdalena": false,
+        "es_caribe": false
+      },
+      {
+        "rank": 17,
+        "nombre": "UNIDAD CENTRAL DEL VALLE DEL CAUCA",
+        "abrev": "UCEVA",
+        "puntaje": 150,
+        "n": 841,
+        "es_unimagdalena": false,
+        "es_caribe": false
+      },
+      {
+        "rank": 18,
+        "nombre": "ESCUELA TECNOLOGICA INSTITUTO TECNICO CENTRAL",
+        "abrev": "ETITC",
+        "puntaje": 149,
+        "n": 223,
+        "es_unimagdalena": false,
+        "es_caribe": false
+      },
+      {
+        "rank": 19,
+        "nombre": "INSTITUTO TECNOLOGICO METROPOLITANO",
+        "abrev": "ITM",
+        "puntaje": 148,
+        "n": 1597,
+        "es_unimagdalena": false,
+        "es_caribe": false
+      },
+      {
+        "rank": 20,
+        "nombre": "COLEGIO MAYOR DE ANTIOQUIA",
+        "abrev": "Col. M. Antioquia",
+        "puntaje": 147,
+        "n": 451,
+        "es_unimagdalena": false,
+        "es_caribe": false
+      },
+      {
+        "rank": 21,
+        "nombre": "UNIVERSIDAD DEL QUINDIO",
+        "abrev": "Quindío",
+        "puntaje": 147,
+        "n": 2038,
+        "es_unimagdalena": false,
+        "es_caribe": false
+      },
+      {
+        "rank": 22,
+        "nombre": "UNIVERSIDAD DE CARTAGENA",
+        "abrev": "Cartagena",
+        "puntaje": 146,
+        "n": 3383,
+        "es_unimagdalena": false,
+        "es_caribe": true
+      },
+      {
+        "rank": 23,
+        "nombre": "UNIVERSIDAD DEL MAGDALENA",
+        "abrev": "Unimagdalena",
+        "puntaje": 146,
+        "n": 2809,
+        "es_unimagdalena": true,
+        "es_caribe": true
+      },
+      {
+        "rank": 24,
+        "nombre": "UNIVERSIDAD DE CORDOBA",
+        "abrev": "Córdoba",
+        "puntaje": 145,
+        "n": 2704,
+        "es_unimagdalena": false,
+        "es_caribe": true
+      },
+      {
+        "rank": 25,
+        "nombre": "INSTITUTO TECNOLOGICO PASCUAL BRAVO",
+        "abrev": "Pascual Bravo",
+        "puntaje": 144,
+        "n": 564,
+        "es_unimagdalena": false,
+        "es_caribe": false
+      },
+      {
+        "rank": 26,
+        "nombre": "UNIVERSIDAD FRANCISCO DE PAULA SANTANDER",
+        "abrev": "Fco. Paula Sant.",
+        "puntaje": 144,
+        "n": 2906,
+        "es_unimagdalena": false,
+        "es_caribe": false
+      },
+      {
+        "rank": 27,
+        "nombre": "TECNOLOGICO DE ANTIOQUIA",
+        "abrev": "Tec. Antioquia",
+        "puntaje": 141,
+        "n": 1703,
+        "es_unimagdalena": false,
+        "es_caribe": false
+      },
+      {
+        "rank": 28,
+        "nombre": "UNIVERSIDAD DE PAMPLONA",
+        "abrev": "Pamplona",
+        "puntaje": 141,
+        "n": 3267,
+        "es_unimagdalena": false,
+        "es_caribe": false
+      },
+      {
+        "rank": 29,
+        "nombre": "UNIVERSIDAD POPULAR DEL CESAR",
+        "abrev": "Cesar",
+        "puntaje": 141,
+        "n": 2067,
+        "es_unimagdalena": false,
+        "es_caribe": true
+      },
+      {
+        "rank": 30,
+        "nombre": "COLEGIO MAYOR DEL CAUCA",
+        "abrev": "Col. M. Cauca",
+        "puntaje": 140,
+        "n": 363,
+        "es_unimagdalena": false,
+        "es_caribe": false
+      },
+      {
+        "rank": 31,
+        "nombre": "UNIVERSIDAD DE LA AMAZONIA",
+        "abrev": "Amazonía",
+        "puntaje": 139,
+        "n": 1083,
+        "es_unimagdalena": false,
+        "es_caribe": false
+      },
+      {
+        "rank": 32,
+        "nombre": "UNIVERSIDAD DEL TOLIMA",
+        "abrev": "Tolima",
+        "puntaje": 139,
+        "n": 3639,
+        "es_unimagdalena": false,
+        "es_caribe": false
+      },
+      {
+        "rank": 33,
+        "nombre": "INSTITUCION UNIVERSITARIA BELLAS ARTES Y CIENCIAS DE BOLIVAR",
+        "abrev": "IU Bellas Artes",
+        "puntaje": 139,
+        "n": 254,
+        "es_unimagdalena": false,
+        "es_caribe": true
+      },
+      {
+        "rank": 34,
+        "nombre": "INSTITUCION UNIVERSITARIA DIGITAL DE ANTIOQUIA -IU. DIGITAL",
+        "abrev": "IU Digital",
+        "puntaje": 138,
+        "n": 609,
+        "es_unimagdalena": false,
+        "es_caribe": false
+      },
+      {
+        "rank": 35,
+        "nombre": "UNIVERSIDAD DE LA GUAJIRA",
+        "abrev": "Guajira",
+        "puntaje": 133,
+        "n": 1888,
+        "es_unimagdalena": false,
+        "es_caribe": true
+      },
+      {
+        "rank": 36,
+        "nombre": "UNIVERSIDAD DEL PACIFICO",
+        "abrev": "Pacífico",
+        "puntaje": 127,
+        "n": 225,
+        "es_unimagdalena": false,
+        "es_caribe": false
+      },
+      {
+        "rank": 37,
+        "nombre": "UNIVERSIDAD TECNOLOGICA DEL CHOCO-DIEGO LUIS CORDOBA",
+        "abrev": "Chocó",
+        "puntaje": 117,
+        "n": 2029,
+        "es_unimagdalena": false,
+        "es_caribe": false
+      }
+    ],
+    "2025": [
+      {
+        "rank": 1,
+        "nombre": "UNIVERSIDAD NACIONAL DE COLOMBIA",
+        "abrev": "UNAL",
+        "puntaje": 177,
+        "n": 6892,
+        "es_unimagdalena": false,
+        "es_caribe": false
+      },
+      {
+        "rank": 2,
+        "nombre": "UNIVERSIDAD INDUSTRIAL DE SANTANDER",
+        "abrev": "UIS",
+        "puntaje": 170,
+        "n": 2250,
+        "es_unimagdalena": false,
+        "es_caribe": false
+      },
+      {
+        "rank": 3,
+        "nombre": "UNIVERSIDAD DISTRITAL FRANCISCO JOSE DE CALDAS",
+        "abrev": "Distrital",
+        "puntaje": 167,
+        "n": 2617,
+        "es_unimagdalena": false,
+        "es_caribe": false
+      },
+      {
+        "rank": 4,
+        "nombre": "UNIVERSIDAD DE ANTIOQUIA",
+        "abrev": "Antioquia",
+        "puntaje": 166,
+        "n": 3769,
+        "es_unimagdalena": false,
+        "es_caribe": false
+      },
+      {
+        "rank": 5,
+        "nombre": "UNIVERSIDAD DEL CAUCA",
+        "abrev": "Cauca",
+        "puntaje": 163,
+        "n": 1801,
+        "es_unimagdalena": false,
+        "es_caribe": false
+      },
+      {
+        "rank": 6,
+        "nombre": "UNIVERSIDAD PEDAGOGICA Y TECNOLOGICA DE COLOMBIA",
+        "abrev": "UPTC",
+        "puntaje": 158,
+        "n": 3510,
+        "es_unimagdalena": false,
+        "es_caribe": false
+      },
+      {
+        "rank": 7,
+        "nombre": "UNIVERSIDAD TECNOLOGICA DE PEREIRA",
+        "abrev": "Pereira",
+        "puntaje": 158,
+        "n": 1929,
+        "es_unimagdalena": false,
+        "es_caribe": false
+      },
+      {
+        "rank": 8,
+        "nombre": "UNIVERSIDAD DEL VALLE",
+        "abrev": "Valle",
+        "puntaje": 158,
+        "n": 3818,
+        "es_unimagdalena": false,
+        "es_caribe": false
+      },
+      {
+        "rank": 9,
+        "nombre": "UNIVERSIDAD PEDAGOGICA NACIONAL",
+        "abrev": "UPN",
+        "puntaje": 157,
+        "n": 1224,
+        "es_unimagdalena": false,
+        "es_caribe": false
+      },
+      {
+        "rank": 10,
+        "nombre": "UNIVERSIDAD DE LOS LLANOS",
+        "abrev": "Llanos",
+        "puntaje": 157,
+        "n": 969,
+        "es_unimagdalena": false,
+        "es_caribe": false
+      },
+      {
+        "rank": 11,
+        "nombre": "UNIVERSIDAD-COLEGIO MAYOR DE CUNDINAMARCA",
+        "abrev": "Col. Mayor C/marca",
+        "puntaje": 155,
+        "n": 1026,
+        "es_unimagdalena": false,
+        "es_caribe": false
+      },
+      {
+        "rank": 12,
+        "nombre": "UNIVERSIDAD DE CALDAS",
+        "abrev": "Caldas",
+        "puntaje": 155,
+        "n": 1537,
+        "es_unimagdalena": false,
+        "es_caribe": false
+      },
+      {
+        "rank": 13,
+        "nombre": "UNIVERSIDAD DE SUCRE",
+        "abrev": "Sucre",
+        "puntaje": 155,
+        "n": 872,
+        "es_unimagdalena": false,
+        "es_caribe": true
+      },
+      {
+        "rank": 14,
+        "nombre": "UNIVERSIDAD DEL ATLANTICO",
+        "abrev": "Atlántico",
+        "puntaje": 154,
+        "n": 2967,
+        "es_unimagdalena": false,
+        "es_caribe": true
+      },
+      {
+        "rank": 15,
+        "nombre": "UNIVERSIDAD DE NARINO",
+        "abrev": "Nariño",
+        "puntaje": 154,
+        "n": 1643,
+        "es_unimagdalena": false,
+        "es_caribe": false
+      },
+      {
+        "rank": 16,
+        "nombre": "UNIDAD CENTRAL DEL VALLE DEL CAUCA",
+        "abrev": "UCEVA",
+        "puntaje": 152,
+        "n": 853,
+        "es_unimagdalena": false,
+        "es_caribe": false
+      },
+      {
+        "rank": 17,
+        "nombre": "COLEGIO MAYOR DE ANTIOQUIA",
+        "abrev": "Col. M. Antioquia",
+        "puntaje": 151,
+        "n": 423,
+        "es_unimagdalena": false,
+        "es_caribe": false
+      },
+      {
+        "rank": 18,
+        "nombre": "UNIVERSIDAD SURCOLOMBIANA",
+        "abrev": "Surcolombiana",
+        "puntaje": 151,
+        "n": 2036,
+        "es_unimagdalena": false,
+        "es_caribe": false
+      },
+      {
+        "rank": 19,
+        "nombre": "INSTITUTO TECNOLOGICO METROPOLITANO",
+        "abrev": "ITM",
+        "puntaje": 150,
+        "n": 1381,
+        "es_unimagdalena": false,
+        "es_caribe": false
+      },
+      {
+        "rank": 20,
+        "nombre": "UNIVERSIDAD DEL QUINDIO",
+        "abrev": "Quindío",
+        "puntaje": 150,
+        "n": 2283,
+        "es_unimagdalena": false,
+        "es_caribe": false
+      },
+      {
+        "rank": 21,
+        "nombre": "UNIVERSIDAD DE CARTAGENA",
+        "abrev": "Cartagena",
+        "puntaje": 150,
+        "n": 3150,
+        "es_unimagdalena": false,
+        "es_caribe": true
+      },
+      {
+        "rank": 22,
+        "nombre": "UNIVERSIDAD DEL MAGDALENA",
+        "abrev": "Unimagdalena",
+        "puntaje": 150,
+        "n": 2982,
+        "es_unimagdalena": true,
+        "es_caribe": true
+      },
+      {
+        "rank": 23,
+        "nombre": "ESCUELA TECNOLOGICA INSTITUTO TECNICO CENTRAL",
+        "abrev": "ETITC",
+        "puntaje": 149,
+        "n": 324,
+        "es_unimagdalena": false,
+        "es_caribe": false
+      },
+      {
+        "rank": 24,
+        "nombre": "UNIVERSIDAD DE CORDOBA",
+        "abrev": "Córdoba",
+        "puntaje": 149,
+        "n": 2703,
+        "es_unimagdalena": false,
+        "es_caribe": true
+      },
+      {
+        "rank": 25,
+        "nombre": "UNIVERSIDAD DE LA AMAZONIA",
+        "abrev": "Amazonía",
+        "puntaje": 148,
+        "n": 1020,
+        "es_unimagdalena": false,
+        "es_caribe": false
+      },
+      {
+        "rank": 26,
+        "nombre": "UNIVERSIDAD FRANCISCO DE PAULA SANTANDER",
+        "abrev": "Fco. Paula Sant.",
+        "puntaje": 148,
+        "n": 2839,
+        "es_unimagdalena": false,
+        "es_caribe": false
+      },
+      {
+        "rank": 27,
+        "nombre": "INSTITUTO TECNOLOGICO PASCUAL BRAVO",
+        "abrev": "Pascual Bravo",
+        "puntaje": 146,
+        "n": 603,
+        "es_unimagdalena": false,
+        "es_caribe": false
+      },
+      {
+        "rank": 28,
+        "nombre": "UNIVERSIDAD POPULAR DEL CESAR",
+        "abrev": "Cesar",
+        "puntaje": 146,
+        "n": 1600,
+        "es_unimagdalena": false,
+        "es_caribe": true
+      },
+      {
+        "rank": 29,
+        "nombre": "UNIVERSIDAD DE PAMPLONA",
+        "abrev": "Pamplona",
+        "puntaje": 145,
+        "n": 3390,
+        "es_unimagdalena": false,
+        "es_caribe": false
+      },
+      {
+        "rank": 30,
+        "nombre": "TECNOLOGICO DE ANTIOQUIA",
+        "abrev": "Tec. Antioquia",
+        "puntaje": 143,
+        "n": 1758,
+        "es_unimagdalena": false,
+        "es_caribe": false
+      },
+      {
+        "rank": 31,
+        "nombre": "UNIVERSIDAD DEL TOLIMA",
+        "abrev": "Tolima",
+        "puntaje": 143,
+        "n": 3726,
+        "es_unimagdalena": false,
+        "es_caribe": false
+      },
+      {
+        "rank": 32,
+        "nombre": "INSTITUCION UNIVERSITARIA BELLAS ARTES Y CIENCIAS DE BOLIVAR",
+        "abrev": "IU Bellas Artes",
+        "puntaje": 142,
+        "n": 231,
+        "es_unimagdalena": false,
+        "es_caribe": true
+      },
+      {
+        "rank": 33,
+        "nombre": "COLEGIO MAYOR DEL CAUCA",
+        "abrev": "Col. M. Cauca",
+        "puntaje": 142,
+        "n": 296,
+        "es_unimagdalena": false,
+        "es_caribe": false
+      },
+      {
+        "rank": 34,
+        "nombre": "INSTITUCION UNIVERSITARIA DIGITAL DE ANTIOQUIA -IU. DIGITAL",
+        "abrev": "IU Digital",
+        "puntaje": 136,
+        "n": 1555,
+        "es_unimagdalena": false,
+        "es_caribe": false
+      },
+      {
+        "rank": 35,
+        "nombre": "UNIVERSIDAD DE LA GUAJIRA",
+        "abrev": "Guajira",
+        "puntaje": 135,
+        "n": 2395,
+        "es_unimagdalena": false,
+        "es_caribe": true
+      },
+      {
+        "rank": 36,
+        "nombre": "UNIVERSIDAD DEL PACIFICO",
+        "abrev": "Pacífico",
+        "puntaje": 129,
+        "n": 250,
+        "es_unimagdalena": false,
+        "es_caribe": false
+      },
+      {
+        "rank": 37,
+        "nombre": "UNIVERSIDAD TECNOLOGICA DEL CHOCO-DIEGO LUIS CORDOBA",
+        "abrev": "Chocó",
+        "puntaje": 120,
+        "n": 1410,
+        "es_unimagdalena": false,
+        "es_caribe": false
+      }
+    ]
+  },
   "departamento": [
     {
       "departamento": "CUNDINAMARCA",
@@ -754,7 +2748,7 @@
   "universidades_dept_historico": {
     "2020": [
       {
-        "nombre": "UNIMAGDALENA",
+        "nombre": "Unimagdalena",
         "puntaje_global": 142,
         "n": 3030,
         "competencias": [
@@ -837,7 +2831,7 @@
     ],
     "2021": [
       {
-        "nombre": "UNIMAGDALENA",
+        "nombre": "Unimagdalena",
         "puntaje_global": 142,
         "n": 2598,
         "competencias": [
@@ -920,7 +2914,7 @@
     ],
     "2022": [
       {
-        "nombre": "UNIMAGDALENA",
+        "nombre": "Unimagdalena",
         "puntaje_global": 146,
         "n": 1888,
         "competencias": [
@@ -1003,7 +2997,7 @@
     ],
     "2023": [
       {
-        "nombre": "UNIMAGDALENA",
+        "nombre": "Unimagdalena",
         "puntaje_global": 146,
         "n": 2536,
         "competencias": [
@@ -1086,7 +3080,7 @@
     ],
     "2024": [
       {
-        "nombre": "UNIMAGDALENA",
+        "nombre": "Unimagdalena",
         "puntaje_global": 146,
         "n": 2809,
         "competencias": [
@@ -1169,7 +3163,7 @@
     ],
     "2025": [
       {
-        "nombre": "UNIMAGDALENA",
+        "nombre": "Unimagdalena",
         "puntaje_global": 150,
         "n": 2982,
         "competencias": [
@@ -1415,6 +3409,992 @@
       ]
     }
   ],
+  "facultades_historico": {
+    "2020": [
+      {
+        "facultad": "Facultad de Ciencias Básicas",
+        "puntaje_global": 149.0,
+        "n": 60,
+        "competencias": [
+          {
+            "competencia": "LECTURA CRÍTICA",
+            "puntaje": 161.0
+          },
+          {
+            "competencia": "RAZONAMIENTO CUANTITATIVO",
+            "puntaje": 150.0
+          },
+          {
+            "competencia": "COMPETENCIAS CIUDADANAS",
+            "puntaje": 154.0
+          },
+          {
+            "competencia": "COMUNICACIÓN ESCRITA",
+            "puntaje": 132.0
+          },
+          {
+            "competencia": "INGLÉS",
+            "puntaje": 147.0
+          }
+        ]
+      },
+      {
+        "facultad": "Facultad de Ciencias Empresariales y Económicas",
+        "puntaje_global": 139.81,
+        "n": 837,
+        "competencias": [
+          {
+            "competencia": "LECTURA CRÍTICA",
+            "puntaje": 141.43
+          },
+          {
+            "competencia": "RAZONAMIENTO CUANTITATIVO",
+            "puntaje": 135.05
+          },
+          {
+            "competencia": "COMPETENCIAS CIUDADANAS",
+            "puntaje": 145.07
+          },
+          {
+            "competencia": "COMUNICACIÓN ESCRITA",
+            "puntaje": 128.1
+          },
+          {
+            "competencia": "INGLÉS",
+            "puntaje": 149.79
+          }
+        ]
+      },
+      {
+        "facultad": "Facultad de Ciencias de la Educación",
+        "puntaje_global": 127.87,
+        "n": 335,
+        "competencias": [
+          {
+            "competencia": "LECTURA CRÍTICA",
+            "puntaje": 130.15
+          },
+          {
+            "competencia": "RAZONAMIENTO CUANTITATIVO",
+            "puntaje": 121.93
+          },
+          {
+            "competencia": "COMPETENCIAS CIUDADANAS",
+            "puntaje": 130.31
+          },
+          {
+            "competencia": "COMUNICACIÓN ESCRITA",
+            "puntaje": 124.52
+          },
+          {
+            "competencia": "INGLÉS",
+            "puntaje": 130.79
+          }
+        ]
+      },
+      {
+        "facultad": "Facultad de Ciencias de la Salud",
+        "puntaje_global": 152.45,
+        "n": 259,
+        "competencias": [
+          {
+            "competencia": "LECTURA CRÍTICA",
+            "puntaje": 158.75
+          },
+          {
+            "competencia": "RAZONAMIENTO CUANTITATIVO",
+            "puntaje": 144.54
+          },
+          {
+            "competencia": "COMPETENCIAS CIUDADANAS",
+            "puntaje": 156.82
+          },
+          {
+            "competencia": "COMUNICACIÓN ESCRITA",
+            "puntaje": 148.61
+          },
+          {
+            "competencia": "INGLÉS",
+            "puntaje": 154.75
+          }
+        ]
+      },
+      {
+        "facultad": "Facultad de Humanidades",
+        "puntaje_global": 149.47,
+        "n": 427,
+        "competencias": [
+          {
+            "competencia": "LECTURA CRÍTICA",
+            "puntaje": 157.2
+          },
+          {
+            "competencia": "RAZONAMIENTO CUANTITATIVO",
+            "puntaje": 139.69
+          },
+          {
+            "competencia": "COMPETENCIAS CIUDADANAS",
+            "puntaje": 159.49
+          },
+          {
+            "competencia": "COMUNICACIÓN ESCRITA",
+            "puntaje": 142.05
+          },
+          {
+            "competencia": "INGLÉS",
+            "puntaje": 147.87
+          }
+        ]
+      },
+      {
+        "facultad": "Facultad de Ingeniería",
+        "puntaje_global": 152.77,
+        "n": 594,
+        "competencias": [
+          {
+            "competencia": "LECTURA CRÍTICA",
+            "puntaje": 155.46
+          },
+          {
+            "competencia": "RAZONAMIENTO CUANTITATIVO",
+            "puntaje": 164.77
+          },
+          {
+            "competencia": "COMPETENCIAS CIUDADANAS",
+            "puntaje": 155.89
+          },
+          {
+            "competencia": "COMUNICACIÓN ESCRITA",
+            "puntaje": 133.86
+          },
+          {
+            "competencia": "INGLÉS",
+            "puntaje": 153.43
+          }
+        ]
+      }
+    ],
+    "2021": [
+      {
+        "facultad": "Facultad de Ciencias Básicas",
+        "puntaje_global": 147.0,
+        "n": 42,
+        "competencias": [
+          {
+            "competencia": "LECTURA CRÍTICA",
+            "puntaje": 149.0
+          },
+          {
+            "competencia": "RAZONAMIENTO CUANTITATIVO",
+            "puntaje": 146.0
+          },
+          {
+            "competencia": "COMPETENCIAS CIUDADANAS",
+            "puntaje": 151.0
+          },
+          {
+            "competencia": "COMUNICACIÓN ESCRITA",
+            "puntaje": 137.0
+          },
+          {
+            "competencia": "INGLÉS",
+            "puntaje": 154.0
+          }
+        ]
+      },
+      {
+        "facultad": "Facultad de Ciencias Empresariales y Económicas",
+        "puntaje_global": 142.25,
+        "n": 819,
+        "competencias": [
+          {
+            "competencia": "LECTURA CRÍTICA",
+            "puntaje": 143.28
+          },
+          {
+            "competencia": "RAZONAMIENTO CUANTITATIVO",
+            "puntaje": 137.28
+          },
+          {
+            "competencia": "COMPETENCIAS CIUDADANAS",
+            "puntaje": 141.71
+          },
+          {
+            "competencia": "COMUNICACIÓN ESCRITA",
+            "puntaje": 134.76
+          },
+          {
+            "competencia": "INGLÉS",
+            "puntaje": 154.85
+          }
+        ]
+      },
+      {
+        "facultad": "Facultad de Ciencias de la Educación",
+        "puntaje_global": 127.99,
+        "n": 243,
+        "competencias": [
+          {
+            "competencia": "LECTURA CRÍTICA",
+            "puntaje": 130.46
+          },
+          {
+            "competencia": "RAZONAMIENTO CUANTITATIVO",
+            "puntaje": 117.24
+          },
+          {
+            "competencia": "COMPETENCIAS CIUDADANAS",
+            "puntaje": 122.65
+          },
+          {
+            "competencia": "COMUNICACIÓN ESCRITA",
+            "puntaje": 132.24
+          },
+          {
+            "competencia": "INGLÉS",
+            "puntaje": 136.33
+          }
+        ]
+      },
+      {
+        "facultad": "Facultad de Ciencias de la Salud",
+        "puntaje_global": 148.19,
+        "n": 287,
+        "competencias": [
+          {
+            "competencia": "LECTURA CRÍTICA",
+            "puntaje": 154.31
+          },
+          {
+            "competencia": "RAZONAMIENTO CUANTITATIVO",
+            "puntaje": 140.95
+          },
+          {
+            "competencia": "COMPETENCIAS CIUDADANAS",
+            "puntaje": 150.26
+          },
+          {
+            "competencia": "COMUNICACIÓN ESCRITA",
+            "puntaje": 143.67
+          },
+          {
+            "competencia": "INGLÉS",
+            "puntaje": 152.6
+          }
+        ]
+      },
+      {
+        "facultad": "Facultad de Humanidades",
+        "puntaje_global": 149.29,
+        "n": 285,
+        "competencias": [
+          {
+            "competencia": "LECTURA CRÍTICA",
+            "puntaje": 159.44
+          },
+          {
+            "competencia": "RAZONAMIENTO CUANTITATIVO",
+            "puntaje": 136.22
+          },
+          {
+            "competencia": "COMPETENCIAS CIUDADANAS",
+            "puntaje": 157.54
+          },
+          {
+            "competencia": "COMUNICACIÓN ESCRITA",
+            "puntaje": 143.18
+          },
+          {
+            "competencia": "INGLÉS",
+            "puntaje": 151.68
+          }
+        ]
+      },
+      {
+        "facultad": "Facultad de Ingeniería",
+        "puntaje_global": 149.44,
+        "n": 657,
+        "competencias": [
+          {
+            "competencia": "LECTURA CRÍTICA",
+            "puntaje": 150.66
+          },
+          {
+            "competencia": "RAZONAMIENTO CUANTITATIVO",
+            "puntaje": 161.77
+          },
+          {
+            "competencia": "COMPETENCIAS CIUDADANAS",
+            "puntaje": 148.43
+          },
+          {
+            "competencia": "COMUNICACIÓN ESCRITA",
+            "puntaje": 132.93
+          },
+          {
+            "competencia": "INGLÉS",
+            "puntaje": 153.58
+          }
+        ]
+      }
+    ],
+    "2022": [
+      {
+        "facultad": "Facultad de Ciencias Básicas",
+        "puntaje_global": 159.0,
+        "n": 36,
+        "competencias": [
+          {
+            "competencia": "LECTURA CRÍTICA",
+            "puntaje": 165.0
+          },
+          {
+            "competencia": "RAZONAMIENTO CUANTITATIVO",
+            "puntaje": 157.0
+          },
+          {
+            "competencia": "COMPETENCIAS CIUDADANAS",
+            "puntaje": 156.0
+          },
+          {
+            "competencia": "COMUNICACIÓN ESCRITA",
+            "puntaje": 148.0
+          },
+          {
+            "competencia": "INGLÉS",
+            "puntaje": 170.0
+          }
+        ]
+      },
+      {
+        "facultad": "Facultad de Ciencias Empresariales y Económicas",
+        "puntaje_global": 142.73,
+        "n": 532,
+        "competencias": [
+          {
+            "competencia": "LECTURA CRÍTICA",
+            "puntaje": 150.32
+          },
+          {
+            "competencia": "RAZONAMIENTO CUANTITATIVO",
+            "puntaje": 141.12
+          },
+          {
+            "competencia": "COMPETENCIAS CIUDADANAS",
+            "puntaje": 142.04
+          },
+          {
+            "competencia": "COMUNICACIÓN ESCRITA",
+            "puntaje": 123.06
+          },
+          {
+            "competencia": "INGLÉS",
+            "puntaje": 156.69
+          }
+        ]
+      },
+      {
+        "facultad": "Facultad de Ciencias de la Educación",
+        "puntaje_global": 127.52,
+        "n": 315,
+        "competencias": [
+          {
+            "competencia": "LECTURA CRÍTICA",
+            "puntaje": 132.57
+          },
+          {
+            "competencia": "RAZONAMIENTO CUANTITATIVO",
+            "puntaje": 125.67
+          },
+          {
+            "competencia": "COMPETENCIAS CIUDADANAS",
+            "puntaje": 121.24
+          },
+          {
+            "competencia": "COMUNICACIÓN ESCRITA",
+            "puntaje": 124.1
+          },
+          {
+            "competencia": "INGLÉS",
+            "puntaje": 134.03
+          }
+        ]
+      },
+      {
+        "facultad": "Facultad de Ciencias de la Salud",
+        "puntaje_global": 153.55,
+        "n": 171,
+        "competencias": [
+          {
+            "competencia": "LECTURA CRÍTICA",
+            "puntaje": 167.59
+          },
+          {
+            "competencia": "RAZONAMIENTO CUANTITATIVO",
+            "puntaje": 148.73
+          },
+          {
+            "competencia": "COMPETENCIAS CIUDADANAS",
+            "puntaje": 157.25
+          },
+          {
+            "competencia": "COMUNICACIÓN ESCRITA",
+            "puntaje": 135.54
+          },
+          {
+            "competencia": "INGLÉS",
+            "puntaje": 158.95
+          }
+        ]
+      },
+      {
+        "facultad": "Facultad de Humanidades",
+        "puntaje_global": 153.42,
+        "n": 191,
+        "competencias": [
+          {
+            "competencia": "LECTURA CRÍTICA",
+            "puntaje": 167.15
+          },
+          {
+            "competencia": "RAZONAMIENTO CUANTITATIVO",
+            "puntaje": 141.58
+          },
+          {
+            "competencia": "COMPETENCIAS CIUDADANAS",
+            "puntaje": 162.17
+          },
+          {
+            "competencia": "COMUNICACIÓN ESCRITA",
+            "puntaje": 136.45
+          },
+          {
+            "competencia": "INGLÉS",
+            "puntaje": 158.86
+          }
+        ]
+      },
+      {
+        "facultad": "Facultad de Ingeniería",
+        "puntaje_global": 154.37,
+        "n": 630,
+        "competencias": [
+          {
+            "competencia": "LECTURA CRÍTICA",
+            "puntaje": 162.22
+          },
+          {
+            "competencia": "RAZONAMIENTO CUANTITATIVO",
+            "puntaje": 167.02
+          },
+          {
+            "competencia": "COMPETENCIAS CIUDADANAS",
+            "puntaje": 154.07
+          },
+          {
+            "competencia": "COMUNICACIÓN ESCRITA",
+            "puntaje": 127.5
+          },
+          {
+            "competencia": "INGLÉS",
+            "puntaje": 161.79
+          }
+        ]
+      }
+    ],
+    "2023": [
+      {
+        "facultad": "Facultad de Ciencias Básicas",
+        "puntaje_global": 158.0,
+        "n": 41,
+        "competencias": [
+          {
+            "competencia": "LECTURA CRÍTICA",
+            "puntaje": 166.0
+          },
+          {
+            "competencia": "RAZONAMIENTO CUANTITATIVO",
+            "puntaje": 155.0
+          },
+          {
+            "competencia": "COMPETENCIAS CIUDADANAS",
+            "puntaje": 158.0
+          },
+          {
+            "competencia": "COMUNICACIÓN ESCRITA",
+            "puntaje": 145.0
+          },
+          {
+            "competencia": "INGLÉS",
+            "puntaje": 162.0
+          }
+        ]
+      },
+      {
+        "facultad": "Facultad de Ciencias Empresariales y Económicas",
+        "puntaje_global": 147.99,
+        "n": 803,
+        "competencias": [
+          {
+            "competencia": "LECTURA CRÍTICA",
+            "puntaje": 151.56
+          },
+          {
+            "competencia": "RAZONAMIENTO CUANTITATIVO",
+            "puntaje": 143.85
+          },
+          {
+            "competencia": "COMPETENCIAS CIUDADANAS",
+            "puntaje": 144.16
+          },
+          {
+            "competencia": "COMUNICACIÓN ESCRITA",
+            "puntaje": 144.83
+          },
+          {
+            "competencia": "INGLÉS",
+            "puntaje": 158.64
+          }
+        ]
+      },
+      {
+        "facultad": "Facultad de Ciencias de la Educación",
+        "puntaje_global": 124.47,
+        "n": 547,
+        "competencias": [
+          {
+            "competencia": "LECTURA CRÍTICA",
+            "puntaje": 129.47
+          },
+          {
+            "competencia": "RAZONAMIENTO CUANTITATIVO",
+            "puntaje": 122.83
+          },
+          {
+            "competencia": "COMPETENCIAS CIUDADANAS",
+            "puntaje": 115.58
+          },
+          {
+            "competencia": "COMUNICACIÓN ESCRITA",
+            "puntaje": 121.7
+          },
+          {
+            "competencia": "INGLÉS",
+            "puntaje": 128.91
+          }
+        ]
+      },
+      {
+        "facultad": "Facultad de Ciencias de la Salud",
+        "puntaje_global": 159.76,
+        "n": 291,
+        "competencias": [
+          {
+            "competencia": "LECTURA CRÍTICA",
+            "puntaje": 172.28
+          },
+          {
+            "competencia": "RAZONAMIENTO CUANTITATIVO",
+            "puntaje": 154.23
+          },
+          {
+            "competencia": "COMPETENCIAS CIUDADANAS",
+            "puntaje": 159.21
+          },
+          {
+            "competencia": "COMUNICACIÓN ESCRITA",
+            "puntaje": 146.8
+          },
+          {
+            "competencia": "INGLÉS",
+            "puntaje": 165.8
+          }
+        ]
+      },
+      {
+        "facultad": "Facultad de Humanidades",
+        "puntaje_global": 153.13,
+        "n": 217,
+        "competencias": [
+          {
+            "competencia": "LECTURA CRÍTICA",
+            "puntaje": 165.15
+          },
+          {
+            "competencia": "RAZONAMIENTO CUANTITATIVO",
+            "puntaje": 136.19
+          },
+          {
+            "competencia": "COMPETENCIAS CIUDADANAS",
+            "puntaje": 160.2
+          },
+          {
+            "competencia": "COMUNICACIÓN ESCRITA",
+            "puntaje": 143.13
+          },
+          {
+            "competencia": "INGLÉS",
+            "puntaje": 160.64
+          }
+        ]
+      },
+      {
+        "facultad": "Facultad de Ingeniería",
+        "puntaje_global": 152.46,
+        "n": 624,
+        "competencias": [
+          {
+            "competencia": "LECTURA CRÍTICA",
+            "puntaje": 155.49
+          },
+          {
+            "competencia": "RAZONAMIENTO CUANTITATIVO",
+            "puntaje": 162.34
+          },
+          {
+            "competencia": "COMPETENCIAS CIUDADANAS",
+            "puntaje": 146.7
+          },
+          {
+            "competencia": "COMUNICACIÓN ESCRITA",
+            "puntaje": 141.61
+          },
+          {
+            "competencia": "INGLÉS",
+            "puntaje": 157.0
+          }
+        ]
+      }
+    ],
+    "2024": [
+      {
+        "facultad": "Facultad de Ciencias Básicas",
+        "puntaje_global": 159.0,
+        "n": 48,
+        "competencias": [
+          {
+            "competencia": "LECTURA CRÍTICA",
+            "puntaje": 169.0
+          },
+          {
+            "competencia": "RAZONAMIENTO CUANTITATIVO",
+            "puntaje": 148.0
+          },
+          {
+            "competencia": "COMPETENCIAS CIUDADANAS",
+            "puntaje": 162.0
+          },
+          {
+            "competencia": "COMUNICACIÓN ESCRITA",
+            "puntaje": 152.0
+          },
+          {
+            "competencia": "INGLÉS",
+            "puntaje": 165.0
+          }
+        ]
+      },
+      {
+        "facultad": "Facultad de Ciencias Empresariales y Económicas",
+        "puntaje_global": 149.94,
+        "n": 642,
+        "competencias": [
+          {
+            "competencia": "LECTURA CRÍTICA",
+            "puntaje": 156.67
+          },
+          {
+            "competencia": "RAZONAMIENTO CUANTITATIVO",
+            "puntaje": 143.37
+          },
+          {
+            "competencia": "COMPETENCIAS CIUDADANAS",
+            "puntaje": 150.5
+          },
+          {
+            "competencia": "COMUNICACIÓN ESCRITA",
+            "puntaje": 138.92
+          },
+          {
+            "competencia": "INGLÉS",
+            "puntaje": 160.81
+          }
+        ]
+      },
+      {
+        "facultad": "Facultad de Ciencias de la Educación",
+        "puntaje_global": 126.96,
+        "n": 955,
+        "competencias": [
+          {
+            "competencia": "LECTURA CRÍTICA",
+            "puntaje": 134.55
+          },
+          {
+            "competencia": "RAZONAMIENTO CUANTITATIVO",
+            "puntaje": 121.45
+          },
+          {
+            "competencia": "COMPETENCIAS CIUDADANAS",
+            "puntaje": 125.56
+          },
+          {
+            "competencia": "COMUNICACIÓN ESCRITA",
+            "puntaje": 121.98
+          },
+          {
+            "competencia": "INGLÉS",
+            "puntaje": 132.39
+          }
+        ]
+      },
+      {
+        "facultad": "Facultad de Ciencias de la Salud",
+        "puntaje_global": 161.29,
+        "n": 209,
+        "competencias": [
+          {
+            "competencia": "LECTURA CRÍTICA",
+            "puntaje": 172.65
+          },
+          {
+            "competencia": "RAZONAMIENTO CUANTITATIVO",
+            "puntaje": 153.82
+          },
+          {
+            "competencia": "COMPETENCIAS CIUDADANAS",
+            "puntaje": 162.88
+          },
+          {
+            "competencia": "COMUNICACIÓN ESCRITA",
+            "puntaje": 153.36
+          },
+          {
+            "competencia": "INGLÉS",
+            "puntaje": 164.66
+          }
+        ]
+      },
+      {
+        "facultad": "Facultad de Humanidades",
+        "puntaje_global": 150.12,
+        "n": 211,
+        "competencias": [
+          {
+            "competencia": "LECTURA CRÍTICA",
+            "puntaje": 163.46
+          },
+          {
+            "competencia": "RAZONAMIENTO CUANTITATIVO",
+            "puntaje": 135.28
+          },
+          {
+            "competencia": "COMPETENCIAS CIUDADANAS",
+            "puntaje": 161.55
+          },
+          {
+            "competencia": "COMUNICACIÓN ESCRITA",
+            "puntaje": 128.51
+          },
+          {
+            "competencia": "INGLÉS",
+            "puntaje": 162.87
+          }
+        ]
+      },
+      {
+        "facultad": "Facultad de Ingeniería",
+        "puntaje_global": 159.12,
+        "n": 730,
+        "competencias": [
+          {
+            "competencia": "LECTURA CRÍTICA",
+            "puntaje": 165.23
+          },
+          {
+            "competencia": "RAZONAMIENTO CUANTITATIVO",
+            "puntaje": 171.12
+          },
+          {
+            "competencia": "COMPETENCIAS CIUDADANAS",
+            "puntaje": 161.81
+          },
+          {
+            "competencia": "COMUNICACIÓN ESCRITA",
+            "puntaje": 136.72
+          },
+          {
+            "competencia": "INGLÉS",
+            "puntaje": 161.83
+          }
+        ]
+      }
+    ],
+    "2025": [
+      {
+        "facultad": "Facultad de Ciencias Básicas",
+        "puntaje_global": 165.0,
+        "n": 69,
+        "competencias": [
+          {
+            "competencia": "LECTURA CRÍTICA",
+            "puntaje": 171.0
+          },
+          {
+            "competencia": "RAZONAMIENTO CUANTITATIVO",
+            "puntaje": 157.0
+          },
+          {
+            "competencia": "COMPETENCIAS CIUDADANAS",
+            "puntaje": 164.0
+          },
+          {
+            "competencia": "COMUNICACIÓN ESCRITA",
+            "puntaje": 158.0
+          },
+          {
+            "competencia": "INGLÉS",
+            "puntaje": 175.0
+          }
+        ]
+      },
+      {
+        "facultad": "Facultad de Ciencias Empresariales y Económicas",
+        "puntaje_global": 147.62,
+        "n": 638,
+        "competencias": [
+          {
+            "competencia": "LECTURA CRÍTICA",
+            "puntaje": 152.21
+          },
+          {
+            "competencia": "RAZONAMIENTO CUANTITATIVO",
+            "puntaje": 135.69
+          },
+          {
+            "competencia": "COMPETENCIAS CIUDADANAS",
+            "puntaje": 146.03
+          },
+          {
+            "competencia": "COMUNICACIÓN ESCRITA",
+            "puntaje": 150.35
+          },
+          {
+            "competencia": "INGLÉS",
+            "puntaje": 153.79
+          }
+        ]
+      },
+      {
+        "facultad": "Facultad de Ciencias de la Educación",
+        "puntaje_global": 136.42,
+        "n": 638,
+        "competencias": [
+          {
+            "competencia": "LECTURA CRÍTICA",
+            "puntaje": 139.74
+          },
+          {
+            "competencia": "RAZONAMIENTO CUANTITATIVO",
+            "puntaje": 124.88
+          },
+          {
+            "competencia": "COMPETENCIAS CIUDADANAS",
+            "puntaje": 128.29
+          },
+          {
+            "competencia": "COMUNICACIÓN ESCRITA",
+            "puntaje": 143.2
+          },
+          {
+            "competencia": "INGLÉS",
+            "puntaje": 133.89
+          }
+        ]
+      },
+      {
+        "facultad": "Facultad de Ciencias de la Salud",
+        "puntaje_global": 162.03,
+        "n": 295,
+        "competencias": [
+          {
+            "competencia": "LECTURA CRÍTICA",
+            "puntaje": 169.84
+          },
+          {
+            "competencia": "RAZONAMIENTO CUANTITATIVO",
+            "puntaje": 152.91
+          },
+          {
+            "competencia": "COMPETENCIAS CIUDADANAS",
+            "puntaje": 162.38
+          },
+          {
+            "competencia": "COMUNICACIÓN ESCRITA",
+            "puntaje": 159.62
+          },
+          {
+            "competencia": "INGLÉS",
+            "puntaje": 164.98
+          }
+        ]
+      },
+      {
+        "facultad": "Facultad de Humanidades",
+        "puntaje_global": 156.85,
+        "n": 295,
+        "competencias": [
+          {
+            "competencia": "LECTURA CRÍTICA",
+            "puntaje": 167.64
+          },
+          {
+            "competencia": "RAZONAMIENTO CUANTITATIVO",
+            "puntaje": 139.18
+          },
+          {
+            "competencia": "COMPETENCIAS CIUDADANAS",
+            "puntaje": 163.72
+          },
+          {
+            "competencia": "COMUNICACIÓN ESCRITA",
+            "puntaje": 152.91
+          },
+          {
+            "competencia": "INGLÉS",
+            "puntaje": 162.71
+          }
+        ]
+      },
+      {
+        "facultad": "Facultad de Ingeniería",
+        "puntaje_global": 160.3,
+        "n": 661,
+        "competencias": [
+          {
+            "competencia": "LECTURA CRÍTICA",
+            "puntaje": 162.38
+          },
+          {
+            "competencia": "RAZONAMIENTO CUANTITATIVO",
+            "puntaje": 167.16
+          },
+          {
+            "competencia": "COMPETENCIAS CIUDADANAS",
+            "puntaje": 157.23
+          },
+          {
+            "competencia": "COMUNICACIÓN ESCRITA",
+            "puntaje": 152.33
+          },
+          {
+            "competencia": "INGLÉS",
+            "puntaje": 162.09
+          }
+        ]
+      }
+    ]
+  },
   "programas": [
     {
       "programa": "ADMINISTRACION DE EMPRESAS",

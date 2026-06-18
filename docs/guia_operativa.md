@@ -6,7 +6,7 @@ Esta guía describe cómo regenerar los datos del informe, abrir el HTML y actua
 
 - Windows con PowerShell.
 - Python 3 instalado.
-- Dependencias de `requirements.txt`: `polars`, `pymupdf`, `openpyxl`, `pyarrow`, `pyyaml`.
+- Dependencias de `requirements.txt`: `polars`, `fastexcel`, `pymupdf`, `openpyxl`, `pyarrow`, `pyyaml`.
 
 Instalación inicial:
 
@@ -27,6 +27,7 @@ El archivo [data/config/parametros.yml](../data/config/parametros.yml) controla:
 - Competencias genéricas oficiales.
 - Universidades SUE y Caribe.
 - `universidades_dept_magdalena`: lista de universidades del Departamento del Magdalena para el comparativo (cada entrada con `nombre_display`, `busqueda` exacta como aparece en el Excel del Icfes, y `agregacion` = `INSTITUCION` o `SEDE`).
+- `sue_abreviaturas`: mapeo de nombre normalizado de IES SUE → abreviatura corta usada en el eje X del ranking SUE (ej. "UNIVERSIDAD NACIONAL DE COLOMBIA" → "UNAL").
 - Mapeo de programas de UNIMAGDALENA a facultad y NBC.
 
 El archivo [data/config/normalizacion_ies.csv](../data/config/normalizacion_ies.csv) alinea nombres de instituciones entre la Fuente A (base de cruce) y la Fuente B (Excel agregados). Por ejemplo, normaliza `UNIVERSIDAD DE NARIÑO` a `UNIVERSIDAD DE NARINO` para que el cruce con la Fuente B sea exitoso.
@@ -147,4 +148,18 @@ Comprobar que `datos_informe.json` contiene:
 - 6 facultades.
 - 39 programas.
 - Cuadrantes para 2018-2024.
-- `universidades_dept_historico` con 6 años (2020-2025) y 3 universidades por año (UNIMAGDALENA + Sergio Arboleda Santa Marta + Cooperativa Santa Marta).
+- `universidades_dept_historico` con 6 años (2020-2025) y 3 universidades por año (Unimagdalena + Sergio Arboleda Santa Marta + Cooperativa Santa Marta).
+- `sue_ranking_historico` con 6 años (2020-2025) y ~37 universidades del SUE por año; cada entrada con `abrev` (etiqueta corta del eje X).
+- `facultades_historico` con 6 años (2020-2025) y 6 facultades por año, cada una con `puntaje_global`, `n` y `competencias[]` (5 competencias genéricas ponderadas).
+
+## 8. Optimización del pipeline: cache parquet
+
+Desde la versión 2.5 el script `02_construir_agregados.py` lee los Excel del Icfes con **polars + fastexcel** (motor calamine en Rust) y genera un archivo `Base-de-datos-...-saber-pro-YYYY.cache.parquet` al lado de cada `.xlsx`. La primera corrida tarda ~57s (genera los 6 caches); las corridas siguientes tardan ~30s (≈4x más rápido que la versión anterior con openpyxl).
+
+**Comportamiento del cache:**
+
+- Si el `.cache.parquet` existe y es **más reciente** que el `.xlsx`, se usa directamente.
+- Si el `.xlsx` es más nuevo (caso típico: llega un Excel actualizado del Icfes), el cache se regenera automáticamente.
+- Si quieres forzar regeneración, basta con borrar los `*.cache.parquet` y volver a correr el pipeline.
+
+**Los caches NO se versionan**: están en `.gitignore` porque se reconstruyen del Excel original. Si clonas el repo en otra máquina la primera corrida toma 57s; después siempre ~30s.

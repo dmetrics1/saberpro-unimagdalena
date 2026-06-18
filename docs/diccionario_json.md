@@ -15,11 +15,13 @@ El archivo `data/processed/datos_informe.json` es la fuente de verdad que consum
   "meta": {},
   "institucional": {},
   "sue_ranking": [],
+  "sue_ranking_historico": {},
   "departamento": [],
   "universidades_dept_historico": {},
   "cuadrantes_por_anio": {},
   "trayectoria_unimag": {},
   "facultades": [],
+  "facultades_historico": {},
   "programas": [],
   "top10": {},
   "niveles_desempeno": []
@@ -87,6 +89,34 @@ Ranking de universidades del Sistema Universitario Estatal.
 | `es_caribe` | booleano | Marca universidades SUE de la región Caribe. |
 
 **Nota:** `parametros.yml` lista 40 IES del SUE, pero el ranking del JSON contiene solo las que aparecen efectivamente en las bases agregadas del año vigente (37 al cierre de 2025). Las IES SUE sin registro en la Fuente B (actualmente UNAD, Universidad de Cundinamarca y Universidad Militar Nueva Granada) quedan fuera del ranking. Esto no es un error: es el comportamiento esperado del cruce contra `INSTITUCIÓN` en los Excel oficiales.
+
+## `sue_ranking_historico`
+
+Objeto indexado por año (string). Para cada año disponible (2020-2025) contiene el ranking completo de universidades del SUE con su puntaje global, abreviatura y banderas. Lo consume la gráfica del ranking SUE con selector de año.
+
+```json
+{
+  "2025": [
+    { "rank": 1, "nombre": "UNIVERSIDAD NACIONAL DE COLOMBIA", "abrev": "UNAL", "puntaje": 177, "n": 6892, "es_unimagdalena": false, "es_caribe": false },
+    ...
+    { "rank": 22, "nombre": "UNIVERSIDAD DEL MAGDALENA", "abrev": "Unimagdalena", "puntaje": 150, "n": 2982, "es_unimagdalena": true, "es_caribe": true },
+    ...
+  ],
+  "2024": [...]
+}
+```
+
+### `sue_ranking_historico[<año>][]`
+
+| Campo | Tipo | Descripción |
+|---|---|---|
+| `rank` | número | Posición del año (1 = más alto). Se recalcula por año. |
+| `nombre` | texto | Nombre completo normalizado. Se muestra en el tooltip. |
+| `abrev` | texto | Nombre abreviado configurado en `parametros.yml` bajo `sue_abreviaturas`. Se muestra en el eje X. |
+| `puntaje` | número | Puntaje global. |
+| `n` | número | Evaluados según `CANTIDADEVALUADOS`. |
+| `es_unimagdalena` | booleano | Marca Universidad del Magdalena. |
+| `es_caribe` | booleano | Marca universidades SUE de la región Caribe. |
 
 ## `departamento[]`
 
@@ -207,6 +237,33 @@ Promedios ponderados de programas UNIMAGDALENA por facultad.
 | `competencia` | texto | Competencia genérica (mismas 5 oficiales del Icfes). |
 | `puntaje` | número | Puntaje promedio ponderado de la facultad en esa competencia. |
 
+## `facultades_historico`
+
+Objeto indexado por año (string, 2020-2025) con el mismo cálculo de `facultades` pero por año. Lo consume el gráfico de Facultades con sus dos selectores (año + competencia).
+
+```json
+{
+  "2025": [
+    { "facultad": "Facultad de Ingeniería", "puntaje_global": 159.12, "n": 730, "competencias": [...] },
+    ...
+  ],
+  "2024": [...]
+}
+```
+
+### `facultades_historico[<año>][]`
+
+Misma estructura que `facultades[]`:
+
+| Campo | Tipo | Descripción |
+|---|---|---|
+| `facultad` | texto | Nombre de la facultad. |
+| `puntaje_global` | número | Promedio ponderado por evaluados de los programas de la facultad ese año. |
+| `n` | número | Suma de evaluados de los programas en la facultad. |
+| `competencias[]` | arreglo | Promedio ponderado de cada competencia genérica en la facultad ese año (subschema igual al de `facultades[].competencias[]`). El `puntaje` puede ser `null` si la facultad no reportó esa competencia ese año. |
+
+**Cálculo:** para cada facultad y año se aplica `sum(score_programa × n_programa) / sum(n_programa)`, tanto para el puntaje global como para cada competencia. Es exactamente el mismo método del año vigente (bloque `facultades[]`), solo que aplicado a los datos históricos disponibles en cada Excel del Icfes.
+
 ## `programas[]`
 
 Datos del explorador de programas.
@@ -300,10 +357,10 @@ Distribución institucional por niveles de logro.
 | Radar institucional (filtrable por año) | `institucional.historico[].competencias`, `institucional.historico[].puntaje_unimag/nacional` |
 | Línea histórica | `institucional.historico` |
 | Comparativo con universidades del departamento (filtrable por año) | `universidades_dept_historico` |
-| Ranking SUE | `sue_ranking` |
+| Ranking SUE (filtrable por año) | `sue_ranking_historico` |
 | Cuadrantes | `cuadrantes_por_anio` |
 | Trayectoria | `trayectoria_unimag` |
-| Facultades | `facultades` |
+| Facultades (filtrable por año y competencia) | `facultades_historico` (con fallback a `facultades` para el año vigente) |
 | Explorador de programas | `programas` |
 | Top 10 | `top10` |
 | Niveles de desempeño | `niveles_desempeno` |

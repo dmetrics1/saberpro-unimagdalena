@@ -94,46 +94,83 @@
               <select id="selAnioUnivDept" class="control-select"></select>
             </div>
           </div>
-          <div class="chart-container chart-container--large" id="chartUnivDept"></div>
+          <div class="chart-container" id="chartUnivDept"></div>
         </div>
         <div class="card">
-          <h3 class="card__title">Ranking SUE - Universidades Públicas</h3>
-          <div class="chart-container chart-container--large" id="chartSue"></div>
+          <div class="card__header-flex">
+            <h3 class="card__title">Puntaje global universidades del SUE <span id="sueYearLbl">2025</span></h3>
+            <div class="select-wrapper">
+              <select id="selAnioSue" class="control-select"></select>
+            </div>
+          </div>
+          <div class="chart-container" id="chartSue"></div>
         </div>
       </div>
     </section>
 
     <section class="section" id="valor-agregado">
       <div class="section__eyebrow">03 · Valor agregado</div>
-      <h2 class="section__title">Cuánto aporta la formación (2020–2024)</h2>
-      <p class="section__lead" id="leadVA"></p>
-      <div class="charts-grid">
+
+      <!-- Tarjetas explicativas de los 4 cuadrantes -->
+      <div class="cuadrante-cards">
+        <article class="cuadrante-card cuadrante-card--desempeno">
+          <header class="cuadrante-card__head">
+            <span class="cuadrante-card__icon" aria-hidden="true">🚀</span>
+            <h4>Alto Desempeño</h4>
+          </header>
+          <p>Entrada y salida superiores a la media nacional. Consolidación de calidad académica y atracción de perfiles sobresalientes.</p>
+        </article>
+        <article class="cuadrante-card cuadrante-card--aporte">
+          <header class="cuadrante-card__head">
+            <span class="cuadrante-card__icon" aria-hidden="true">🌱</span>
+            <h4>Alto Aporte</h4>
+          </header>
+          <p>Entrada por debajo de la media nacional pero salida por encima. Representa el mayor valor agregado formativo del proceso docente.</p>
+        </article>
+        <article class="cuadrante-card cuadrante-card--base">
+          <header class="cuadrante-card__head">
+            <span class="cuadrante-card__icon" aria-hidden="true">📉</span>
+            <h4>Base Baja</h4>
+          </header>
+          <p>Entrada y salida por debajo del promedio. Áreas con brechas formativas profundas que demandan tutorías focalizadas.</p>
+        </article>
+        <article class="cuadrante-card cuadrante-card--alerta">
+          <header class="cuadrante-card__head">
+            <span class="cuadrante-card__icon" aria-hidden="true">⚠️</span>
+            <h4>Alerta</h4>
+          </header>
+          <p>Entrada alta con egreso inferior al promedio. Sugiere pérdida de potencial de ingreso y exige auditoría pedagógica inmediata.</p>
+        </article>
+      </div>
+
+      <div class="charts-grid charts-grid--stacked">
+        <div class="card">
+          <h3 class="card__title">Trayectoria de valor agregado <span class="card__title-soft">2020 – 2024</span></h3>
+          <div class="chart-container" id="chartTrayectoria"></div>
+        </div>
         <div class="card">
           <div class="card__header-flex">
-            <h3 class="card__title">Cuadrantes de Valor Agregado</h3>
+            <h3 class="card__title">Cuadrantes de valor agregado <span id="cuadranteYearLbl">2024</span></h3>
             <div class="select-wrapper">
               <select id="selAnioCuadrante" class="control-select"></select>
             </div>
           </div>
-          <p class="card__subtitle">Saber 11 (Entrada) vs. Saber Pro (Salida) por IES y NBCs de UNIMAGDALENA. Nota: Datos hasta 2024.</p>
           <div class="chart-container" id="chartCuadrantes"></div>
-        </div>
-        <div class="card">
-          <h3 class="card__title">Trayectoria de Valor Agregado</h3>
-          <p class="card__subtitle">Evolución institucional en el plano de cuadrantes (2020–2024).</p>
-          <div class="chart-container" id="chartTrayectoria"></div>
         </div>
       </div>
     </section>
 
     <section class="section" id="facultades">
       <div class="section__eyebrow">04 · Facultades</div>
-      <h2 class="section__title">Desempeño por facultad</h2>
-      <p class="section__lead" id="leadFac"></p>
-      <div class="charts-grid">
-        <div class="card card--full">
-          <h3 class="card__title">Puntaje Global Promedio por Facultad</h3>
-          <p class="card__subtitle">Promedio ponderado por la cantidad de evaluados.</p>
+      <div class="charts-grid charts-grid--stacked">
+        <div class="card">
+          <div class="card__header-flex">
+            <h3 class="card__title"><span id="facultadCompLbl">Puntaje global</span> promedio por facultad <span id="facultadYearLbl">2025</span></h3>
+            <div class="card__controls">
+              <select id="selCompFacultad" class="control-select"></select>
+              <select id="selAnioFacultad" class="control-select"></select>
+            </div>
+          </div>
           <div class="chart-container" id="chartFacultades"></div>
         </div>
       </div>

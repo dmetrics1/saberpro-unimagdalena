@@ -57,6 +57,12 @@ ehthumbs.db
 *~
 
 # ============================================================
+# Cache parquet de los Excel del Icfes (generados por el pipeline)
+# Se regeneran automáticamente la próxima vez que corre 02_construir_agregados.py
+# ============================================================
+data/saberpro_agregados/*.cache.parquet
+
+# ============================================================
 # OneDrive — metadatos locales
 # ============================================================
 .~lock.*

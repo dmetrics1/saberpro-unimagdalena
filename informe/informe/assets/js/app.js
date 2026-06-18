@@ -42,11 +42,13 @@ async function init() {
   initRadarYearPicker(d);
   renderRadar(d);
   renderEvolLine(d);
+  initSueYearPicker(d);
   renderSueRanking(d);
   initUnivDeptYearPicker(d);
   renderUnivDept(d);
   renderCuadrantes(d);
   renderTrayectoria(d);
+  initFacultadYearPicker(d);
   renderFacultades(d);
   renderProgramExplorer(d);
   renderTop10(d);
@@ -70,8 +72,38 @@ function showTooltip(e, html) {
 
 function moveTooltip(e) {
   if (!tooltipEl) return;
-  tooltipEl.style.left = (e.pageX + 15) + 'px';
-  tooltipEl.style.top = (e.pageY - 15) + 'px';
+  const tW = tooltipEl.offsetWidth;
+  const tH = tooltipEl.offsetHeight;
+  const winW = window.innerWidth;
+  const winH = window.innerHeight;
+  const sx = window.pageXOffset || 0;
+  const sy = window.pageYOffset || 0;
+  const pad = 12;
+
+  // Por defecto a la derecha del cursor
+  let left = e.pageX + 15;
+  // Si se sale por la derecha, voltearlo a la izquierda del cursor
+  if (left + tW > sx + winW - pad) {
+    left = e.pageX - tW - 15;
+  }
+  // Si todavía se sale por la izquierda, anclar al borde
+  if (left < sx + pad) {
+    left = sx + pad;
+  }
+
+  // Por defecto un poco arriba del cursor
+  let top = e.pageY - 15;
+  // Si se sale por arriba, bajarlo
+  if (top < sy + pad) {
+    top = e.pageY + 18;
+  }
+  // Si se sale por abajo, subirlo
+  if (top + tH > sy + winH - pad) {
+    top = e.pageY - tH - 15;
+  }
+
+  tooltipEl.style.left = left + 'px';
+  tooltipEl.style.top = top + 'px';
 }
 
 function hideTooltip() {
@@ -182,7 +214,7 @@ function setLeads(d) {
   const sobre = progs.filter(p => p.global_2025 > p.global_nbc_nacional_2025).length;
 
   set('leadPanorama', `La universidad alcanzó ${g.puntaje_unimag} puntos globales frente a ${g.puntaje_nacional} del país. Aquí se detalla su perfil por competencia y su evolución 2020–${d.meta.anio_vigente}.`);
-  set('leadPos', um ? `UNIMAGDALENA ocupa la posición ${um.rank} entre las ${d.sue_ranking.length} universidades del SUE evaluadas. Liderando la oferta regional junto a los pares del Caribe.` : '');
+  set('leadPos', um ? `Unimagdalena ocupa la posición ${um.rank} entre las ${d.sue_ranking.length} universidades del SUE evaluadas. Liderando la oferta regional junto a los pares del Caribe.` : '');
   set('leadVA', `Cruzando el perfil de ingreso (Saber 11) con el de egreso (Saber Pro), se observa cuánto aporta la formación. Datos disponibles hasta 2024.`);
   set('leadFac', `Comparativo del desempeño global de las ${d.facultades.length} facultades de la universidad.`);
   set('leadProg', `${sobre} de los ${progs.length} programas evaluados superan el promedio nacional de su grupo de referencia (NBC).`);
@@ -644,102 +676,147 @@ function renderEvolLine(d) {
   container.appendChild(svg);
 }
 
-/* ---------- G4: Ranking SUE ---------- */
-function renderSueRanking(d) {
+/* ---------- G4: Ranking SUE (columnas verticales, filtrable por año) ---------- */
+// Paleta SUE: UNIMAGDALENA verde, Caribe naranja, resto azul institucional
+const SUE_COLOR_UM = '#2BA85E';
+const SUE_COLOR_CARIBE = '#FF9400';
+const SUE_COLOR_OTHERS = '#0F4FA8';
+
+function initSueYearPicker(d) {
+  const sel = document.getElementById('selAnioSue');
+  if (!sel) return;
+  const hist = d.sue_ranking_historico || {};
+  const years = Object.keys(hist).filter(y => Array.isArray(hist[y]) && hist[y].length > 0);
+  if (years.length === 0) return;
+
+  sel.innerHTML = years
+    .map(y => parseInt(y, 10))
+    .sort((a, b) => b - a)
+    .map(y => `<option value="${y}">${y}</option>`)
+    .join('');
+
+  const defaultYear = String(d.meta?.anio_vigente ?? years[years.length - 1]);
+  sel.value = defaultYear;
+  sel.addEventListener('change', () => renderSueRanking(d, parseInt(sel.value, 10)));
+}
+
+function renderSueRanking(d, yearOverride) {
   const container = document.getElementById('chartSue');
   if (!container) return;
 
-  const data = d.sue_ranking;
-  if (!data || data.length === 0) return;
+  const hist = d.sue_ranking_historico || {};
+  const currentYear = d.meta?.anio_vigente ?? null;
+  const targetYear = yearOverride ?? currentYear;
+  const data = hist[String(targetYear)] || d.sue_ranking || [];
+  if (data.length === 0) return;
 
-  const w = 600;
-  const h = 480;
-  const margin = { top: 20, right: 60, bottom: 20, left: 180 };
+  // Actualizar título dinámico
+  const lbl = document.getElementById('sueYearLbl');
+  if (lbl) lbl.textContent = targetYear;
+
+  // Ordenar por puntaje descendente (ya viene ordenado, pero por seguridad)
+  const sorted = [...data].sort((a, b) => b.puntaje - a.puntaje);
+  const totalBars = sorted.length;
+
+  const w = 1000;
+  const h = 360;
+  const margin = { top: 20, right: 24, bottom: 110, left: 50 };
+  const innerW = w - margin.left - margin.right;
+  const innerH = h - margin.top - margin.bottom;
+
+  const allVals = sorted.map(u => u.puntaje);
+  const dataMin = Math.min(...allVals);
+  const dataMax = Math.max(...allVals);
+  let minVal = Math.floor((dataMin - 8) / 10) * 10;
+  let maxVal = Math.ceil((dataMax + 8) / 10) * 10;
+  if (minVal < 0) minVal = 0;
 
   const svg = createSVGEl('svg', { viewBox: `0 0 ${w} ${h}`, class: 'svg-chart' });
 
-  const totalBars = data.length;
-  const barHeight = (h - margin.top - margin.bottom) / totalBars;
-  const minVal = 110;
-  const maxVal = 175;
+  const yToPx = v => margin.top + innerH - ((v - minVal) / (maxVal - minVal)) * innerH;
+  const xToPx = i => {
+    const slot = innerW / totalBars;
+    return margin.left + slot * (i + 0.5);
+  };
 
-  const getWidth = (val) => ((val - minVal) / (maxVal - minVal)) * (w - margin.left - margin.right);
-
-  // Líneas verticales de referencia
-  const xTicks = 4;
-  for (let i = 0; i <= xTicks; i++) {
-    const val = minVal + (i / xTicks) * (maxVal - minVal);
-    const x = margin.left + getWidth(val);
-
-    const line = createSVGEl('line', {
-      x1: x, y1: margin.top,
-      x2: x, y2: h - margin.bottom,
-      class: 'grid-line'
+  // Rejilla horizontal cada 10 puntos
+  const tickStep = 10;
+  for (let v = minVal; v <= maxVal; v += tickStep) {
+    const y = yToPx(v);
+    svg.appendChild(createSVGEl('line', {
+      x1: margin.left, y1: y,
+      x2: w - margin.right, y2: y,
+      stroke: 'var(--border)', 'stroke-width': '0.6',
+      'stroke-dasharray': '2,4', opacity: '0.7'
+    }));
+    const yl = createSVGEl('text', {
+      x: margin.left - 10, y: y + 4,
+      'text-anchor': 'end',
+      style: 'font-family: var(--font-display); font-size: 11px; font-weight: 500; fill: var(--text-soft);'
     });
-    const label = createSVGEl('text', {
-      x: x, y: h - margin.bottom + 12,
-      'text-anchor': 'middle',
-      class: 'axis-label',
-      style: 'font-size: 8px;'
-    });
-    label.textContent = Math.round(val);
-
-    svg.appendChild(line);
-    svg.appendChild(label);
+    yl.textContent = v;
+    svg.appendChild(yl);
   }
 
-  // Dibujar barras horizontales
-  data.forEach((univ, idx) => {
-    const y = margin.top + idx * barHeight;
-    const barW = getWidth(univ.puntaje);
+  // Línea base
+  svg.appendChild(createSVGEl('line', {
+    x1: margin.left, y1: margin.top + innerH,
+    x2: w - margin.right, y2: margin.top + innerH,
+    stroke: 'var(--border)', 'stroke-width': '1'
+  }));
 
-    let color = '#DCE5EE'; // Gris por defecto
-    let textWeight = '400';
-    if (univ.es_unimagdalena) {
-      color = COLOR_PRIMARY; // destacado unimagdalena
-      textWeight = '700';
-    } else if (univ.es_caribe) {
-      color = '#87add6'; // Caribe
-      textWeight = '600';
-    }
+  // Geometría de barras
+  const slot = innerW / totalBars;
+  const barW = Math.max(8, slot * 0.7);
+
+  sorted.forEach((univ, i) => {
+    const x = xToPx(i) - barW / 2;
+    const y = yToPx(univ.puntaje);
+    const barH = (margin.top + innerH) - y;
+
+    let color = SUE_COLOR_OTHERS;
+    if (univ.es_unimagdalena) color = SUE_COLOR_UM;
+    else if (univ.es_caribe) color = SUE_COLOR_CARIBE;
 
     const rect = createSVGEl('rect', {
-      x: margin.left, y: y + 2,
-      width: Math.max(barW, 2), height: barHeight - 4,
-      fill: color,
-      rx: 3,
+      x, y, width: barW, height: barH,
+      fill: color, rx: 3,
       class: 'chart-bar'
     });
-
-    const nameText = createSVGEl('text', {
-      x: margin.left - 8, y: y + barHeight / 2 + 3,
-      'text-anchor': 'end',
-      class: 'axis-label',
-      style: `font-size: 8px; font-weight: ${textWeight}; fill: var(--text);`
-    });
-    // Truncar nombres muy largos
-    let cleanName = univ.nombre;
-    if (cleanName.length > 30) cleanName = cleanName.substring(0, 28) + '...';
-    nameText.textContent = `${univ.rank}. ${cleanName}`;
-
-    const scoreText = createSVGEl('text', {
-      x: margin.left + barW + 6, y: y + barHeight / 2 + 3,
-      class: 'axis-label',
-      style: `font-size: 9px; font-weight: 700; fill: ${univ.es_unimagdalena ? COLOR_PRIMARY : 'var(--text-soft)'};`
-    });
-    scoreText.textContent = univ.puntaje.toFixed(1);
-
-    // Eventos interactivos
-    rect.addEventListener('mouseenter', (e) => {
-      showTooltip(e, `<strong>${univ.nombre}</strong>Posición: ${univ.rank} de ${totalBars}<br>Puntaje: ${univ.puntaje} pts<br>Evaluados: ${NUM.format(univ.n)}`);
-    });
+    rect.addEventListener('mouseenter', (e) => showTooltip(e, `<strong>${univ.nombre}</strong>Posición: ${univ.rank} de ${totalBars}<br>Puntaje global: ${univ.puntaje} pts<br>Evaluados: ${NUM.format(univ.n)}`));
     rect.addEventListener('mousemove', moveTooltip);
     rect.addEventListener('mouseleave', hideTooltip);
-
     svg.appendChild(rect);
-    svg.appendChild(nameText);
-    svg.appendChild(scoreText);
+
+    // Etiqueta del puntaje encima de la barra
+    const vlbl = createSVGEl('text', {
+      x: x + barW / 2, y: y - 5,
+      'text-anchor': 'middle',
+      style: `font-family: var(--font-display); font-weight: 700; font-size: ${univ.es_unimagdalena ? '12.5px' : '11px'}; fill: ${univ.es_unimagdalena ? color : 'var(--brand-primary-dark)'};`
+    });
+    vlbl.textContent = Math.round(univ.puntaje);
+    svg.appendChild(vlbl);
+
+    // Etiqueta debajo (abreviatura), rotada 45° para que quepan todas
+    const xlbl = createSVGEl('text', {
+      x: xToPx(i),
+      y: margin.top + innerH + 14,
+      'text-anchor': 'end',
+      transform: `rotate(-45, ${xToPx(i)}, ${margin.top + innerH + 14})`,
+      style: `font-family: var(--font-display); font-size: 10.5px; font-weight: ${univ.es_unimagdalena ? '700' : '500'}; fill: ${univ.es_unimagdalena ? color : 'var(--brand-primary-dark)'};`
+    });
+    xlbl.textContent = univ.abrev || univ.nombre;
+    svg.appendChild(xlbl);
   });
+
+  // Leyenda inferior con 3 categorías
+  svg.appendChild(createLegend([
+    { color: SUE_COLOR_UM, text: 'Unimagdalena' },
+    { color: SUE_COLOR_CARIBE, text: 'Región Caribe' },
+    { color: SUE_COLOR_OTHERS, text: 'Otras del SUE' }
+  ], (w / 2) - 230, h - 10, {
+    fontSize: 11.5, rectW: 18, rectH: 9, gap: 180, textGap: 24, fontWeight: 700
+  }));
 
   container.innerHTML = '';
   container.appendChild(svg);
@@ -812,18 +889,18 @@ function renderUnivDept(d, yearOverride) {
     return c ? c.puntaje : null;
   };
 
-  // Cálculo de rangos
+  // Cálculo de rangos: padding pequeño para que las barras llenen el chart
   const allVals = univs.flatMap(u => groups.map(g => getVal(u, g.key))).filter(v => v != null);
   const dataMin = Math.min(...allVals);
   const dataMax = Math.max(...allVals);
-  let minVal = Math.floor((dataMin - 10) / 10) * 10;
-  let maxVal = Math.ceil((dataMax + 10) / 10) * 10;
+  let minVal = Math.floor((dataMin - 4) / 5) * 5;
+  let maxVal = Math.ceil((dataMax + 4) / 5) * 5;
   if (minVal < 0) minVal = 0;
-  if (maxVal - minVal < 30) maxVal = minVal + 30;
+  if (maxVal - minVal < 25) maxVal = minVal + 25;
 
   const w = 900;
-  const h = 460;
-  const margin = { top: 36, right: 28, bottom: 110, left: 56 };
+  const h = 360;
+  const margin = { top: 20, right: 24, bottom: 90, left: 50 };
   const innerW = w - margin.left - margin.right;
   const innerH = h - margin.top - margin.bottom;
 
@@ -1023,12 +1100,12 @@ function renderCuadrantes(d) {
   const container = document.getElementById('chartCuadrantes');
   if (!container) return;
 
-  const dataYearKeys = Object.keys(d.cuadrantes_por_anio || {}).filter(yr => yr >= '2020' && yr <= '2024');
+  const dataYearKeys = Object.keys(d.cuadrantes_por_anio || {}).filter(yr => yr >= '2020' && yr <= '2024').sort();
   if (dataYearKeys.length === 0) return;
 
-  // Poblar selector de año
+  // Poblar selector de año (más recientes primero)
   if (select && select.children.length === 0) {
-    dataYearKeys.forEach(yr => {
+    [...dataYearKeys].reverse().forEach(yr => {
       const opt = document.createElement('option');
       opt.value = yr;
       opt.textContent = yr;
@@ -1050,210 +1127,213 @@ function drawCuadrantePlot(d) {
   const yrData = d.cuadrantes_por_anio[activeYearCuadrante];
   if (!yrData) return;
 
-  const w = 500;
-  const h = 360;
-  const margin = { top: 30, right: 30, bottom: 45, left: 45 };
+  // Actualizar etiqueta del año en el título
+  const lbl = document.getElementById('cuadranteYearLbl');
+  if (lbl) lbl.textContent = activeYearCuadrante;
+
+  const w = 1000;
+  const h = 440;
+  const margin = { top: 28, right: 28, bottom: 100, left: 68 };
+  const innerW = w - margin.left - margin.right;
+  const innerH = h - margin.top - margin.bottom;
+
+  // Rango basado en datos reales del año
+  const allInst = yrData.instituciones || [];
+  const allSb11 = allInst.map(i => i.sb11);
+  const allSbpro = allInst.map(i => i.sbpro);
+  const xMean = yrData.limites.x_mean;
+  const yMean = yrData.limites.y_mean;
+
+  const xMin = Math.floor((Math.min(...allSb11, xMean) - 5) / 20) * 20;
+  const xMax = Math.ceil((Math.max(...allSb11, xMean) + 5) / 20) * 20;
+  const yMin = Math.floor((Math.min(...allSbpro, yMean) - 5) / 25) * 25;
+  const yMax = Math.ceil((Math.max(...allSbpro, yMean) + 5) / 25) * 25;
+
+  const getX = v => margin.left + ((v - xMin) / (xMax - xMin)) * innerW;
+  const getY = v => margin.top + innerH - ((v - yMin) / (yMax - yMin)) * innerH;
+
+  const xMid = getX(xMean);
+  const yMid = getY(yMean);
 
   const svg = createSVGEl('svg', { viewBox: `0 0 ${w} ${h}`, class: 'svg-chart' });
 
-  // Coordenadas fijas razonables de la escala nacional
-  const xMin = 210, xMax = 370;
-  const yMin = 110, yMax = 190;
+  // Fondos coloreados de los 4 cuadrantes
+  const fillQ = (x, y, ww, hh, color, opacity) => svg.appendChild(createSVGEl('rect', {
+    x, y, width: ww, height: hh, fill: color, opacity
+  }));
+  fillQ(margin.left, margin.top, xMid - margin.left, yMid - margin.top, VA_COLORS.aporte, 0.10);
+  fillQ(xMid, margin.top, w - margin.right - xMid, yMid - margin.top, VA_COLORS.desempeno, 0.08);
+  fillQ(margin.left, yMid, xMid - margin.left, margin.top + innerH - yMid, VA_COLORS.base, 0.06);
+  fillQ(xMid, yMid, w - margin.right - xMid, margin.top + innerH - yMid, VA_COLORS.alerta, 0.10);
 
-  const getX = (val) => margin.left + ((val - xMin) / (xMax - xMin)) * (w - margin.left - margin.right);
-  const getY = (val) => h - margin.bottom - ((val - yMin) / (yMax - yMin)) * (h - margin.top - margin.bottom);
-
-  const xLimitVal = yrData.limites.x_mean;
-  const yLimitVal = yrData.limites.y_mean;
-  const xLimit = getX(xLimitVal);
-  const yLimit = getY(yLimitVal);
-
-  // 1. Fondos coloreados para los cuadrantes
-  // Alto Aporte (Arriba-Izquierda): entrada baja, salida alta -> verde suave
-  const rectAporte = createSVGEl('rect', {
-    x: margin.left, y: margin.top,
-    width: xLimit - margin.left, height: yLimit - margin.top,
-    fill: 'rgba(0, 165, 11, 0.04)',
-    class: 'quadrant-bg'
-  });
-  svg.appendChild(rectAporte);
-
-  // Alto Desempeño (Arriba-Derecha): entrada alta, salida alta -> azul suave
-  const rectDesempeno = createSVGEl('rect', {
-    x: xLimit, y: margin.top,
-    width: w - margin.right - xLimit, height: yLimit - margin.top,
-    fill: 'rgba(1, 131, 239, 0.03)',
-    class: 'quadrant-bg'
-  });
-  svg.appendChild(rectDesempeno);
-
-  // Alerta (Abajo-Derecha): entrada alta, salida baja -> rojo suave
-  const rectAlerta = createSVGEl('rect', {
-    x: xLimit, y: yLimit,
-    width: w - margin.right - xLimit, height: h - margin.bottom - yLimit,
-    fill: 'rgba(209, 5, 0, 0.04)',
-    class: 'quadrant-bg'
-  });
-  svg.appendChild(rectAlerta);
-
-  // 2. Líneas cruzadas de la media
-  const mediaX = createSVGEl('line', {
-    x1: xLimit, y1: margin.top,
-    x2: xLimit, y2: h - margin.bottom,
-    stroke: 'var(--text-soft)',
-    'stroke-width': '1.5',
-    'stroke-dasharray': '2,2'
-  });
-  const mediaY = createSVGEl('line', {
-    x1: margin.left, y1: yLimit,
-    x2: w - margin.right, y2: yLimit,
-    stroke: 'var(--text-soft)',
-    'stroke-width': '1.5',
-    'stroke-dasharray': '2,2'
-  });
-  svg.appendChild(mediaX);
-  svg.appendChild(mediaY);
-
-  // Etiquetas de los cuadrantes
-  const addQuadLabel = (txt, x, y, anchor, color) => {
-    const label = createSVGEl('text', {
-      x: x, y: y, 'text-anchor': anchor,
-      class: 'axis-label',
-      style: `font-size: 8px; font-weight: 700; fill: ${color}; opacity: 0.8; letter-spacing: 0.05em;`
+  // Rejilla
+  const xStep = 20, yStep = 25;
+  for (let v = Math.ceil(yMin / yStep) * yStep; v <= yMax; v += yStep) {
+    const y = getY(v);
+    svg.appendChild(createSVGEl('line', {
+      x1: margin.left, y1: y, x2: w - margin.right, y2: y,
+      stroke: 'var(--border)', 'stroke-width': '0.5',
+      'stroke-dasharray': '2,4', opacity: '0.5'
+    }));
+    const lbl = createSVGEl('text', {
+      x: margin.left - 10, y: y + 4, 'text-anchor': 'end',
+      style: 'font-family: var(--font-display); font-size: 11px; font-weight: 500; fill: var(--text-soft);'
     });
-    label.textContent = txt;
-    svg.appendChild(label);
+    lbl.textContent = v;
+    svg.appendChild(lbl);
+  }
+  for (let v = Math.ceil(xMin / xStep) * xStep; v <= xMax; v += xStep) {
+    const x = getX(v);
+    svg.appendChild(createSVGEl('line', {
+      x1: x, y1: margin.top, x2: x, y2: margin.top + innerH,
+      stroke: 'var(--border)', 'stroke-width': '0.5',
+      'stroke-dasharray': '2,4', opacity: '0.5'
+    }));
+    const lbl = createSVGEl('text', {
+      x, y: margin.top + innerH + 20, 'text-anchor': 'middle',
+      style: 'font-family: var(--font-display); font-size: 11px; font-weight: 500; fill: var(--text-soft);'
+    });
+    lbl.textContent = v;
+    svg.appendChild(lbl);
+  }
+
+  // Líneas de media (cruz)
+  svg.appendChild(createSVGEl('line', {
+    x1: xMid, y1: margin.top, x2: xMid, y2: margin.top + innerH,
+    stroke: VA_COLORS.desempeno, 'stroke-width': '1.2', 'stroke-dasharray': '5,4', opacity: '0.55'
+  }));
+  svg.appendChild(createSVGEl('line', {
+    x1: margin.left, y1: yMid, x2: w - margin.right, y2: yMid,
+    stroke: VA_COLORS.desempeno, 'stroke-width': '1.2', 'stroke-dasharray': '5,4', opacity: '0.55'
+  }));
+
+  // Etiquetas de cuadrante en las esquinas
+  const quadLabel = (txt, x, y, color, anchor) => {
+    const t = createSVGEl('text', {
+      x, y, 'text-anchor': anchor,
+      style: `font-family: var(--font-display); font-weight: 700; font-size: 13px; fill: ${color};`
+    });
+    t.textContent = txt;
+    svg.appendChild(t);
   };
+  quadLabel('Alto aporte',    margin.left + 10, margin.top + 18, VA_COLORS.aporte, 'start');
+  quadLabel('Alto desempeño', w - margin.right - 10, margin.top + 18, VA_COLORS.desempeno, 'end');
+  quadLabel('Base baja',      margin.left + 10, margin.top + innerH - 10, VA_COLORS.base, 'start');
+  quadLabel('Alerta',         w - margin.right - 10, margin.top + innerH - 10, VA_COLORS.alerta, 'end');
 
-  addQuadLabel('ALTO APORTE', margin.left + 10, margin.top + 15, 'start', COLOR_POS);
-  addQuadLabel('ALTO DESEMPEÑO', w - margin.right - 10, margin.top + 15, 'end', COLOR_UM);
-  addQuadLabel('BASE BAJA', margin.left + 10, h - margin.bottom - 10, 'start', 'var(--text-faint)');
-  addQuadLabel('ALERTA', w - margin.right - 10, h - margin.bottom - 10, 'end', COLOR_NEG);
+  // Título del eje X (entre los números y la leyenda)
+  const axTitleX = createSVGEl('text', {
+    x: margin.left + innerW / 2, y: h - 50, 'text-anchor': 'middle',
+    style: 'font-family: var(--font-display); font-weight: 700; font-size: 12.5px; fill: var(--brand-primary-dark);'
+  });
+  axTitleX.textContent = 'Saber 11 (Perfil de Entrada)';
+  svg.appendChild(axTitleX);
+  const axTitleY = createSVGEl('text', {
+    x: 22, y: margin.top + innerH / 2, 'text-anchor': 'middle',
+    transform: `rotate(-90, 22, ${margin.top + innerH / 2})`,
+    style: 'font-family: var(--font-display); font-weight: 700; font-size: 12.5px; fill: var(--brand-primary-dark);'
+  });
+  axTitleY.textContent = 'Saber Pro (Desempeño de Salida)';
+  svg.appendChild(axTitleY);
 
-  // 3. Ejes y etiquetas
-  const lineX = createSVGEl('line', {
-    x1: margin.left, y1: h - margin.bottom,
-    x2: w - margin.right, y2: h - margin.bottom,
-    class: 'axis-line'
-  });
-  const lineY = createSVGEl('line', {
-    x1: margin.left, y1: margin.top,
-    x2: margin.left, y2: h - margin.bottom,
-    class: 'axis-line'
-  });
-  svg.appendChild(lineX);
-  svg.appendChild(lineY);
+  // Clasificación de instituciones del Departamento del Magdalena (otras universidades en Santa Marta)
+  const UNIV_MAG_NAMES = [
+    'UNIVERSIDAD SERGIO ARBOLEDA-SANTA MARTA',
+    'UNIVERSIDAD COOPERATIVA DE COLOMBIA-SANTA MARTA'
+  ];
+  const isUnivMagdalena = (nombre) => UNIV_MAG_NAMES.includes(nombre);
 
-  // Nombre de los ejes
-  const labelX = createSVGEl('text', {
-    x: w / 2 + 10, y: h - 10, 'text-anchor': 'middle',
-    class: 'axis-label', style: 'font-weight: 600;'
-  });
-  labelX.textContent = 'Saber 11 (Perfil de Entrada)';
-  svg.appendChild(labelX);
-
-  const labelY = createSVGEl('text', {
-    x: 12, y: h / 2, 'text-anchor': 'middle',
-    class: 'axis-label', style: 'font-weight: 600;',
-    transform: `rotate(-90 12 ${h/2})`
-  });
-  labelY.textContent = 'Saber Pro (Desempeño de Salida)';
-  svg.appendChild(labelY);
-
-  // Marcas de los ejes (marcas simplificadas)
-  [220, 260, 300, 340].forEach(val => {
-    const x = getX(val);
-    const text = createSVGEl('text', { x: x, y: h - margin.bottom + 14, 'text-anchor': 'middle', class: 'axis-label' });
-    text.textContent = val;
-    svg.appendChild(text);
-  });
-  [120, 140, 160, 180].forEach(val => {
-    const y = getY(val);
-    const text = createSVGEl('text', { x: margin.left - 6, y: y + 4, 'text-anchor': 'end', class: 'axis-label' });
-    text.textContent = val;
-    svg.appendChild(text);
-  });
-
-  // 4. Dibujar puntos de otras universidades (IES) en gris transparente
-  const filterIES = yrData.instituciones.filter(ies => ies.nombre !== 'UNIVERSIDAD DEL MAGDALENA');
-  filterIES.forEach(ies => {
-    const circle = createSVGEl('circle', {
-      cx: getX(ies.sb11), cy: getY(ies.sbpro), r: 3.5,
-      fill: 'var(--text-faint)', 'fill-opacity': '0.3',
-      stroke: 'var(--border)', 'stroke-width': '0.5'
+  // Otras IES (gris suave) — todo lo que NO es UM, NO es univ del depto Magdalena
+  const otrasIES = (yrData.instituciones || []).filter(ies =>
+    ies.nombre !== 'UNIVERSIDAD DEL MAGDALENA' && !isUnivMagdalena(ies.nombre)
+  );
+  otrasIES.forEach(ies => {
+    const c = createSVGEl('circle', {
+      cx: getX(ies.sb11), cy: getY(ies.sbpro), r: 4,
+      fill: VA_COLORS.base, 'fill-opacity': '0.32',
+      stroke: 'var(--border)', 'stroke-width': '0.4'
     });
-
-    circle.addEventListener('mouseenter', (e) => {
-      showTooltip(e, `<strong>${ies.nombre}</strong>Saber 11: ${ies.sb11}<br>Saber Pro: ${ies.sbpro}<br>N: ${NUM.format(ies.n)}<br>Cuadrante: ${ies.cuadrante}`);
-    });
-    circle.addEventListener('mousemove', moveTooltip);
-    circle.addEventListener('mouseleave', hideTooltip);
-    svg.appendChild(circle);
+    c.addEventListener('mouseenter', (e) => showTooltip(e, `<strong>${ies.nombre}</strong>Saber 11: ${ies.sb11}<br>Saber Pro: ${ies.sbpro}<br>n: ${NUM.format(ies.n)}<br>Cuadrante: ${ies.cuadrante}`));
+    c.addEventListener('mousemove', moveTooltip);
+    c.addEventListener('mouseleave', hideTooltip);
+    svg.appendChild(c);
   });
 
-  // 5. Dibujar los NBCs de UNIMAGDALENA como triángulos/puntos destacados
-  yrData.nbcs_unimag.forEach(nbc => {
-    const nbcX = getX(nbc.sb11);
-    const nbcY = getY(nbc.sbpro);
-
-    const point = createSVGEl('circle', {
-      cx: nbcX, cy: nbcY, r: 6.5,
-      fill: COLOR_REF,
-      stroke: '#fff', 'stroke-width': '1.2',
+  // Otras Universidades del Departamento del Magdalena (naranja)
+  const univsMag = (yrData.instituciones || []).filter(ies => isUnivMagdalena(ies.nombre));
+  univsMag.forEach(ies => {
+    const c = createSVGEl('circle', {
+      cx: getX(ies.sb11), cy: getY(ies.sbpro), r: 7,
+      fill: VA_COLORS.alerta, stroke: '#fff', 'stroke-width': '1.6',
       class: 'chart-dot'
     });
-
-    point.addEventListener('mouseenter', (e) => {
-      showTooltip(e, `<strong>NBC: ${nbc.nbc}</strong>Saber 11 (Entrada): ${nbc.sb11} pts<br>Saber Pro (Salida): ${nbc.sbpro} pts<br>Muestra emparejada: ${NUM.format(nbc.n)} alumnos<br>Cuadrante: ${nbc.cuadrante}`);
-    });
-    point.addEventListener('mousemove', moveTooltip);
-    point.addEventListener('mouseleave', hideTooltip);
-    svg.appendChild(point);
+    c.addEventListener('mouseenter', (e) => showTooltip(e, `<strong>${ies.nombre}</strong>Saber 11: ${ies.sb11}<br>Saber Pro: ${ies.sbpro}<br>n: ${NUM.format(ies.n)}<br>Cuadrante: ${ies.cuadrante}`));
+    c.addEventListener('mousemove', moveTooltip);
+    c.addEventListener('mouseleave', hideTooltip);
+    svg.appendChild(c);
   });
 
-  // 6. Dibujar el punto global institucional de UNIMAGDALENA en azul destacado
-  const umGlobal = yrData.instituciones.find(ies => ies.nombre === 'UNIVERSIDAD DEL MAGDALENA');
+  // NBCs de Unimagdalena (verde)
+  (yrData.nbcs_unimag || []).forEach(nbc => {
+    const c = createSVGEl('circle', {
+      cx: getX(nbc.sb11), cy: getY(nbc.sbpro), r: 7,
+      fill: VA_COLORS.aporte, stroke: '#fff', 'stroke-width': '1.6',
+      class: 'chart-dot'
+    });
+    c.addEventListener('mouseenter', (e) => showTooltip(e, `<strong>NBC: ${nbc.nbc}</strong>Saber 11: ${nbc.sb11}<br>Saber Pro: ${nbc.sbpro}<br>n: ${NUM.format(nbc.n)}<br>Cuadrante: ${nbc.cuadrante}`));
+    c.addEventListener('mousemove', moveTooltip);
+    c.addEventListener('mouseleave', hideTooltip);
+    svg.appendChild(c);
+  });
+
+  // Unimagdalena (azul institucional, destacado)
+  const umGlobal = (yrData.instituciones || []).find(ies => ies.nombre === 'UNIVERSIDAD DEL MAGDALENA');
   if (umGlobal) {
     const umX = getX(umGlobal.sb11);
     const umY = getY(umGlobal.sbpro);
 
     const star = createSVGEl('circle', {
-      cx: umX, cy: umY, r: 10,
-      fill: COLOR_UM,
-      stroke: '#ffffff', 'stroke-width': '2.5',
+      cx: umX, cy: umY, r: 11,
+      fill: VA_COLORS.desempeno, stroke: '#fff', 'stroke-width': '2.5',
       class: 'chart-dot',
-      style: 'filter: drop-shadow(0 2px 5px rgba(0,0,0,0.25));'
+      style: 'filter: drop-shadow(0 2px 5px rgba(0,0,0,0.22));'
     });
-
-    // Poner una etiqueta de texto sobre el punto
     const tag = createSVGEl('text', {
-      x: umX, y: umY - 14, 'text-anchor': 'middle',
-      class: 'axis-label', style: 'font-weight: 700; fill: var(--brand-primary-dark); font-size: 8px;'
+      x: umX, y: umY - 18, 'text-anchor': 'middle',
+      style: `font-family: var(--font-display); font-weight: 800; font-size: 13px; fill: ${VA_COLORS.desempeno};`
     });
-    tag.textContent = 'UNIMAGDALENA';
+    tag.textContent = 'Unimagdalena';
     svg.appendChild(tag);
-
-    star.addEventListener('mouseenter', (e) => {
-      showTooltip(e, `<strong>UNIVERSIDAD DEL MAGDALENA</strong>Puntaje Promedio Entrada: ${umGlobal.sb11} pts<br>Puntaje Promedio Salida: ${umGlobal.sbpro} pts<br>Población cruzada total: ${NUM.format(umGlobal.n)} alumnos<br>Ubicación: ${umGlobal.cuadrante}`);
-    });
+    star.addEventListener('mouseenter', (e) => showTooltip(e, `<strong>Unimagdalena</strong>Saber 11 (Entrada): ${umGlobal.sb11} pts<br>Saber Pro (Salida): ${umGlobal.sbpro} pts<br>Muestra cruzada: ${NUM.format(umGlobal.n)}<br>Cuadrante: ${umGlobal.cuadrante}`));
     star.addEventListener('mousemove', moveTooltip);
     star.addEventListener('mouseleave', hideTooltip);
     svg.appendChild(star);
   }
 
-  // Leyenda
-  const legend = createLegend([
-    { color: COLOR_UM, text: 'UNIMAGDALENA' },
-    { color: COLOR_REF, text: 'Grupos NBC' },
-    { color: 'var(--text-faint)', text: 'Otras IES' }
-  ], margin.left + 20, margin.top - 18);
-  svg.appendChild(legend);
+  // Leyenda al pie del card — 4 categorías
+  svg.appendChild(createLegend([
+    { color: VA_COLORS.desempeno, text: 'Unimagdalena' },
+    { color: VA_COLORS.aporte, text: 'NBC Unimagdalena' },
+    { color: VA_COLORS.alerta, text: 'Univ. del Magdalena' },
+    { color: VA_COLORS.base, text: 'Otras IES' }
+  ], (w / 2) - 320, h - 14, {
+    fontSize: 11.5, rectW: 16, rectH: 9, gap: 188, textGap: 22, fontWeight: 700
+  }));
 
   container.innerHTML = '';
   container.appendChild(svg);
 }
 
-/* ---------- G7: Trayectoria de Valor Agregado ---------- */
+/* ---------- G7: Trayectoria de Valor Agregado (rediseñada) ---------- */
+const VA_COLORS = {
+  desempeno: '#0F4FA8',   // azul institucional
+  aporte:    '#2BA85E',   // verde
+  base:      '#8295AB',   // gris
+  alerta:    '#D17900',   // naranja oscuro
+  arrow:     '#D17900',   // flechas y línea de trayectoria UM
+  point:     '#D17900'    // punto UM en la trayectoria
+};
+
 function renderTrayectoria(d) {
   const container = document.getElementById('chartTrayectoria');
   if (!container) return;
@@ -1261,234 +1341,416 @@ function renderTrayectoria(d) {
   const traj = d.trayectoria_unimag;
   if (!traj || !traj.puntos || traj.puntos.length === 0) return;
 
-  // Filtrar los puntos para solo mostrar de 2020 a 2024 en el front-end
-  const filterPoints = traj.puntos.filter(pt => pt.anio >= 2020 && pt.anio <= 2024);
+  // Filtrar a 2020-2024
+  const points = traj.puntos.filter(pt => pt.anio >= 2020 && pt.anio <= 2024).sort((a,b) => a.anio - b.anio);
+  if (points.length === 0) return;
 
-  const w = 400;
-  const h = 300;
-  const margin = { top: 30, right: 30, bottom: 45, left: 45 };
+  const w = 900;
+  const h = 420;
+  const margin = { top: 40, right: 70, bottom: 60, left: 70 };
+  const innerW = w - margin.left - margin.right;
+  const innerH = h - margin.top - margin.bottom;
+
+  // Rangos auto a partir de los datos + medias, con padding
+  const xMean = traj.limites.x_mean;
+  const yMean = traj.limites.y_mean;
+  const xs = points.map(p => p.sb11).concat([xMean]);
+  const ys = points.map(p => p.sbpro).concat([yMean]);
+  const xPadL = Math.max(6, Math.ceil((Math.max(...xs) - Math.min(...xs)) * 0.4));
+  const yPadL = Math.max(3, Math.ceil((Math.max(...ys) - Math.min(...ys)) * 0.6));
+  const xMin = Math.floor((Math.min(...xs) - xPadL) / 5) * 5;
+  const xMax = Math.ceil((Math.max(...xs) + xPadL) / 5) * 5;
+  const yMin = Math.floor((Math.min(...ys) - yPadL) / 2.5) * 2.5;
+  const yMax = Math.ceil((Math.max(...ys) + yPadL) / 2.5) * 2.5;
+
+  const getX = v => margin.left + ((v - xMin) / (xMax - xMin)) * innerW;
+  const getY = v => margin.top + innerH - ((v - yMin) / (yMax - yMin)) * innerH;
 
   const svg = createSVGEl('svg', { viewBox: `0 0 ${w} ${h}`, class: 'svg-chart' });
 
-  // Coordenadas fijas
-  const xMin = 210, xMax = 370;
-  const yMin = 110, yMax = 190;
+  // Fondos coloreados por cuadrante
+  const xMid = getX(xMean);
+  const yMid = getY(yMean);
+  const fillQ = (x, y, ww, hh, color, opacity) => svg.appendChild(createSVGEl('rect', {
+    x, y, width: ww, height: hh, fill: color, opacity
+  }));
+  fillQ(margin.left, margin.top, xMid - margin.left, yMid - margin.top, VA_COLORS.aporte, 0.10);     // top-left: Alto aporte
+  fillQ(xMid, margin.top, w - margin.right - xMid, yMid - margin.top, VA_COLORS.desempeno, 0.08);    // top-right: Alto desempeño
+  fillQ(margin.left, yMid, xMid - margin.left, margin.top + innerH - yMid, VA_COLORS.base, 0.06);    // bottom-left: Base baja
+  fillQ(xMid, yMid, w - margin.right - xMid, margin.top + innerH - yMid, VA_COLORS.alerta, 0.10);    // bottom-right: Alerta
 
-  const getX = (val) => margin.left + ((val - xMin) / (xMax - xMin)) * (w - margin.left - margin.right);
-  const getY = (val) => h - margin.bottom - ((val - yMin) / (yMax - yMin)) * (h - margin.top - margin.bottom);
-
-  const xLimitVal = traj.limites.x_mean;
-  const yLimitVal = traj.limites.y_mean;
-  const xLimit = getX(xLimitVal);
-  const yLimit = getY(yLimitVal);
-
-  // Fondos coloreados simplificados
-  const rectAporte = createSVGEl('rect', {
-    x: margin.left, y: margin.top,
-    width: xLimit - margin.left, height: yLimit - margin.top,
-    fill: 'rgba(0, 165, 11, 0.04)'
-  });
-  const rectDesempeno = createSVGEl('rect', {
-    x: xLimit, y: margin.top,
-    width: w - margin.right - xLimit, height: yLimit - margin.top,
-    fill: 'rgba(1, 131, 239, 0.03)'
-  });
-  const rectAlerta = createSVGEl('rect', {
-    x: xLimit, y: yLimit,
-    width: w - margin.right - xLimit, height: h - margin.bottom - yLimit,
-    fill: 'rgba(209, 5, 0, 0.04)'
-  });
-  svg.appendChild(rectAporte);
-  svg.appendChild(rectDesempeno);
-  svg.appendChild(rectAlerta);
-
-  // Ejes y medias cruzadas
-  const mediaX = createSVGEl('line', {
-    x1: xLimit, y1: margin.top, x2: xLimit, y2: h - margin.bottom,
-    stroke: 'var(--text-soft)', 'stroke-width': '1', 'stroke-dasharray': '2,2'
-  });
-  const mediaY = createSVGEl('line', {
-    x1: margin.left, y1: yLimit, x2: w - margin.right, y2: yLimit,
-    stroke: 'var(--text-soft)', 'stroke-width': '1', 'stroke-dasharray': '2,2'
-  });
-  svg.appendChild(mediaX);
-  svg.appendChild(mediaY);
-
-  const lineX = createSVGEl('line', { x1: margin.left, y1: h - margin.bottom, x2: w - margin.right, y2: h - margin.bottom, class: 'axis-line' });
-  const lineY = createSVGEl('line', { x1: margin.left, y1: margin.top, x2: margin.left, y2: h - margin.bottom, class: 'axis-line' });
-  svg.appendChild(lineX);
-  svg.appendChild(lineY);
-
-  // Nombre de los ejes
-  const labelX = createSVGEl('text', { x: w / 2 + 10, y: h - 10, 'text-anchor': 'middle', class: 'axis-label', style: 'font-size: 9px; font-weight:600;' });
-  labelX.textContent = 'Saber 11 (Perfil de Entrada)';
-  const labelY = createSVGEl('text', { x: 12, y: h / 2, 'text-anchor': 'middle', class: 'axis-label', style: 'font-size: 9px; font-weight:600;', transform: `rotate(-90 12 ${h/2})` });
-  labelY.textContent = 'Saber Pro (Desempeño de Salida)';
-  svg.appendChild(labelX);
-  svg.appendChild(labelY);
-
-  // Trazar línea de trayectoria conectora
-  let dPath = '';
-  filterPoints.forEach((pt, idx) => {
-    const x = getX(pt.sb11);
-    const y = getY(pt.sbpro);
-    dPath += `${idx === 0 ? 'M' : 'L'} ${x} ${y} `;
-  });
-
-  const path = createSVGEl('path', {
-    d: dPath,
-    stroke: COLOR_PRIMARY,
-    fill: 'none',
-    'stroke-width': '2.5',
-    'stroke-linecap': 'round',
-    'stroke-linejoin': 'round'
-  });
-  svg.appendChild(path);
-
-  // Trazar cabezas de flechas sencillas para ilustrar dirección
-  for (let i = 0; i < filterPoints.length - 1; i++) {
-    const pt1 = filterPoints[i];
-    const pt2 = filterPoints[i + 1];
-    const x1 = getX(pt1.sb11);
-    const y1 = getY(pt1.sbpro);
-    const x2 = getX(pt2.sb11);
-    const y2 = getY(pt2.sbpro);
-
-    // Calcular el punto medio para poner la flecha
-    const mx = (x1 + x2) / 2;
-    const my = (y1 + y2) / 2;
-    const angle = Math.atan2(y2 - y1, x2 - x1);
-
-    // Crear flecha
-    const arrowLen = 6;
-    const arrowPts = [
-      `${mx - arrowLen * Math.cos(angle - Math.PI/6)},${my - arrowLen * Math.sin(angle - Math.PI/6)}`,
-      `${mx},${my}`,
-      `${mx - arrowLen * Math.cos(angle + Math.PI/6)},${my - arrowLen * Math.sin(angle + Math.PI/6)}`
-    ];
-    const arrow = createSVGEl('polyline', {
-      points: arrowPts.join(' '),
-      stroke: COLOR_PRIMARY,
-      fill: 'none',
-      'stroke-width': '2',
-      'stroke-linecap': 'round'
-    });
-    svg.appendChild(arrow);
+  // Rejilla suave
+  for (let v = Math.ceil(yMin / 2.5) * 2.5; v <= yMax; v += 2.5) {
+    const y = getY(v);
+    svg.appendChild(createSVGEl('line', {
+      x1: margin.left, y1: y, x2: w - margin.right, y2: y,
+      stroke: 'var(--border)', 'stroke-width': '0.5',
+      'stroke-dasharray': '2,4', opacity: '0.6'
+    }));
+  }
+  for (let v = Math.ceil(xMin / 5) * 5; v <= xMax; v += 5) {
+    const x = getX(v);
+    svg.appendChild(createSVGEl('line', {
+      x1: x, y1: margin.top, x2: x, y2: margin.top + innerH,
+      stroke: 'var(--border)', 'stroke-width': '0.5',
+      'stroke-dasharray': '2,4', opacity: '0.6'
+    }));
   }
 
-  // Dibujar puntos
-  filterPoints.forEach((pt, idx) => {
-    const x = getX(pt.sb11);
-    const y = getY(pt.sbpro);
+  // Líneas de la media (dasheadas, color institucional)
+  svg.appendChild(createSVGEl('line', {
+    x1: xMid, y1: margin.top, x2: xMid, y2: margin.top + innerH,
+    stroke: VA_COLORS.desempeno, 'stroke-width': '1.2', 'stroke-dasharray': '5,4', opacity: '0.65'
+  }));
+  svg.appendChild(createSVGEl('line', {
+    x1: margin.left, y1: yMid, x2: w - margin.right, y2: yMid,
+    stroke: VA_COLORS.desempeno, 'stroke-width': '1.2', 'stroke-dasharray': '5,4', opacity: '0.65'
+  }));
 
-    // Gradiente de color según antigüedad (de claro a oscuro)
-    const opacityVal = 0.4 + 0.6 * (idx / (filterPoints.length - 1));
+  // Etiquetas con el valor de la media
+  svg.appendChild((() => {
+    const t = createSVGEl('text', {
+      x: xMid, y: margin.top - 12, 'text-anchor': 'middle',
+      style: `font-family: var(--font-display); font-weight: 700; font-size: 11px; fill: ${VA_COLORS.desempeno};`
+    });
+    t.textContent = xMean.toFixed(1);
+    return t;
+  })());
+  svg.appendChild((() => {
+    const t = createSVGEl('text', {
+      x: w - margin.right + 8, y: yMid + 4, 'text-anchor': 'start',
+      style: `font-family: var(--font-display); font-weight: 700; font-size: 11px; fill: ${VA_COLORS.desempeno};`
+    });
+    t.textContent = yMean.toFixed(1);
+    return t;
+  })());
 
+  // Etiquetas de cuadrante (esquinas)
+  const quadLabel = (txt, x, y, color, anchor) => {
+    const t = createSVGEl('text', {
+      x, y, 'text-anchor': anchor,
+      style: `font-family: var(--font-display); font-weight: 700; font-size: 13px; fill: ${color};`
+    });
+    t.textContent = txt;
+    svg.appendChild(t);
+  };
+  quadLabel('Alto aporte',    margin.left + 8, margin.top + 14, VA_COLORS.aporte, 'start');
+  quadLabel('Alto desempeño', w - margin.right - 8, margin.top + 14, VA_COLORS.desempeno, 'end');
+  quadLabel('Base baja',      margin.left + 8, margin.top + innerH - 8, VA_COLORS.base, 'start');
+  quadLabel('Alerta',         w - margin.right - 8, margin.top + innerH - 8, VA_COLORS.alerta, 'end');
+
+  // Ejes X e Y con sus números
+  for (let v = Math.ceil(xMin / 5) * 5; v <= xMax; v += 5) {
+    const x = getX(v);
+    const tl = createSVGEl('text', {
+      x, y: margin.top + innerH + 20, 'text-anchor': 'middle',
+      style: 'font-family: var(--font-display); font-size: 11px; font-weight: 500; fill: var(--text-soft);'
+    });
+    tl.textContent = v;
+    svg.appendChild(tl);
+  }
+  for (let v = Math.ceil(yMin / 2.5) * 2.5; v <= yMax; v += 2.5) {
+    const y = getY(v);
+    const tl = createSVGEl('text', {
+      x: margin.left - 10, y: y + 4, 'text-anchor': 'end',
+      style: 'font-family: var(--font-display); font-size: 11px; font-weight: 500; fill: var(--text-soft);'
+    });
+    tl.textContent = (v % 1 === 0) ? v.toFixed(0) : v.toFixed(1);
+    svg.appendChild(tl);
+  }
+
+  // Títulos de ejes
+  const axTitleX = createSVGEl('text', {
+    x: margin.left + innerW / 2, y: h - 16, 'text-anchor': 'middle',
+    style: 'font-family: var(--font-display); font-weight: 700; font-size: 12.5px; fill: var(--brand-primary-dark);'
+  });
+  axTitleX.textContent = 'Promedio Saber 11 (Entrada)';
+  svg.appendChild(axTitleX);
+  const axTitleY = createSVGEl('text', {
+    x: 20, y: margin.top + innerH / 2, 'text-anchor': 'middle',
+    transform: `rotate(-90, 20, ${margin.top + innerH / 2})`,
+    style: 'font-family: var(--font-display); font-weight: 700; font-size: 12.5px; fill: var(--brand-primary-dark);'
+  });
+  axTitleY.textContent = 'Promedio Saber Pro (Salida)';
+  svg.appendChild(axTitleY);
+
+  // Definir marker para las flechas
+  const defs = createSVGEl('defs');
+  const marker = createSVGEl('marker', {
+    id: 'arrowHead', viewBox: '0 0 10 10', refX: '8', refY: '5',
+    markerWidth: '7', markerHeight: '7', orient: 'auto-start-reverse'
+  });
+  const arrowPath = createSVGEl('path', {
+    d: 'M 0 0 L 10 5 L 0 10 z', fill: VA_COLORS.arrow
+  });
+  marker.appendChild(arrowPath);
+  defs.appendChild(marker);
+  svg.appendChild(defs);
+
+  // Trayectoria: segmentos dasheados con flecha entre puntos consecutivos
+  for (let i = 0; i < points.length - 1; i++) {
+    const x1 = getX(points[i].sb11);
+    const y1 = getY(points[i].sbpro);
+    const x2 = getX(points[i + 1].sb11);
+    const y2 = getY(points[i + 1].sbpro);
+    // Recortamos el segmento para que no toque los círculos
+    const dx = x2 - x1, dy = y2 - y1;
+    const len = Math.sqrt(dx * dx + dy * dy);
+    const ux = dx / len, uy = dy / len;
+    const r = 10; // radio del círculo
+    const sx = x1 + ux * r, sy = y1 + uy * r;
+    const ex = x2 - ux * r, ey = y2 - uy * r;
+
+    svg.appendChild(createSVGEl('line', {
+      x1: sx, y1: sy, x2: ex, y2: ey,
+      stroke: VA_COLORS.arrow, 'stroke-width': '2.2',
+      'stroke-dasharray': '6,4',
+      'marker-end': 'url(#arrowHead)'
+    }));
+  }
+
+  // Pre-calcular coordenadas en píxeles de cada punto (para anti-colisión)
+  const ptPx = points.map(pt => ({ x: getX(pt.sb11), y: getY(pt.sbpro) }));
+
+  // Puntos con etiquetas posicionadas en la dirección opuesta al vecino más cercano
+  points.forEach((pt, idx) => {
+    const { x, y } = ptPx[idx];
+
+    // Encontrar el vecino más cercano en píxeles
+    let minDist = Infinity;
+    let neighborAngle = Math.PI / 2; // por defecto: vecino imaginario abajo → label irá arriba
+    for (let j = 0; j < ptPx.length; j++) {
+      if (j === idx) continue;
+      const dx = ptPx[j].x - x;
+      const dy = ptPx[j].y - y;
+      const d = Math.sqrt(dx * dx + dy * dy);
+      if (d < minDist) {
+        minDist = d;
+        neighborAngle = Math.atan2(dy, dx);
+      }
+    }
+    // Dirección de la etiqueta: opuesta al vecino
+    const labelAngle = neighborAngle + Math.PI;
+    const cosA = Math.cos(labelAngle);
+    const sinA = Math.sin(labelAngle);
+
+    // Posición de la etiqueta del año (alejada del vecino más cercano)
+    const yearDist = 22;
+    const yx = x + cosA * yearDist;
+    const yy = y + sinA * yearDist + 4;   // +4 = corrección visual para baseline del texto
+
+    // Círculo del punto
     const circle = createSVGEl('circle', {
-      cx: x, cy: y, r: 6,
-      fill: COLOR_UM,
-      'fill-opacity': opacityVal,
-      stroke: COLOR_PRIMARY,
-      'stroke-width': '1.5',
+      cx: x, cy: y, r: 9,
+      fill: VA_COLORS.point, stroke: '#fff', 'stroke-width': '2.2',
       class: 'chart-dot'
     });
-
-    const yearLabel = createSVGEl('text', {
-      x: x + 8, y: y + 3,
-      class: 'axis-label',
-      style: 'font-weight: 700; font-size: 8px; fill: var(--brand-primary-dark);'
-    });
-    yearLabel.textContent = pt.anio;
-    svg.appendChild(yearLabel);
-
-    circle.addEventListener('mouseenter', (e) => {
-      showTooltip(e, `<strong>Año ${pt.anio}</strong>Saber 11 (Entrada): ${pt.sb11} pts<br>Saber Pro (Salida): ${pt.sbpro} pts<br>Evaluados: ${NUM.format(pt.n)}<br>Ubicación: ${pt.cuadrante_anual}`);
-    });
+    circle.addEventListener('mouseenter', (e) => showTooltip(e, `<strong>Año ${pt.anio}</strong>Saber 11: ${pt.sb11.toFixed(1)} pts<br>Saber Pro: ${pt.sbpro.toFixed(1)} pts<br>Evaluados: ${NUM.format(pt.n)}<br>Cuadrante: ${pt.cuadrante_anual}`));
     circle.addEventListener('mousemove', moveTooltip);
     circle.addEventListener('mouseleave', hideTooltip);
-
     svg.appendChild(circle);
+
+    // Solo el año (las coordenadas se muestran al hover)
+    const yrLbl = createSVGEl('text', {
+      x: yx, y: yy, 'text-anchor': 'middle',
+      style: `font-family: var(--font-display); font-weight: 800; font-size: 14px; fill: ${VA_COLORS.aporte};`
+    });
+    yrLbl.textContent = pt.anio;
+    svg.appendChild(yrLbl);
   });
 
   container.innerHTML = '';
   container.appendChild(svg);
 }
 
-/* ---------- G8: Desempeño por facultad ---------- */
-function renderFacultades(d) {
+/* ---------- G8: Desempeño por facultad (filtrable por año, color por barra) ---------- */
+// Paleta de 6 colores distintos, ordenados de forma que destaquen barras adyacentes
+const FAC_PALETTE = [
+  '#0F4FA8',   // azul institucional
+  '#2BA85E',   // verde
+  '#D17900',   // naranja oscuro
+  '#FF9400',   // naranja vivo
+  '#5C8AC3',   // azul medio
+  '#8295AB'    // gris azulado
+];
+
+// Selector de competencia: 'global' o el nombre canónico de una competencia genérica
+let activeFacultadComp = 'global';
+
+function initFacultadYearPicker(d) {
+  const selY = document.getElementById('selAnioFacultad');
+  const selC = document.getElementById('selCompFacultad');
+
+  // Selector de año
+  if (selY) {
+    const hist = d.facultades_historico || {};
+    const years = Object.keys(hist).filter(y => Array.isArray(hist[y]) && hist[y].length > 0);
+    if (years.length > 0) {
+      selY.innerHTML = years
+        .map(y => parseInt(y, 10))
+        .sort((a, b) => b - a)
+        .map(y => `<option value="${y}">${y}</option>`)
+        .join('');
+      const defaultYear = String(d.meta?.anio_vigente ?? years[years.length - 1]);
+      selY.value = defaultYear;
+      selY.addEventListener('change', () => renderFacultades(d, parseInt(selY.value, 10)));
+    }
+  }
+
+  // Selector de competencia (Global + las 5 genéricas)
+  if (selC) {
+    const facsSample = (d.facultades && d.facultades.length > 0) ? d.facultades[0] : null;
+    const comps = facsSample && Array.isArray(facsSample.competencias)
+      ? facsSample.competencias.map(c => c.competencia)
+      : [];
+    const opciones = ['global', ...comps];
+    selC.innerHTML = opciones.map(o => {
+      const label = o === 'global' ? 'Puntaje global' : titleCase(o);
+      return `<option value="${o}">${label}</option>`;
+    }).join('');
+    selC.value = 'global';
+    selC.addEventListener('change', () => {
+      activeFacultadComp = selC.value;
+      const yr = selY ? parseInt(selY.value, 10) : (d.meta?.anio_vigente ?? null);
+      renderFacultades(d, yr);
+    });
+  }
+}
+
+function titleCase(s) {
+  return s.toLowerCase().replace(/(?:^|\s|í|ó|á|é|ú)\S/g, c => c.toUpperCase())
+    .replace(/Critica/i, 'Crítica')
+    .replace(/Cuantitativo/i, 'Cuantitativo')
+    .replace(/Ciudadanas/i, 'Ciudadanas')
+    .replace(/Escrita/i, 'Escrita')
+    .replace(/Ingles/i, 'Inglés')
+    .replace(/Comunicacion/i, 'Comunicación');
+}
+
+function renderFacultades(d, yearOverride) {
   const container = document.getElementById('chartFacultades');
   if (!container) return;
 
-  const data = d.facultades;
-  if (!data || data.length === 0) return;
+  const currentYear = d.meta?.anio_vigente ?? null;
+  const targetYear = yearOverride ?? currentYear;
+  const hist = d.facultades_historico || {};
+  const yearData = hist[String(targetYear)] || [];
 
-  const sortedFacs = sorted(data, key => key.puntaje_global, true);
+  // Para el año vigente preferimos d.facultades (más fiable, ya validado)
+  let dataset = yearData;
+  if (targetYear === currentYear && Array.isArray(d.facultades) && d.facultades.length > 0) {
+    dataset = d.facultades;
+  }
+  if (!dataset || dataset.length === 0) return;
 
-  const w = 600;
-  const h = 240;
-  const margin = { top: 10, right: 50, bottom: 20, left: 220 };
+  // Extraer el valor según la competencia activa
+  const compKey = activeFacultadComp || 'global';
+  const valueOf = (fac) => {
+    if (compKey === 'global') return fac.puntaje_global;
+    const c = (fac.competencias || []).find(c => c.competencia === compKey);
+    return c ? c.puntaje : null;
+  };
+  // Filtrar facultades que no tienen valor para esa competencia (n=0)
+  const dataWithValue = dataset.filter(f => valueOf(f) != null);
+  if (dataWithValue.length === 0) return;
+
+  // Actualizar etiquetas del título
+  const lbl = document.getElementById('facultadYearLbl');
+  if (lbl) lbl.textContent = targetYear;
+  const lblComp = document.getElementById('facultadCompLbl');
+  if (lblComp) lblComp.textContent = compKey === 'global' ? 'Puntaje global' : titleCase(compKey);
+
+  const sortedFacs = sorted(dataWithValue, key => valueOf(key), true);
+
+  const w = 1000;
+  const h = 360;
+  const margin = { top: 20, right: 60, bottom: 36, left: 240 };
+  const innerW = w - margin.left - margin.right;
+  const innerH = h - margin.top - margin.bottom;
+
+  // Escala: rango compacto alrededor de los datos
+  const vals = sortedFacs.map(f => valueOf(f));
+  const dataMin = Math.min(...vals);
+  const dataMax = Math.max(...vals);
+  let minVal = Math.floor((dataMin - 4) / 5) * 5;
+  let maxVal = Math.ceil((dataMax + 6) / 5) * 5;
+  if (maxVal - minVal < 20) maxVal = minVal + 20;
 
   const svg = createSVGEl('svg', { viewBox: `0 0 ${w} ${h}`, class: 'svg-chart' });
 
   const totalBars = sortedFacs.length;
-  const barHeight = (h - margin.top - margin.bottom) / totalBars;
-  const minVal = 120;
-  const maxVal = 170;
+  const slot = innerH / totalBars;
+  const barH = slot * 0.62;
 
-  const getWidth = (val) => ((val - minVal) / (maxVal - minVal)) * (w - margin.left - margin.right);
+  const xOf = v => margin.left + ((v - minVal) / (maxVal - minVal)) * innerW;
 
-  // Rejilla vertical
-  const ticks = 4;
-  for (let i = 0; i <= ticks; i++) {
-    const val = minVal + (i / ticks) * (maxVal - minVal);
-    const x = margin.left + getWidth(val);
-
-    const line = createSVGEl('line', { x1: x, y1: margin.top, x2: x, y2: h - margin.bottom, class: 'grid-line' });
-    const text = createSVGEl('text', { x: x, y: h - margin.bottom + 12, 'text-anchor': 'middle', class: 'axis-label' });
-    text.textContent = Math.round(val);
-    svg.appendChild(line);
-    svg.appendChild(text);
+  // Rejilla vertical con tics múltiplos de 5
+  const tickStep = 5;
+  for (let v = minVal; v <= maxVal; v += tickStep) {
+    const x = xOf(v);
+    svg.appendChild(createSVGEl('line', {
+      x1: x, y1: margin.top, x2: x, y2: margin.top + innerH,
+      stroke: 'var(--border)', 'stroke-width': '0.6',
+      'stroke-dasharray': '2,4', opacity: '0.65'
+    }));
+    const tlbl = createSVGEl('text', {
+      x, y: margin.top + innerH + 18, 'text-anchor': 'middle',
+      style: 'font-family: var(--font-display); font-size: 11.5px; font-weight: 500; fill: var(--text-soft);'
+    });
+    tlbl.textContent = v;
+    svg.appendChild(tlbl);
   }
+
+  // Línea base del eje X
+  svg.appendChild(createSVGEl('line', {
+    x1: margin.left, y1: margin.top + innerH,
+    x2: w - margin.right, y2: margin.top + innerH,
+    stroke: 'var(--border)', 'stroke-width': '1'
+  }));
 
   // Barras
   sortedFacs.forEach((fac, idx) => {
-    const y = margin.top + idx * barHeight;
-    const barW = getWidth(fac.puntaje_global);
+    const v = valueOf(fac);
+    const y = margin.top + slot * idx + (slot - barH) / 2;
+    const barW = xOf(v) - margin.left;
+    const color = FAC_PALETTE[idx % FAC_PALETTE.length];
 
     const rect = createSVGEl('rect', {
-      x: margin.left, y: y + 3,
-      width: Math.max(barW, 2), height: barHeight - 6,
-      fill: COLOR_UM,
-      rx: 4,
+      x: margin.left, y,
+      width: Math.max(barW, 2), height: barH,
+      fill: color, rx: 5,
       class: 'chart-bar'
     });
 
-    const nameText = createSVGEl('text', {
-      x: margin.left - 8, y: y + barHeight / 2 + 3,
-      'text-anchor': 'end',
-      class: 'axis-label',
-      style: 'font-weight: 600; font-size: 9px; fill: var(--brand-primary-dark);'
-    });
-    // Truncar para adaptarlo
-    let cleanName = fac.facultad.replace('Facultad de ', '');
-    nameText.textContent = cleanName;
-
-    const scoreText = createSVGEl('text', {
-      x: margin.left + barW + 6, y: y + barHeight / 2 + 3,
-      class: 'axis-label',
-      style: 'font-weight: 700; font-size: 10px; fill: var(--brand-primary-dark);'
-    });
-    scoreText.textContent = fac.puntaje_global.toFixed(1);
-
+    // Tooltip: aclara que es promedio ponderado
     rect.addEventListener('mouseenter', (e) => {
-      let compsHtml = fac.competencias.map(c => `<br>  • ${c.competencia}: ${c.puntaje} pts`).join('');
-      showTooltip(e, `<strong>${fac.facultad}</strong>Promedio Ponderado: ${fac.puntaje_global} pts<br>Evaluados de la Facultad: ${NUM.format(fac.n)} alumnos<br><strong>Competencias:</strong>${compsHtml}`);
+      const compTitle = compKey === 'global' ? 'Puntaje global' : titleCase(compKey);
+      let compsHtml = '';
+      if (Array.isArray(fac.competencias) && fac.competencias.length > 0 && compKey === 'global') {
+        compsHtml = '<br><strong>Por competencia (' + targetYear + '):</strong>' +
+          fac.competencias.map(c => `<br>  • ${c.competencia}: ${c.puntaje ?? '—'} pts`).join('');
+      }
+      showTooltip(e, `<strong>${fac.facultad}</strong>${compTitle} (promedio ponderado por evaluados): <strong>${v} pts</strong><br>Evaluados en ${targetYear}: ${NUM.format(fac.n)}${compsHtml}`);
     });
     rect.addEventListener('mousemove', moveTooltip);
     rect.addEventListener('mouseleave', hideTooltip);
-
     svg.appendChild(rect);
+
+    // Nombre de la facultad (a la izquierda)
+    const nameText = createSVGEl('text', {
+      x: margin.left - 12, y: y + barH / 2 + 5,
+      'text-anchor': 'end',
+      style: `font-family: var(--font-display); font-weight: 600; font-size: 13px; fill: ${color};`
+    });
+    nameText.textContent = fac.facultad.replace(/^Facultad de /, '');
     svg.appendChild(nameText);
+
+    // Puntaje (al final de la barra)
+    const scoreText = createSVGEl('text', {
+      x: margin.left + barW + 8, y: y + barH / 2 + 5,
+      style: `font-family: var(--font-display); font-weight: 800; font-size: 13.5px; fill: ${color};`
+    });
+    scoreText.textContent = v.toFixed(1);
     svg.appendChild(scoreText);
   });
 
@@ -2223,7 +2485,7 @@ function renderNivelesInstitucional(d) {
         });
 
         rect.addEventListener('mouseenter', (e) => {
-          showTooltip(e, `<strong>UNIMAGDALENA - Nivel ${nIdx + 1}</strong>Distribución: ${(pct * 100).toFixed(1)}%`);
+          showTooltip(e, `<strong>Unimagdalena - Nivel ${nIdx + 1}</strong>Distribución: ${(pct * 100).toFixed(1)}%`);
         });
         rect.addEventListener('mousemove', moveTooltip);
         rect.addEventListener('mouseleave', hideTooltip);
@@ -2453,7 +2715,7 @@ function buildDofaDetails(d) {
 
   // 3. Oportunidades
   const oportunidades = [];
-  oportunidades.push(`Aprovechar que UNIMAGDALENA ocupa el puesto <strong>${d.sue_ranking.find(r => r.es_unimagdalena)?.rank}.º en el SUE</strong> para consolidar y mercadear la posición competitiva frente a otras universidades del Caribe.`);
+  oportunidades.push(`Aprovechar que Unimagdalena ocupa el puesto <strong>${d.sue_ranking.find(r => r.es_unimagdalena)?.rank}.º en el SUE</strong> para consolidar y mercadear la posición competitiva frente a otras universidades del Caribe.`);
   
   // Programas muy cerca del promedio nacional NBC
   const cercaNBC = progs.filter(p => {

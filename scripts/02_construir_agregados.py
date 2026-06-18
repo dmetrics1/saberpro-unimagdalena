@@ -1,8 +1,19 @@
 import json
 import re
+import time
 from pathlib import Path
-import openpyxl
+import polars as pl
 import lib_saberpro as sp
+
+# Valores RAW de AGREGACION (con tildes) que sí nos interesan en el procesamiento
+ALLOWED_AGREG_RAW = [
+    'INSTITUCIÓN', 'INSTITUCION',
+    'PAIS', 'PAÍS',
+    'DEPARTAMENTO',
+    'PROGRAMA_ACÁDEMICO', 'PROGRAMA_ACADEMICO',
+    'NBC',
+    'SEDE'
+]
 
 # Departamentos de la región Caribe para clasificación
 DEPARTAMENTOS_CARIBE = {
@@ -10,58 +21,43 @@ DEPARTAMENTOS_CARIBE = {
     "SAN ANDRES", "SAN ANDRES Y PROVIDENCIA", "SAN ANDRES PROVIDENCIA Y SANTA CATALINA"
 }
 
+def _excel_to_parquet_cache(file_path: Path) -> Path:
+    """
+    Convierte un Excel a un parquet (cache) si aún no existe o si el Excel es más reciente.
+    Usa polars + calamine (motor Rust, mucho más rápido que openpyxl).
+    Filtra al guardar para reducir el parquet (solo agregaciones que nos interesan)
+    y normaliza nombres de columnas a MAYÚSCULAS.
+    """
+    cache_path = file_path.with_suffix('.cache.parquet')
+    if cache_path.exists() and cache_path.stat().st_mtime >= file_path.stat().st_mtime:
+        return cache_path
+    print(f"  >> Generando cache parquet para {file_path.name} (primera vez)...")
+    t0 = time.time()
+    df = pl.read_excel(file_path, sheet_name='SABER PRO', engine='calamine')
+    df = df.rename({c: c.upper() for c in df.columns})
+    df = df.filter(pl.col('AGREGACION').is_in(ALLOWED_AGREG_RAW))
+    df.write_parquet(cache_path)
+    print(f"     Cache guardado en {cache_path.name} ({time.time()-t0:.1f}s, {df.height} filas filtradas)")
+    return cache_path
+
+
 def load_excel_data(file_path: Path) -> list[dict[str, object]]:
     """
-    Lee de forma perezosa el archivo Excel y retorna una lista de diccionarios
-    solo con las filas que corresponden a las agregaciones necesarias.
+    Lee el archivo Excel (o su cache parquet) y devuelve una lista de diccionarios
+    con las filas que nos interesan. Reusa el cache si existe.
     """
     print(f"Cargando {file_path.name}...")
-    wb = openpyxl.load_workbook(file_path, read_only=True)
-    if 'SABER PRO' not in wb.sheetnames:
-        print(f"Advertencia: No se encontró la hoja 'SABER PRO' en {file_path.name}")
-        return []
-        
-    sheet = wb['SABER PRO']
-    rows_iter = sheet.iter_rows(values_only=True)
-    
-    # Obtener cabecera y construir mapa de columnas
-    try:
-        header = [str(c).upper() for c in next(rows_iter)]
-    except StopIteration:
-        return []
-        
-    col_map = {col: idx for idx, col in enumerate(header)}
-    
-    # Validar que las columnas críticas existan
+    t0 = time.time()
+    cache = _excel_to_parquet_cache(file_path)
+    df = pl.read_parquet(cache)
+    # Asegurar que todas las columnas críticas existen
     criticas = ['AGREGACION', 'MEDIDA_AGREGACION', 'CANTIDADEVALUADOS', 'NOMBRE_INSTITUCION', 'NOMBRE_PRUEBA']
     for c in criticas:
-        if c not in col_map:
-            raise KeyError(f"Columna crítica '{c}' no encontrada en el archivo {file_path.name}")
-            
-    filtered_data = []
-    
-    # Agregaciones permitidas para procesar (limpias)
-    agregaciones_permitidas = {"INSTITUCION", "PAIS", "DEPARTAMENTO", "PROGRAMA_ACADEMICO", "NBC", "SEDE"}
-    
-    for r in rows_iter:
-        if len(r) <= max(col_map.values()):
-            continue
-            
-        agreg = r[col_map['AGREGACION']]
-        if agreg is None:
-            continue
-            
-        agreg_clean = sp.clean_text(agreg)
-        if agreg_clean not in agregaciones_permitidas:
-            continue
-            
-        # Construir un objeto limpio para esta fila
-        row_dict = {col: r[idx] for col, idx in col_map.items()}
-        filtered_data.append(row_dict)
-        
-    wb.close()
-    print(f"Filas filtradas leídas: {len(filtered_data)}")
-    return filtered_data
+        if c not in df.columns:
+            raise KeyError(f"Columna crítica '{c}' no encontrada en {file_path.name}")
+    data = df.to_dicts()
+    print(f"  Filas leídas: {len(data)} en {time.time()-t0:.1f}s")
+    return data
 
 def main() -> None:
     print("-------------------------------------------------------")
@@ -111,6 +107,11 @@ def main() -> None:
     universidades_depto_cfg = params.get("universidades_dept_magdalena", [])
     # estructura: {year: [{"nombre": str, "puntaje_global": int, "n": int, "competencias": [{"competencia": str, "puntaje": int, "n": int}]}, ...]}
     universidades_dept_historico = {}
+
+    # Ranking SUE histórico (todos los años)
+    sue_abreviaturas = params.get("sue_abreviaturas", {})
+    # estructura: {year: [{"rank": int, "nombre": str, "abrev": str, "puntaje": float, "n": int, "es_unimagdalena": bool, "es_caribe": bool}, ...]}
+    sue_ranking_historico = {}
     
     # Registro de cantidad de programas de UNIMAGDALENA por año para reporte
     conteo_programas_por_anio = {}
@@ -235,6 +236,43 @@ def main() -> None:
             })
         if univs_year:
             universidades_dept_historico[str(year)] = univs_year
+
+        # Ranking SUE de este año
+        sue_dict_year = {}
+        for r in rows:
+            agreg = sp.clean_text(r['AGREGACION'])
+            medida = sp.clean_text(r['MEDIDA_AGREGACION'])
+            inst_raw = r['NOMBRE_INSTITUCION']
+            if agreg == "INSTITUCION" and medida == "PUNTAJE_GLOBAL" and inst_raw is not None:
+                inst_norm = sp.normalize_ies_name(inst_raw, "agregados", norm_mapping)
+                clean_name = sp.clean_text(inst_norm)
+                if clean_name in sue_set:
+                    score = sp.safe_num(r['PROMEDIO_GLOBAL'])
+                    n = sp.safe_num(r['CANTIDADEVALUADOS'])
+                    if score is not None:
+                        if inst_norm not in sue_dict_year or score > sue_dict_year[inst_norm]["puntaje"]:
+                            abrev = sue_abreviaturas.get(inst_norm) or sue_abreviaturas.get(inst_raw) or inst_norm
+                            sue_dict_year[inst_norm] = {
+                                "nombre": inst_norm,
+                                "abrev": abrev,
+                                "puntaje": score,
+                                "n": n,
+                                "es_unimagdalena": (inst_norm == "UNIVERSIDAD DEL MAGDALENA"),
+                                "es_caribe": (clean_name in caribe_set)
+                            }
+        sorted_sue_year = sorted(sue_dict_year.values(), key=lambda x: x["puntaje"], reverse=True)
+        sue_ranking_historico[str(year)] = [
+            {
+                "rank": idx + 1,
+                "nombre": item["nombre"],
+                "abrev": item["abrev"],
+                "puntaje": round(item["puntaje"], 2),
+                "n": int(item["n"]) if item["n"] is not None else 0,
+                "es_unimagdalena": item["es_unimagdalena"],
+                "es_caribe": item["es_caribe"]
+            }
+            for idx, item in enumerate(sorted_sue_year)
+        ]
 
         # Conteo temporal de programas para reportar cantidad por año
         programas_anual_set = set()
@@ -539,46 +577,63 @@ def main() -> None:
                                 "distribucion_nbc_nacional": nbc_levels
                             }
 
-    # 5. Rellenar histórico de programas leyendo todos los años de forma dinámica
-    print("Construyendo históricos por programa...")
+    # 5. Rellenar histórico de programas leyendo todos los años desde el cache parquet
+    #    (puntaje global por año + competencias genéricas por año, para agregar luego a facultad)
+    print("Construyendo históricos por programa (desde cache parquet)...")
+    for prog_clean in programas_2025:
+        programas_2025[prog_clean]["historico_competencias"] = {}
+
+    competencias_gen_set = set(competencias_gen)
     for file in sorted(excel_files, key=lambda f: f.name):
         year_match = re.search(r"20\d{2}", file.name)
         if not year_match:
             continue
         year = int(year_match.group())
-        
-        # Leemos solo filas de programa para optimizar la carga histórica
-        wb = openpyxl.load_workbook(file, read_only=True)
-        sheet = wb['SABER PRO']
-        rows_iter = sheet.iter_rows(values_only=True)
-        header = [str(c).upper() for c in next(rows_iter)]
-        col_map = {col: idx for idx, col in enumerate(header)}
-        
-        for r in rows_iter:
-            if len(r) <= max(col_map.values()):
+        cache = _excel_to_parquet_cache(file)
+        # Leer solo lo relevante: programas de UNIMAGDALENA con puntaje global o por prueba
+        df = pl.read_parquet(cache).filter(
+            pl.col('AGREGACION').is_in(['PROGRAMA_ACÁDEMICO', 'PROGRAMA_ACADEMICO'])
+            & pl.col('MEDIDA_AGREGACION').is_in(['PUNTAJE_GLOBAL', 'PUNTAJE_PRUEBA'])
+        )
+        # Iteramos solo este subconjunto (mucho menor que las 150k+ filas originales)
+        for r in df.iter_rows(named=True):
+            inst = sp.normalize_ies_name(r['NOMBRE_INSTITUCION'], "agregados", norm_mapping)
+            if inst != "UNIVERSIDAD DEL MAGDALENA":
                 continue
-            agreg = sp.clean_text(r[col_map['AGREGACION']])
-            medida = sp.clean_text(r[col_map['MEDIDA_AGREGACION']])
-            inst = sp.normalize_ies_name(r[col_map['NOMBRE_INSTITUCION']], "agregados", norm_mapping)
-            prog_name = r[col_map['NOMBRE_PROGRAMA_ACAD']]
-            
-            if agreg == "PROGRAMA_ACADEMICO" and inst == "UNIVERSIDAD DEL MAGDALENA" and medida == "PUNTAJE_GLOBAL" and prog_name is not None:
-                prog_clean = sp.clean_text(prog_name)
-                if prog_clean in programas_2025:
-                    score = sp.safe_num(r[col_map['PROMEDIO_GLOBAL']])
-                    n = sp.safe_num(r[col_map['CANTIDADEVALUADOS']])
+            prog_name = r.get('NOMBRE_PROGRAMA_ACAD')
+            if not prog_name:
+                continue
+            prog_clean = sp.clean_text(prog_name)
+            if prog_clean not in programas_2025:
+                continue
+            medida = sp.clean_text(r['MEDIDA_AGREGACION'])
+
+            if medida == "PUNTAJE_GLOBAL":
+                score = sp.safe_num(r.get('PROMEDIO_GLOBAL'))
+                n = sp.safe_num(r.get('CANTIDADEVALUADOS'))
+                if score is not None:
+                    programas_2025[prog_clean]["historico"].append({
+                        "anio": year,
+                        "puntaje": round(score, 2),
+                        "n": int(n) if n is not None else 0
+                    })
+            elif medida == "PUNTAJE_PRUEBA":
+                test_clean = sp.clean_text(r.get('NOMBRE_PRUEBA'))
+                if test_clean in competencias_gen_set:
+                    score = sp.safe_num(r.get('PROMEDIO_PRUEBA'))
+                    n = sp.safe_num(r.get('CANTIDADEVALUADOS'))
                     if score is not None:
-                        programas_2025[prog_clean]["historico"].append({
-                            "anio": year,
+                        if year not in programas_2025[prog_clean]["historico_competencias"]:
+                            programas_2025[prog_clean]["historico_competencias"][year] = {}
+                        programas_2025[prog_clean]["historico_competencias"][year][test_clean] = {
                             "puntaje": round(score, 2),
                             "n": int(n) if n is not None else 0
-                        })
-        wb.close()
+                        }
 
     # Ordenar los históricos cronológicamente
     for prog_clean in programas_2025:
         programas_2025[prog_clean]["historico"] = sorted(
-            programas_2025[prog_clean]["historico"], 
+            programas_2025[prog_clean]["historico"],
             key=lambda x: x["anio"]
         )
 
@@ -634,6 +689,58 @@ def main() -> None:
             "n": f["n"],
             "competencias": competencias_salida
         })
+
+    # 6b. Histórico de facultades por año (promedio ponderado por n de programa, con competencias)
+    facultades_historico = {}
+    todos_anios = sorted({h["anio"] for p in programas_2025.values() for h in p.get("historico", []) if isinstance(h, dict)})
+    for anio in todos_anios:
+        fac_data = {}
+        for prog_clean, p in programas_2025.items():
+            fac = p["facultad"]
+            prog_year = next((h for h in p.get("historico", []) if h.get("anio") == anio), None)
+            if not prog_year:
+                continue
+            n_year = prog_year.get("n") or 0
+            score_year = prog_year.get("puntaje")
+            if not n_year or score_year is None:
+                continue
+            if fac not in fac_data:
+                fac_data[fac] = {
+                    "sum": 0.0, "n": 0,
+                    "comp_sum": {sp.clean_text(c): 0.0 for c in params["competencias_genericas"]},
+                    "comp_n":   {sp.clean_text(c): 0 for c in params["competencias_genericas"]}
+                }
+            fac_data[fac]["sum"] += float(score_year) * int(n_year)
+            fac_data[fac]["n"] += int(n_year)
+            # Aportar competencias del programa para este año
+            prog_comps_year = p.get("historico_competencias", {}).get(anio, {})
+            for comp_clean, info in prog_comps_year.items():
+                cscore = info.get("puntaje")
+                cn = info.get("n") or 0
+                if cscore is None or cn <= 0:
+                    continue
+                if comp_clean in fac_data[fac]["comp_sum"]:
+                    fac_data[fac]["comp_sum"][comp_clean] += float(cscore) * int(cn)
+                    fac_data[fac]["comp_n"][comp_clean] += int(cn)
+
+        out_fac = []
+        for fac, d in fac_data.items():
+            if d["n"] <= 0:
+                continue
+            comps_out = []
+            for comp in params["competencias_genericas"]:
+                cc = sp.clean_text(comp)
+                cs = d["comp_sum"].get(cc, 0.0)
+                cn = d["comp_n"].get(cc, 0)
+                cavg = round(cs / cn, 2) if cn > 0 else None
+                comps_out.append({"competencia": comp, "puntaje": cavg})
+            out_fac.append({
+                "facultad": fac,
+                "puntaje_global": round(d["sum"] / d["n"], 2),
+                "n": d["n"],
+                "competencias": comps_out
+            })
+        facultades_historico[str(anio)] = sorted(out_fac, key=lambda x: x["facultad"])
         
     # 7. Construcción de Top 10 para 2025
     list_progs = [p for p in programas_2025.values() if p["global"] is not None]
@@ -691,9 +798,11 @@ def main() -> None:
             "historico": sorted(historico_institucional, key=lambda x: x["anio"])
         },
         "sue_ranking": ranking_sue_2025,
+        "sue_ranking_historico": sue_ranking_historico,
         "departamento": departamentos_2025,
         "universidades_dept_historico": universidades_dept_historico,
         "facultades": sorted(facultades_salida_2025, key=lambda x: x["facultad"]),
+        "facultades_historico": facultades_historico,
         "programas": sorted(programas_salida_2025, key=lambda x: x["programa"]),
         "top10": {
             "global": top10_global_salida,

@@ -27,7 +27,7 @@ La documentación vigente está en `docs/`. La carpeta `informe/docs/` se conser
 
 ## Convenciones
 
-- `UNIMAGDALENA` se refiere a la Universidad del Magdalena.
+- `Unimagdalena` o `UNIMAGDALENA` se refiere a la Universidad del Magdalena.
 - **Fuente A** o **base de cruce**: el parquet que empareja Saber 11 y Saber Pro a nivel de estudiante. Mide `n` como `crossed_n` con umbral mínimo 25. Cubre 2018–2024.
 - **Fuente B** o **bases agregadas**: los Excel oficiales anuales del Icfes con resultados Saber Pro agregados. Mide `n` como `CANTIDADEVALUADOS`. Cubre 2020–2025.
 - Esta convención está fijada en `meta.convencion_n` dentro del JSON maestro y se usa consistentemente en todos los documentos.
