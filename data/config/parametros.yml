@@ -60,6 +60,20 @@ universidades_sue:
   - "ESCUELA TECNOLOGICA INSTITUTO TECNICO CENTRAL"
   - "UNIDAD CENTRAL DEL VALLE DEL CAUCA"
 
+# UNIVERSIDADES DEL DEPARTAMENTO DEL MAGDALENA (para el comparativo de Posicionamiento)
+# Cada entrada indica el nombre de la institución/sede tal como aparece en los Excel del Icfes
+# y el nivel de agregación (INSTITUCION o SEDE).
+universidades_dept_magdalena:
+  - nombre_display: "UNIMAGDALENA"
+    busqueda: "UNIVERSIDAD DEL MAGDALENA"
+    agregacion: "INSTITUCION"
+  - nombre_display: "U. Sergio Arboleda - Santa Marta"
+    busqueda: "UNIVERSIDAD SERGIO ARBOLEDA-SANTA MARTA"
+    agregacion: "SEDE"
+  - nombre_display: "U. Cooperativa de Colombia - Santa Marta"
+    busqueda: "UNIVERSIDAD COOPERATIVA DE COLOMBIA-SANTA MARTA"
+    agregacion: "SEDE"
+
 # UNIVERSIDADES DEL SUE PERTENECIENTES A LA REGION CARIBE
 universidades_caribe:
   - "UNIVERSIDAD DEL MAGDALENA"

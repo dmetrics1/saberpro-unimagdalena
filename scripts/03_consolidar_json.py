@@ -56,6 +56,7 @@ def main() -> None:
         "institucional": agregados_data["institucional"],
         "sue_ranking": agregados_data["sue_ranking"],
         "departamento": agregados_data["departamento"],
+        "universidades_dept_historico": agregados_data.get("universidades_dept_historico", {}),
         "cuadrantes_por_anio": cuadrantes_data["cuadrantes_por_anio"],
         "trayectoria_unimag": cuadrantes_data["trayectoria_unimag"],
         "facultades": agregados_data["facultades"],

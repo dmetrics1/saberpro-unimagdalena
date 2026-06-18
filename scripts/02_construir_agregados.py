@@ -41,7 +41,7 @@ def load_excel_data(file_path: Path) -> list[dict[str, object]]:
     filtered_data = []
     
     # Agregaciones permitidas para procesar (limpias)
-    agregaciones_permitidas = {"INSTITUCION", "PAIS", "DEPARTAMENTO", "PROGRAMA_ACADEMICO", "NBC"}
+    agregaciones_permitidas = {"INSTITUCION", "PAIS", "DEPARTAMENTO", "PROGRAMA_ACADEMICO", "NBC", "SEDE"}
     
     for r in rows_iter:
         if len(r) <= max(col_map.values()):
@@ -106,6 +106,11 @@ def main() -> None:
     top10_global_2025 = []
     top10_competencias_2025 = {c: [] for c in params["competencias_genericas"]}
     niveles_desempeno_2025 = []
+
+    # Comparativo con universidades del Departamento del Magdalena (todos los años)
+    universidades_depto_cfg = params.get("universidades_dept_magdalena", [])
+    # estructura: {year: [{"nombre": str, "puntaje_global": int, "n": int, "competencias": [{"competencia": str, "puntaje": int, "n": int}]}, ...]}
+    universidades_dept_historico = {}
     
     # Registro de cantidad de programas de UNIMAGDALENA por año para reporte
     conteo_programas_por_anio = {}
@@ -166,15 +171,71 @@ def main() -> None:
                     "n": sp.safe_num(r['CANTIDADEVALUADOS'])
                 }
                 
-        # Registrar histórico institucional
+        # Registrar histórico institucional (incluye competencias por año para el radar filtrable)
         if unimag_global_score is not None:
+            comps_year = []
+            for comp in params["competencias_genericas"]:
+                comp_clean = sp.clean_text(comp)
+                u_score = unimag_comp_scores.get(comp_clean, {}).get("puntaje")
+                n_score = national_comp_scores.get(comp_clean, {}).get("puntaje")
+                u_n = unimag_comp_scores.get(comp_clean, {}).get("n")
+                comps_year.append({
+                    "competencia": comp,
+                    "puntaje_unimag": round(u_score, 2) if u_score is not None else None,
+                    "puntaje_nacional": round(n_score, 2) if n_score is not None else None,
+                    "n_unimag": int(u_n) if u_n is not None else 0
+                })
+
             historico_institucional.append({
                 "anio": year,
                 "puntaje_unimag": round(unimag_global_score, 2),
                 "puntaje_nacional": round(national_global_score, 2) if national_global_score is not None else None,
-                "n_unimag": int(unimag_global_n) if unimag_global_n is not None else None
+                "n_unimag": int(unimag_global_n) if unimag_global_n is not None else None,
+                "competencias": comps_year
             })
-            
+
+        # Comparativo de universidades del Departamento del Magdalena
+        # Para cada universidad configurada, extraer puntaje global y competencias genéricas
+        univs_year = []
+        for cfg in universidades_depto_cfg:
+            busqueda = sp.clean_text(cfg["busqueda"])
+            agreg_target = sp.clean_text(cfg["agregacion"])
+            campo_nombre = "NOMBRE_SEDE" if agreg_target == "SEDE" else "NOMBRE_INSTITUCION"
+            u_global, u_n = None, None
+            u_comps = {}
+            for r in rows:
+                if sp.clean_text(r['AGREGACION']) != agreg_target:
+                    continue
+                nombre_raw = r.get(campo_nombre)
+                if not nombre_raw or sp.clean_text(nombre_raw) != busqueda:
+                    continue
+                medida = sp.clean_text(r['MEDIDA_AGREGACION'])
+                if medida == "PUNTAJE_GLOBAL":
+                    u_global = sp.safe_num(r['PROMEDIO_GLOBAL'])
+                    u_n = sp.safe_num(r['CANTIDADEVALUADOS'])
+                elif medida == "PUNTAJE_PRUEBA":
+                    test_clean = sp.clean_text(r['NOMBRE_PRUEBA'])
+                    if test_clean in competencias_gen:
+                        u_comps[test_clean] = sp.safe_num(r['PROMEDIO_PRUEBA'])
+            if u_global is None and not u_comps:
+                continue
+            comps_arr = []
+            for comp in params["competencias_genericas"]:
+                comp_clean = sp.clean_text(comp)
+                score = u_comps.get(comp_clean)
+                comps_arr.append({
+                    "competencia": comp,
+                    "puntaje": round(score, 2) if score is not None else None
+                })
+            univs_year.append({
+                "nombre": cfg["nombre_display"],
+                "puntaje_global": round(u_global, 2) if u_global is not None else None,
+                "n": int(u_n) if u_n is not None else 0,
+                "competencias": comps_arr
+            })
+        if univs_year:
+            universidades_dept_historico[str(year)] = univs_year
+
         # Conteo temporal de programas para reportar cantidad por año
         programas_anual_set = set()
         for r in rows:
@@ -631,6 +692,7 @@ def main() -> None:
         },
         "sue_ranking": ranking_sue_2025,
         "departamento": departamentos_2025,
+        "universidades_dept_historico": universidades_dept_historico,
         "facultades": sorted(facultades_salida_2025, key=lambda x: x["facultad"]),
         "programas": sorted(programas_salida_2025, key=lambda x: x["programa"]),
         "top10": {
