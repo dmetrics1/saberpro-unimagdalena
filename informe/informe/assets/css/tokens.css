@@ -110,6 +110,104 @@ a { color: var(--brand-accent); }
   overflow-y: auto;
   scrollbar-width: thin;
   scrollbar-color: rgba(255,255,255,.12) transparent;
+  transition: width .28s ease, padding .28s ease;
+}
+
+/* Botón de toggle dentro del header del sidebar (al lado del nombre) */
+.sidebar-toggle {
+  margin-left: auto;     /* empuja el botón al borde derecho del brand */
+  width: 34px;
+  height: 34px;
+  border-radius: 9px;
+  border: 1px solid rgba(255,255,255,.14);
+  background: rgba(255,255,255,.04);
+  color: rgba(217,233,247,.85);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background .15s ease, color .15s ease, border-color .15s ease;
+}
+.sidebar-toggle:hover {
+  background: rgba(255,255,255,.12);
+  color: #fff;
+  border-color: rgba(255,255,255,.22);
+}
+.sidebar-toggle svg { width: 18px; height: 18px; }
+.sidebar-toggle:focus-visible { outline: 2px solid rgba(1,131,239,.55); outline-offset: 2px; }
+
+/* Iconos y texto de cada item del nav */
+.nav__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  flex-shrink: 0;
+}
+.nav__icon svg { width: 20px; height: 20px; }
+.nav__text { white-space: nowrap; }
+
+/* ============================================================
+   Estado COLAPSADO del sidebar
+   ============================================================ */
+body.sidebar-collapsed .sidebar {
+  width: 72px;
+  padding: 22px 12px 18px;
+}
+body.sidebar-collapsed .sidebar__brand {
+  justify-content: center;
+  margin-bottom: 22px;
+}
+body.sidebar-collapsed .sidebar__title { display: none; }
+body.sidebar-collapsed .sidebar__foot { display: none; }
+
+/* Nav: solo icono visible */
+body.sidebar-collapsed .nav__item {
+  justify-content: center;
+  padding: 11px 8px;
+  position: relative;
+}
+body.sidebar-collapsed .nav__num,
+body.sidebar-collapsed .nav__text { display: none; }
+
+/* Tooltip flotante para los items del menú lateral
+   (renderizado en <body> por el JS para escapar del overflow del sidebar) */
+.nav-tooltip {
+  position: fixed;
+  background: #0F4FA8;
+  color: #fff;
+  font-family: var(--font-display);
+  font-size: 0.82rem;
+  font-weight: 700;
+  padding: 6px 14px;
+  border-radius: 999px;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  transform: translateX(-4px);
+  transition: opacity .14s ease, transform .14s ease;
+  box-shadow: 0 4px 12px rgba(0,0,0,.18);
+  z-index: 9999;
+}
+.nav-tooltip.is-visible {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+/* Contenido principal se ajusta al sidebar colapsado */
+body.sidebar-collapsed .content {
+  margin-left: 120px;     /* 24 (gap) + 72 (sidebar) + 24 (gap) */
+}
+
+/* Sidebar colapsado: el brand se reduce al logo + el botón debajo, centrados */
+body.sidebar-collapsed .sidebar__brand {
+  flex-direction: column;
+  gap: 10px;
+}
+body.sidebar-collapsed .sidebar-toggle {
+  margin-left: 0;        /* ya no necesita empujarse al borde */
 }
 .sidebar::-webkit-scrollbar { width: 4px; }
 .sidebar::-webkit-scrollbar-thumb { background: rgba(255,255,255,.12); border-radius: 999px; }
@@ -191,6 +289,7 @@ a { color: var(--brand-accent); }
   padding: 24px clamp(24px, 3vw, 48px) 64px;
   width: auto;
   max-width: 100%;
+  transition: margin-left .28s ease;
 }
 
 /* ============================================================
@@ -597,17 +696,54 @@ a { color: var(--brand-accent); }
   height: 500px;
 }
 
-/* Panorama: cards compactos arriba; gráficos heredan altura estándar */
-#panorama .charts-grid {
-  max-width: 920px;
+/* Panorama: card combinado (radar + histórico) en 2 columnas con divisor */
+#panorama .panorama-card {
+  max-width: 1180px;
   margin-left: auto;
   margin-right: auto;
+  padding: 22px 26px 16px;
 }
-#panorama .card {
-  padding: 18px 24px 14px;
+.panorama-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  align-items: stretch;
 }
-#panorama .card__title {
-  margin-bottom: 4px;
+.panorama-side {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+.panorama-side__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 8px;
+  min-height: 36px;
+}
+.panorama-side__title {
+  margin: 0;
+  font-size: 1.05rem;
+}
+.panorama-side .chart-container {
+  flex: 0 0 420px;
+  min-height: 420px;
+  height: 420px;             /* altura unificada en cards combinados de 2 columnas */
+}
+/* Divisor vertical sutil en pantallas grandes */
+@media (min-width: 1101px) {
+  .panorama-side + .panorama-side {
+    border-left: 1px solid var(--border);
+    padding-left: 24px;
+  }
+}
+/* En pantallas medianas/pequeñas se apilan */
+@media (max-width: 1100px) {
+  .panorama-grid {
+    grid-template-columns: 1fr;
+    gap: 18px;
+  }
 }
 
 /* Valor agregado: misma estructura compacta que Panorama */
@@ -703,9 +839,9 @@ a { color: var(--brand-accent); }
   min-width: 0;
 }
 .prog-history-side .chart-container {
-  flex: 1;
+  flex: 0 0 420px;
   min-height: 420px;
-  height: 420px;
+  height: 420px;             /* altura unificada en cards combinados de 2 columnas */
 }
 /* Separador vertical sutil entre columnas en pantallas grandes */
 @media (min-width: 1101px) {
@@ -744,9 +880,9 @@ a { color: var(--brand-accent); }
   letter-spacing: -0.01em;
 }
 .prog-genspec-side .chart-container {
-  flex: 1;
-  min-height: 520px;
-  height: 520px;             /* radar y específicas llenan más espacio vertical */
+  flex: 0 0 420px;
+  min-height: 420px;
+  height: 420px;             /* altura unificada en cards combinados de 2 columnas */
 }
 /* En pantallas medianas (< 1100px) las dos columnas se apilan */
 @media (max-width: 1100px) {

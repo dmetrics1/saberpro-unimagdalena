@@ -74,8 +74,10 @@ programa). Aquí se sustituyen por **un único componente filtrable** (G9).
 
 ## SECCIÓN 2 — Panorama institucional
 
+> **v2.9:** los gráficos G2 y G3 viven dentro de un **único card combinado** (`.panorama-card`) con dos columnas separadas por un divisor vertical sutil. La columna izquierda contiene G2 (radar con selector de año) y la derecha G3 (línea histórica). Cada `chart-container` mide 420px de alto, igual al resto de cards combinados del informe.
+
 ### G2 · Radar de competencias UM vs. nacional (filtrable por año) — **Esencial**
-- **Tipo:** radar de **6 ejes** (5 competencias genéricas + Puntaje Global) con **selector de año** (2020-2025).
+- **Tipo:** radar de **6 ejes** (5 competencias genéricas + Puntaje Global) con **selector de año** (2020-2025) ubicado en el header de la columna.
 - **Datos:** `institucional.historico[<año>].competencias` para las 5 competencias y `institucional.historico[<año>].puntaje_unimag/nacional` para el eje Puntaje Global.
 - **Mensaje:** "Cómo se compara Unimagdalena con el promedio nacional en cada competencia, en el año seleccionado."
 - **Decisión:** identifica fortalezas/brechas transversales y permite revisar la evolución de esas brechas cambiando el año.

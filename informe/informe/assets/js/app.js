@@ -36,6 +36,8 @@ async function init() {
   renderKPIs(d);
   setLeads(d);
   initNavDrawer();
+  initSidebarToggle();
+  initSidebarNavTooltip();
   initScrollSpy();
 
   // Renderizadores de Gráficos (Etapa 5)
@@ -2959,6 +2961,63 @@ function initNavDrawer() {
 
   document.addEventListener('keydown', (event) => {
     if (event.key === 'Escape') setOpen(false);
+  });
+}
+
+/* ---------- Tooltip de hover para los items del menú lateral ----------
+   Renderizado en <body> con position: fixed para escapar del overflow del sidebar.
+   Funciona en cualquier estado (sidebar expandido o colapsado). */
+function initSidebarNavTooltip() {
+  const items = [...document.querySelectorAll('.nav__item[data-label]')];
+  if (items.length === 0) return;
+
+  const tip = document.createElement('div');
+  tip.className = 'nav-tooltip';
+  tip.setAttribute('role', 'tooltip');
+  document.body.appendChild(tip);
+
+  const show = (item) => {
+    const label = item.dataset.label || '';
+    tip.textContent = label;
+    const r = item.getBoundingClientRect();
+    tip.style.left = `${r.right + 14}px`;
+    tip.style.top = `${r.top + r.height / 2}px`;
+    tip.style.transform = 'translateY(-50%) translateX(-4px)';
+    // Forzamos reflow para que la transición se aplique al añadir la clase
+    void tip.offsetWidth;
+    tip.classList.add('is-visible');
+    tip.style.transform = 'translateY(-50%) translateX(0)';
+  };
+  const hide = () => tip.classList.remove('is-visible');
+
+  items.forEach(item => {
+    item.addEventListener('mouseenter', () => show(item));
+    item.addEventListener('mouseleave', hide);
+    item.addEventListener('focus', () => show(item));
+    item.addEventListener('blur', hide);
+  });
+}
+
+/* ---------- Sidebar colapsable (persistido en localStorage) ---------- */
+function initSidebarToggle() {
+  const btn = document.getElementById('sidebarToggle');
+  if (!btn) return;
+
+  const STORAGE_KEY = 'sidebar-collapsed';
+  const setCollapsed = (collapsed) => {
+    document.body.classList.toggle('sidebar-collapsed', collapsed);
+    btn.setAttribute('aria-expanded', String(!collapsed));
+    btn.setAttribute('aria-label', collapsed ? 'Expandir menú' : 'Colapsar menú');
+    try { localStorage.setItem(STORAGE_KEY, collapsed ? '1' : '0'); } catch (_) {}
+  };
+
+  // Restaurar preferencia previa
+  let initiallyCollapsed = false;
+  try { initiallyCollapsed = localStorage.getItem(STORAGE_KEY) === '1'; } catch (_) {}
+  setCollapsed(initiallyCollapsed);
+
+  btn.addEventListener('click', () => {
+    setCollapsed(!document.body.classList.contains('sidebar-collapsed'));
   });
 }
 
