@@ -1029,6 +1029,16 @@ body.sidebar-collapsed .sidebar-toggle {
   border-color: var(--brand-accent);
   box-shadow: 0 0 0 3px rgba(1, 131, 239, 0.15);
 }
+/* Variante compacta: selector más estrecho cuando comparte fila con un título */
+.control-select--compact {
+  font-size: 0.82rem;
+  padding: 6px 10px;
+  min-width: 140px;
+  max-width: 180px;
+}
+.select-wrapper--compact {
+  flex-shrink: 0;
+}
 
 .tabs {
   display: flex;

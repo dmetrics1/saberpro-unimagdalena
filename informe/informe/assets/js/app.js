@@ -507,13 +507,70 @@ function createLegend(items, startX, startY, opts = {}) {
   return g;
 }
 
-/* ---------- G3: Evolución histórica lineal ---------- */
+/* ---------- G3: Evolución histórica lineal (Global o por competencia) ---------- */
+let activeEvolComp = 'Global';   // 'Global' (default) o nombre canónico de competencia
+
+function initEvolPicker(d) {
+  const sel = document.getElementById('selEvolComp');
+  if (!sel || sel.options.length > 0) return;
+
+  const hist = d.institucional.historico;
+  if (!hist || hist.length === 0) return;
+  const comps = (hist[0].competencias || []).map(c => c.competencia);
+
+  // Opciones: Global por defecto, luego las 5 competencias con nombre en title-case
+  const options = [{ value: 'Global', label: 'Puntaje global' }];
+  comps.forEach(c => options.push({ value: c, label: titleCase(c) }));
+
+  sel.innerHTML = options.map(o => `<option value="${o.value}">${o.label}</option>`).join('');
+  sel.value = activeEvolComp;
+
+  sel.addEventListener('change', () => {
+    activeEvolComp = sel.value;
+    renderEvolLine(d);
+  });
+}
+
 function renderEvolLine(d) {
   const container = document.getElementById('chartEvol');
   if (!container) return;
 
-  const hist = d.institucional.historico;
-  if (!hist || hist.length === 0) return;
+  const histRaw = d.institucional.historico;
+  if (!histRaw || histRaw.length === 0) return;
+
+  // Inicializar selector (idempotente) y derivar la serie según la competencia activa
+  initEvolPicker(d);
+
+  let hist;
+  if (activeEvolComp === 'Global') {
+    hist = histRaw.map(p => ({
+      anio: p.anio,
+      puntaje_unimag: p.puntaje_unimag,
+      puntaje_nacional: p.puntaje_nacional,
+      n_unimag: p.n_unimag
+    }));
+  } else {
+    hist = histRaw.map(p => {
+      const c = (p.competencias || []).find(x => x.competencia === activeEvolComp);
+      return {
+        anio: p.anio,
+        puntaje_unimag: c?.puntaje_unimag,
+        puntaje_nacional: c?.puntaje_nacional,
+        n_unimag: c?.n_unimag ?? p.n_unimag
+      };
+    }).filter(p => p.puntaje_unimag != null && p.puntaje_nacional != null);
+  }
+
+  if (hist.length === 0) {
+    container.innerHTML = '<div class="placeholder">Sin datos para esta competencia</div>';
+    return;
+  }
+
+  // Actualizar etiqueta del título (mantenida en sincronía con la tab activa)
+  const lbl = document.getElementById('evolCompLbl');
+  if (lbl) {
+    lbl.textContent = activeEvolComp === 'Global' ? 'Puntaje global' : titleCase(activeEvolComp);
+  }
 
   const w = 720;
   const h = 400;

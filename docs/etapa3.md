@@ -84,13 +84,16 @@ programa). Aquí se sustituyen por **un único componente filtrable** (G9).
 - **Por qué radar:** muestra las 6 dimensiones y la forma global del perfil en una sola figura, comparando dos series sin saturar.
 - **Diseño:** polígono azul (UM) sobre polígono verde (nacional) con relleno tenue; etiquetas numéricas a cada lado del eje (UM hacia un lado, Nacional hacia el otro) para que nunca se peguen aunque los valores coincidan. Marcadores sólidos de color, tooltip con la competencia y el valor al hacer hover.
 
-### G3 · Evolución histórica global UM vs. nacional — **Esencial**
-- **Tipo:** línea temporal 2020-2025 con curvas suaves (Catmull-Rom).
-- **Datos:** `institucional.historico` (6 puntos: anio, puntaje_unimag, puntaje_nacional).
-- **Mensaje:** "Cómo ha evolucionado nuestra brecha con el país: de estar por debajo (142 vs 149 en 2020) a superarlo (150 vs 148 en 2025)."
-- **Decisión:** evidencia la tendencia institucional para rendición de cuentas.
+### G3 · Evolución histórica UM vs. nacional (filtrable por competencia) — **Esencial**
+- **Tipo:** línea temporal 2020-2025 con curvas suaves (Catmull-Rom) y **selector de competencia** en el header.
+- **Datos:** `institucional.historico[]` con dos rutas:
+  - **Global (default):** `puntaje_unimag` y `puntaje_nacional` por año.
+  - **Por competencia:** `competencias[].puntaje_unimag` y `puntaje_nacional` del elemento cuyo `competencia` coincide con la opción seleccionada (las 5 genéricas).
+- **Control:** dropdown `#selEvolComp` con la clase `control-select--compact` (variante más estrecha — 180px máx — porque comparte fila con el título estático). Opciones: `Global` (default, etiqueta "Puntaje global") + 5 competencias con sus nombres en title-case.
+- **Mensaje:** "Cómo ha evolucionado la brecha con el país, en la competencia que se elija (o en el agregado Global por defecto)."
+- **Decisión:** evidencia la tendencia institucional y permite ver de un vistazo qué competencia mejora más rápido, cuál se estanca y cuál sigue por debajo del estándar nacional.
 - **Por qué línea:** es el formato natural para evolución temporal; el cruce de las dos líneas cuenta la historia visualmente.
-- **Diseño:** línea azul (UM) y verde (nacional) con marcadores sólidos; etiquetas numéricas encima/debajo de cada punto con lógica anti-choque (UM arriba si supera al nacional, abajo si no); eje Y auto-escalado a múltiplos de 5 según el rango de los datos; tooltip con el año y el valor al hacer hover.
+- **Diseño:** título estático **"Evolución histórica 2020 – 2025"** (no se actualiza dinámicamente para no competir con el dropdown). Línea azul (UM) y verde (nacional) con marcadores sólidos; etiquetas numéricas encima/debajo de cada punto con lógica anti-choque (UM arriba si supera al nacional, abajo si no); eje Y auto-escalado a múltiplos de 5 según el rango de los datos; tooltip con el año y el valor al hacer hover.
 
 ---
 
