@@ -578,10 +578,16 @@ def main() -> None:
                             }
 
     # 5. Rellenar histórico de programas leyendo todos los años desde el cache parquet
-    #    (puntaje global por año + competencias genéricas por año, para agregar luego a facultad)
-    print("Construyendo históricos por programa (desde cache parquet)...")
+    #    (puntaje global por año + competencias por año + específicas por año + referencias NBC por año)
+    print("Construyendo históricos por programa y referencias NBC por año (desde cache parquet)...")
     for prog_clean in programas_2025:
         programas_2025[prog_clean]["historico_competencias"] = {}
+        # historico_pruebas captura TODAS las pruebas (genéricas + específicas) por año:
+        # {year: {test_clean: {puntaje, n}}}
+        programas_2025[prog_clean]["historico_pruebas"] = {}
+
+    # Referencias NBC nacional por año: nbc_refs[year][nbc_id][test_clean] = {puntaje, n}
+    nbc_refs_por_anio = {}
 
     competencias_gen_set = set(competencias_gen)
     for file in sorted(excel_files, key=lambda f: f.name):
@@ -590,13 +596,54 @@ def main() -> None:
             continue
         year = int(year_match.group())
         cache = _excel_to_parquet_cache(file)
-        # Leer solo lo relevante: programas de UNIMAGDALENA con puntaje global o por prueba
+        # Leer programas de UNIMAGDALENA + referencias NBC nacional
         df = pl.read_parquet(cache).filter(
-            pl.col('AGREGACION').is_in(['PROGRAMA_ACÁDEMICO', 'PROGRAMA_ACADEMICO'])
-            & pl.col('MEDIDA_AGREGACION').is_in(['PUNTAJE_GLOBAL', 'PUNTAJE_PRUEBA'])
+            (
+                pl.col('AGREGACION').is_in(['PROGRAMA_ACÁDEMICO', 'PROGRAMA_ACADEMICO'])
+                & pl.col('MEDIDA_AGREGACION').is_in(['PUNTAJE_GLOBAL', 'PUNTAJE_PRUEBA'])
+            ) | (
+                (pl.col('AGREGACION') == 'NBC')
+                & pl.col('MEDIDA_AGREGACION').is_in(['PUNTAJE_GLOBAL', 'PUNTAJE_PRUEBA'])
+            )
         )
-        # Iteramos solo este subconjunto (mucho menor que las 150k+ filas originales)
+
+        nbc_refs_por_anio[year] = {}
+
         for r in df.iter_rows(named=True):
+            agreg = sp.clean_text(r['AGREGACION'])
+            medida = sp.clean_text(r['MEDIDA_AGREGACION'])
+
+            # NBC nacional reference (todos los NBCs, no solo los de Unimag)
+            if agreg == "NBC":
+                nbc_id = sp.safe_num(r.get('ID_NBC'))
+                if nbc_id is None:
+                    continue
+                nbc_id = int(nbc_id)
+                if nbc_id not in nbc_refs_por_anio[year]:
+                    nbc_refs_por_anio[year][nbc_id] = {}
+                if medida == "PUNTAJE_GLOBAL":
+                    score = sp.safe_num(r.get('PROMEDIO_GLOBAL'))
+                    n = sp.safe_num(r.get('CANTIDADEVALUADOS'))
+                    if score is not None:
+                        nbc_refs_por_anio[year][nbc_id]['GLOBAL'] = {
+                            "puntaje": round(score, 2),
+                            "n": int(n) if n is not None else 0
+                        }
+                elif medida == "PUNTAJE_PRUEBA":
+                    test_clean = sp.clean_text(r.get('NOMBRE_PRUEBA'))
+                    if test_clean:
+                        # Capturamos TODAS las pruebas (genéricas + específicas) para que el
+                        # radar y el gráfico de específicas puedan filtrar por año.
+                        score = sp.safe_num(r.get('PROMEDIO_PRUEBA'))
+                        n = sp.safe_num(r.get('CANTIDADEVALUADOS'))
+                        if score is not None:
+                            nbc_refs_por_anio[year][nbc_id][test_clean] = {
+                                "puntaje": round(score, 2),
+                                "n": int(n) if n is not None else 0
+                            }
+                continue
+
+            # Programa UNIMAGDALENA
             inst = sp.normalize_ies_name(r['NOMBRE_INSTITUCION'], "agregados", norm_mapping)
             if inst != "UNIVERSIDAD DEL MAGDALENA":
                 continue
@@ -606,7 +653,6 @@ def main() -> None:
             prog_clean = sp.clean_text(prog_name)
             if prog_clean not in programas_2025:
                 continue
-            medida = sp.clean_text(r['MEDIDA_AGREGACION'])
 
             if medida == "PUNTAJE_GLOBAL":
                 score = sp.safe_num(r.get('PROMEDIO_GLOBAL'))
@@ -619,13 +665,22 @@ def main() -> None:
                     })
             elif medida == "PUNTAJE_PRUEBA":
                 test_clean = sp.clean_text(r.get('NOMBRE_PRUEBA'))
-                if test_clean in competencias_gen_set:
+                if test_clean:
                     score = sp.safe_num(r.get('PROMEDIO_PRUEBA'))
                     n = sp.safe_num(r.get('CANTIDADEVALUADOS'))
                     if score is not None:
-                        if year not in programas_2025[prog_clean]["historico_competencias"]:
-                            programas_2025[prog_clean]["historico_competencias"][year] = {}
-                        programas_2025[prog_clean]["historico_competencias"][year][test_clean] = {
+                        # Genéricas → historico_competencias (compat con el radar)
+                        if test_clean in competencias_gen_set:
+                            if year not in programas_2025[prog_clean]["historico_competencias"]:
+                                programas_2025[prog_clean]["historico_competencias"][year] = {}
+                            programas_2025[prog_clean]["historico_competencias"][year][test_clean] = {
+                                "puntaje": round(score, 2),
+                                "n": int(n) if n is not None else 0
+                            }
+                        # TODAS las pruebas → historico_pruebas (alimenta específicas históricas)
+                        if year not in programas_2025[prog_clean]["historico_pruebas"]:
+                            programas_2025[prog_clean]["historico_pruebas"][year] = {}
+                        programas_2025[prog_clean]["historico_pruebas"][year][test_clean] = {
                             "puntaje": round(score, 2),
                             "n": int(n) if n is not None else 0
                         }
@@ -769,9 +824,62 @@ def main() -> None:
     # Convertir a lista limpia para salida JSON
     programas_salida_2025 = []
     for p in programas_2025.values():
+        # Histórico de competencias por año (programa + NBC nacional + global)
+        # para alimentar el radar filtrable por año
+        radar_historico = {}
+        prog_nbc_id = p.get("nbc_id")
+        # global por año (programa)
+        global_por_anio = {h["anio"]: {"puntaje": h["puntaje"], "n": h["n"]} for h in p["historico"]}
+        for anio, comps_year in p.get("historico_competencias", {}).items():
+            comps_arr = []
+            for comp in params["competencias_genericas"]:
+                comp_clean = sp.clean_text(comp)
+                prog_data = comps_year.get(comp_clean) or {}
+                nbc_data = nbc_refs_por_anio.get(anio, {}).get(prog_nbc_id, {}).get(comp_clean) or {}
+                comps_arr.append({
+                    "competencia": comp,
+                    "puntaje_programa": prog_data.get("puntaje"),
+                    "puntaje_nbc_nacional": nbc_data.get("puntaje"),
+                    "n_nbc_nacional": nbc_data.get("n")
+                })
+            g_prog = global_por_anio.get(anio, {})
+            g_nbc = nbc_refs_por_anio.get(anio, {}).get(prog_nbc_id, {}).get('GLOBAL', {})
+            radar_historico[str(anio)] = {
+                "competencias": comps_arr,
+                "global_programa": g_prog.get("puntaje"),
+                "n_programa": g_prog.get("n", 0),
+                "global_nbc_nacional": g_nbc.get("puntaje"),
+                "n_nbc_nacional": g_nbc.get("n", 0)
+            }
+
+        # Histórico de competencias específicas por año (programa + NBC nacional)
+        # Para cada año disponible, recorre las específicas del programa y arma el array
+        especificas_historico = {}
+        # Nombres "display" de las específicas del 2025 (key clean → label original)
+        spec_labels = {sp.clean_text(s["prueba"]): s["prueba"] for s in p["especificas"].values()}
+        years_disp = sorted(set(list(p.get("historico_pruebas", {}).keys())))
+        for anio in years_disp:
+            pruebas_prog = p["historico_pruebas"].get(anio, {})
+            arr = []
+            for clean_name, label in spec_labels.items():
+                prog_data = pruebas_prog.get(clean_name) or {}
+                nbc_data = nbc_refs_por_anio.get(anio, {}).get(prog_nbc_id, {}).get(clean_name) or {}
+                # Solo agregar si el programa tiene puntaje en ese año (no inventamos datos)
+                if prog_data.get("puntaje") is not None:
+                    arr.append({
+                        "prueba": label,
+                        "puntaje_programa": prog_data.get("puntaje"),
+                        "puntaje_nbc_nacional": nbc_data.get("puntaje"),
+                        "n_nbc_nacional": nbc_data.get("n", 0)
+                    })
+            if arr:
+                especificas_historico[str(anio)] = arr
+
         programas_salida_2025.append({
             "programa": p["programa"],
             "facultad": p["facultad"],
+            "nbc_id": p.get("nbc_id"),
+            "nbc_nombre": p.get("nbc_nombre"),
             "n_2025": p["n"],
             "global_2025": p["global"],
             "global_nbc_nacional_2025": p.get("global_nbc_nacional"),
@@ -787,7 +895,9 @@ def main() -> None:
                 }
                 for comp_clean, info in p["niveles"].items()
             ],
-            "historico": p["historico"]
+            "historico": p["historico"],
+            "radar_historico": radar_historico,
+            "especificas_historico": especificas_historico
         })
         
     # Guardar salida agregada

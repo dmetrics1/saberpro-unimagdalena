@@ -636,6 +636,73 @@ a { color: var(--brand-accent); }
   margin-bottom: 4px;
 }
 
+/* Programas: misma estructura compacta */
+#programas .charts-grid {
+  max-width: 1080px;
+  margin-left: auto;
+  margin-right: auto;
+}
+#programas .card {
+  padding: 18px 24px 14px;
+}
+#programas .card__title {
+  margin-bottom: 4px;
+}
+/* El explorer-container se vuelve transparente para que los cards "vivan" en el grid normal */
+#programas .explorer-container {
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  padding: 0;
+  margin-top: 0;
+}
+
+/* Filtro del año (3er control en la fila de filtros del explorador) */
+.control-group--year {
+  flex: 0 0 180px;     /* más compacto que facultad/programa */
+  min-width: 160px;
+}
+
+/* Tarjeta combinada: Genéricas (radar) + Específicas (barras) lado a lado */
+#programas .prog-genspec-card {
+  padding: 14px 18px 10px;   /* padding compacto (igual a las otras cards del programa) */
+}
+.prog-genspec-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  align-items: stretch;
+}
+.prog-genspec-side {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+.prog-genspec-side__title {
+  margin: 0 0 6px;
+  text-align: center;
+  font-size: 1rem;
+}
+.prog-genspec-side .chart-container {
+  flex: 1;
+  min-height: 460px;
+  height: 460px;             /* más alto que el resto: las gráficas necesitan más espacio */
+}
+/* En pantallas medianas (< 1100px) las dos columnas se apilan */
+@media (max-width: 1100px) {
+  .prog-genspec-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+}
+/* Separador vertical sutil entre las dos columnas en pantallas grandes */
+@media (min-width: 1101px) {
+  .prog-genspec-side + .prog-genspec-side {
+    border-left: 1px solid var(--border);
+    padding-left: 20px;
+  }
+}
+
 /* Tabs de competencia en Facultades — píldoras con activo en azul */
 .tabs--facultad {
   margin: 8px 0 8px;
@@ -731,6 +798,18 @@ a { color: var(--brand-accent); }
 .card__title-soft {
   color: var(--text-soft);
   font-weight: 500;
+}
+
+/* Meta-información debajo del título del card (NBC, evaluados, etc.) */
+.card__meta {
+  font-size: 0.82rem;
+  color: var(--text-soft);
+  margin: 0 0 12px;
+  line-height: 1.45;
+}
+.card__meta strong {
+  color: var(--brand-primary-dark);
+  font-weight: 700;
 }
 
 /* Controles de Selección e Interactividad */

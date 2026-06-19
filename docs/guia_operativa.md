@@ -151,6 +151,7 @@ Comprobar que `datos_informe.json` contiene:
 - `universidades_dept_historico` con 6 años (2020-2025) y 3 universidades por año (Unimagdalena + Sergio Arboleda Santa Marta + Cooperativa Santa Marta).
 - `sue_ranking_historico` con 6 años (2020-2025) y ~37 universidades del SUE por año; cada entrada con `abrev` (etiqueta corta del eje X).
 - `facultades_historico` con 6 años (2020-2025) y 6 facultades por año, cada una con `puntaje_global`, `n` y `competencias[]` (5 competencias genéricas ponderadas).
+- **(v2.7)** Cada entrada de `programas[]` con `nbc_id`, `nbc_nombre`, `radar_historico` (uno o más años con el radar genérico y la ref. NBC global por año) y `especificas_historico` (años en que el programa rindió competencias específicas).
 
 ## 8. Optimización del pipeline: cache parquet
 

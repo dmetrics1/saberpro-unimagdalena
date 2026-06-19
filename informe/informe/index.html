@@ -187,50 +187,52 @@
 
     <section class="section" id="programas">
       <div class="section__eyebrow">05 · Programas</div>
-      <h2 class="section__title">Cada programa frente a su grupo de referencia</h2>
-      <p class="section__lead" id="leadProg"></p>
-      
+
       <div class="explorer-container">
         <div class="explorer-controls">
           <div class="control-group">
-            <label for="selFacultad">Filtrar por Facultad:</label>
+            <label for="selFacultad">Filtrar por facultad:</label>
             <select id="selFacultad" class="control-select">
               <option value="TODAS">Todas las facultades</option>
             </select>
           </div>
           <div class="control-group">
-            <label for="selPrograma">Seleccionar Programa Académico:</label>
+            <label for="selPrograma">Seleccionar programa académico:</label>
             <select id="selPrograma" class="control-select"></select>
           </div>
+          <div class="control-group control-group--year">
+            <label for="selAnioProg">Año de evaluación:</label>
+            <select id="selAnioProg" class="control-select"></select>
+          </div>
         </div>
-        
+
         <div id="progWarnN" class="warn-badge" style="display: none;">
           <span class="warn-badge__icon">⚠️</span>
-          <span class="warn-badge__text"><strong>Evaluados bajos (n &lt; 5):</strong> Este programa cuenta con muy pocos evaluados en el año vigente. Interpretar los resultados con precaución.</span>
+          <span class="warn-badge__text"><strong>Evaluados bajos (n &lt; 5):</strong> este programa cuenta con muy pocos evaluados en el año vigente. Interpretar los resultados con precaución.</span>
         </div>
-        
-        <div class="explorer-grid">
-          <div class="card">
-            <h3 class="card__title">Competencias Genéricas vs. NBC Nacional</h3>
-            <p class="card__subtitle">Programa (azul) vs. Promedio Nacional de su NBC (naranja).</p>
-            <div class="chart-container" id="progRadar"></div>
+
+        <div class="charts-grid charts-grid--stacked">
+          <!-- Tarjeta combinada: genéricas + específicas vs. NBC -->
+          <div class="card prog-genspec-card">
+            <div class="prog-genspec-grid">
+              <!-- Columna izquierda: Genéricas (radar) -->
+              <div class="prog-genspec-side">
+                <h3 class="card__title prog-genspec-side__title">Competencias genéricas vs. NBC <span id="progRadarYearLbl">2025</span></h3>
+                <div class="chart-container" id="progRadar"></div>
+              </div>
+              <!-- Columna derecha: Específicas (barras) -->
+              <div class="prog-genspec-side" id="progSpecCard">
+                <h3 class="card__title prog-genspec-side__title">Competencias específicas vs. NBC <span id="progSpecYearLbl">2025</span></h3>
+                <div class="chart-container" id="progSpecBar"></div>
+              </div>
+            </div>
           </div>
-          
-          <div class="card" id="progSpecCard">
-            <h3 class="card__title">Competencias Específicas vs. NBC Nacional</h3>
-            <p class="card__subtitle">Desempeño en módulos disciplinares comparados con su grupo de referencia.</p>
-            <div class="chart-container" id="progSpecBar"></div>
-          </div>
-          
           <div class="card">
-            <h3 class="card__title">Evolución Histórica Global</h3>
-            <p class="card__subtitle">Evolución del puntaje global del programa vs. NBC Nacional (2020–2025).</p>
+            <h3 class="card__title">Evolución histórica global <span class="card__title-soft">2020 – 2025</span></h3>
             <div class="chart-container" id="progHist"></div>
           </div>
-          
           <div class="card">
-            <h3 class="card__title">Distribución por Niveles de Desempeño</h3>
-            <p class="card__subtitle">Distribución porcentual por nivel (1 al 5) en genéricas vs. NBC Nacional.</p>
+            <h3 class="card__title">Distribución por niveles de desempeño</h3>
             <div class="chart-container" id="progNiveles"></div>
           </div>
         </div>

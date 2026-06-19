@@ -177,17 +177,22 @@ programa). Aquí se sustituyen por **un único componente filtrable** (G9).
 ## SECCIÓN 6 — Programas
 
 ### G9 · Explorador de programas (componente filtrable) — **Esencial**
-- **Tipo:** componente compuesto con selector facultad→programa, que actualiza 4 sub-vistas.
-- **Datos:** `programas[]` (39 programas: competencias_2025[], especificas_2025[], niveles_2025[], historico[], global vs global_nbc_nacional, n_bajo).
-- **Sub-vistas al seleccionar un programa:**
-  1. Radar de competencias genéricas del programa vs. su NBC nacional.
-  2. Barras de competencias específicas vs. NBC (ojo: algunos programas tienen 0 específicas → ocultar la sub-vista).
-  3. Histórico del programa (línea 2020-2025).
-  4. Niveles de desempeño del programa vs. NBC (barras apiladas).
+- **Tipo:** componente compuesto con **3 filtros arriba** (facultad → programa → año) que actualizan 3 cards.
+- **Datos:** `programas[]` (39 programas) con los campos:
+  - `competencias_2025[]`, `especificas_2025[]`, `niveles_2025[]`, `historico[]` (rangos vigentes).
+  - **`radar_historico` (v2.7):** `{<año>: {global_programa, global_nbc_nacional, n_programa, n_nbc_nacional, competencias: [5 ejes con puntaje_programa, puntaje_nbc_nacional, n_nbc_nacional]}}` — alimenta el radar al cambiar año.
+  - **`especificas_historico` (v2.7):** `{<año>: [{prueba, puntaje_programa, puntaje_nbc_nacional, n_nbc_nacional}, …]}` — alimenta las barras específicas al cambiar año (solo años en que el programa rindió esa específica).
+  - `nbc_id`, `nbc_nombre`, `global_nbc_nacional_2025`, `n_nbc_nacional_2025`, `n_bajo`.
+- **Cards visibles (v2.7):**
+  1. **Card combinado "Competencias genéricas + específicas"** — radar a la izquierda y barras a la derecha, separadas por un divisor vertical sutil. Ambas comparten el **mismo selector de año** ubicado en la fila de filtros superior, por lo que siempre muestran el mismo periodo.
+     - **Radar** (PANORAMA_UM azul = programa; PANORAMA_NAT verde = NBC nacional): 6 ejes con el Puntaje Global como sexto eje, etiquetas a distancia fija con separación perpendicular para evitar superposición.
+     - **Barras específicas** (mismo par de colores): horizontales, agrupadas. Si el año seleccionado no tiene específicas, el card se oculta automáticamente.
+  2. **Card "Evolución histórica global 2020-2025"** — **dos líneas históricas** (programa en azul + NBC nacional en verde), con etiquetas de valor sobre cada punto. Reemplaza la antigua línea horizontal punteada de "Ref. NBC (vigente)" por una trayectoria comparativa real.
+  3. **Card "Distribución por niveles de desempeño"** — barras apiladas Nivel 1-5 del programa vs. NBC nacional.
 - **Mensaje:** "Cada programa frente a su grupo de referencia nacional, y su evolución."
-- **Decisión:** da a cada director su diagnóstico específico.
+- **Decisión:** da a cada director su diagnóstico específico para el año que le interese revisar.
 - **Por qué un componente filtrable y NO 39 secciones:** elimina la redundancia del PPTX (~70 gráficos repetidos); un solo módulo interactivo cubre todos los programas y escala solo cuando se agregan más.
-- **Diseño:** badge de advertencia para programas con `n_bajo: true`; comparación siempre vs. NBC en naranja.
+- **Diseño:** badge `⚠️ Evaluados bajos (n<5)` para programas con `n_bajo: true`. El selector de año puebla la **unión** de años disponibles en `radar_historico` y `especificas_historico` del programa actual; al cambiar de programa, el año se preserva si está disponible y si no cae al año vigente.
 
 ---
 

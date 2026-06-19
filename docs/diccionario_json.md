@@ -272,6 +272,8 @@ Datos del explorador de programas.
 |---|---|---|
 | `programa` | texto | Nombre del programa académico (grafía original del Excel). |
 | `facultad` | texto | Facultad asignada en `parametros.yml`. |
+| `nbc_id` | número \| null | Identificador interno del NBC (Núcleo Básico de Conocimiento) al que pertenece el programa. |
+| `nbc_nombre` | texto \| null | Nombre del NBC (p. ej. "ADMINISTRACIÓN", "BIOLOGÍA, MICROBIOLOGÍA Y AFINES"). |
 | `n_2025` | número | Evaluados del año vigente. |
 | `global_2025` | número | Puntaje global del programa. |
 | `global_nbc_nacional_2025` | número | Referencia nacional del NBC. |
@@ -281,6 +283,8 @@ Datos del explorador de programas.
 | `especificas_2025[]` | arreglo | Competencias específicas disponibles del programa vs. NBC. Puede estar vacío. Ver subschema. |
 | `niveles_2025[]` | arreglo | Distribución por niveles del programa vs. NBC. Ver subschema. |
 | `historico[]` | arreglo | Serie histórica 2020-2025 del programa. Ver subschema. |
+| `radar_historico` | objeto | **(v2.7)** Histórico anual completo del radar de genéricas. Clave = año (string). Ver subschema. |
+| `especificas_historico` | objeto | **(v2.7)** Histórico anual de competencias específicas. Clave = año (string), valor = array con la misma forma de `especificas_2025[]`. Solo aparecen años en que el programa rindió esa específica. |
 
 ### `programas[].competencias_2025[]`
 
@@ -312,6 +316,26 @@ Serie histórica del programa por año.
 | `anio` | número | Año de la medición. |
 | `puntaje` | número | Puntaje global del programa ese año. |
 | `n` | número | Evaluados del programa ese año. |
+
+### `programas[].radar_historico` *(v2.7)*
+
+Objeto indexado por año (string, p. ej. `"2025"`). Cada año contiene los datos completos para reconstruir el radar genérico del programa y compararlo con su NBC nacional en ese año.
+
+| Campo | Tipo | Descripción |
+|---|---|---|
+| `global_programa` | número | Puntaje global del programa ese año. |
+| `global_nbc_nacional` | número \| null | Puntaje global del NBC a nivel nacional ese año. |
+| `n_programa` | número | Evaluados del programa ese año. |
+| `n_nbc_nacional` | número | Evaluados del NBC a nivel nacional ese año. |
+| `competencias[]` | arreglo | 5 entradas (una por competencia genérica) con `competencia`, `puntaje_programa`, `puntaje_nbc_nacional`, `n_nbc_nacional`. |
+
+Solo aparecen años en que el programa tuvo data válida en el Excel del Icfes. Alimenta el radar del card combinado de Programas y la línea histórica del NBC en la card "Evolución histórica global".
+
+### `programas[].especificas_historico` *(v2.7)*
+
+Objeto indexado por año (string). Cada año contiene un arreglo con la misma forma que `especificas_2025[]` (campos `prueba`, `puntaje_programa`, `puntaje_nbc_nacional`, `n_nbc_nacional`). Una competencia específica solo aparece en el año si el programa la rindió ese año (esto significa que el rango de años cubierto puede ser **menor que el de `radar_historico`** porque las pruebas específicas se incorporaron gradualmente).
+
+Alimenta el card combinado de Programas cuando el usuario cambia el selector único de año.
 
 ## `top10`
 

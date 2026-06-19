@@ -1837,6 +1837,9 @@ function populateProgramsList(d) {
   updateProgramExplorerData(d);
 }
 
+// Año activo único para el explorador (radar + específicas comparten el mismo año)
+let activeProgYear = null;
+
 function updateProgramExplorerData(d) {
   const p = d.programas.find(prog => prog.programa === activeProgClean);
   if (!p) return;
@@ -1847,251 +1850,451 @@ function updateProgramExplorerData(d) {
     warn.style.display = p.n_bajo ? 'flex' : 'none';
   }
 
+  // Selector único de año (unión de años con data en radar o específicas)
+  initProgYearPicker(d, p);
+
   // Renderizar los 4 sub-gráficos
-  renderExplorerRadar(p);
-  renderExplorerSpecifics(p);
+  renderExplorerRadar(p, activeProgYear);
+  renderExplorerSpecifics(p, activeProgYear);
   renderExplorerHistory(p);
   renderExplorerLevels(p);
 }
 
-// Sub-Gráfico 1: Radar de genéricas del programa vs NBC
-function renderExplorerRadar(p) {
+function initProgYearPicker(d, p) {
+  const sel = document.getElementById('selAnioProg');
+  if (!sel) return;
+
+  // Union de años con data en radar o específicas
+  const radarYears = Object.keys(p.radar_historico || {})
+    .filter(y => Array.isArray(p.radar_historico[y]?.competencias) && p.radar_historico[y].competencias.some(c => c.puntaje_programa != null))
+    .map(y => parseInt(y, 10));
+  const specYears = Object.keys(p.especificas_historico || {})
+    .filter(y => Array.isArray(p.especificas_historico[y]) && p.especificas_historico[y].length > 0)
+    .map(y => parseInt(y, 10));
+  const allYears = [...new Set([...radarYears, ...specYears])].sort((a, b) => b - a);
+
+  const opciones = allYears.length > 0 ? allYears : [d.meta?.anio_vigente ?? 2025];
+  sel.innerHTML = opciones.map(y => `<option value="${y}">${y}</option>`).join('');
+
+  // Mantener año si aplica al programa actual, sino default al vigente o el más reciente
+  const currentYear = d.meta?.anio_vigente ?? opciones[0];
+  if (!activeProgYear || !opciones.includes(activeProgYear)) {
+    activeProgYear = opciones.includes(currentYear) ? currentYear : opciones[0];
+  }
+  sel.value = String(activeProgYear);
+
+  // Re-bind del listener
+  const newSel = sel.cloneNode(true);
+  sel.parentNode.replaceChild(newSel, sel);
+  newSel.addEventListener('change', () => {
+    activeProgYear = parseInt(newSel.value, 10);
+    const prog = d.programas.find(prog => prog.programa === activeProgClean);
+    if (!prog) return;
+    renderExplorerRadar(prog, activeProgYear);
+    renderExplorerSpecifics(prog, activeProgYear);
+  });
+}
+
+// Sub-Gráfico 1: Radar genéricas del programa vs NBC nacional (filtrable por año)
+function renderExplorerRadar(p, yearOverride) {
   const container = document.getElementById('progRadar');
   if (!container) return;
 
-  const comps = p.competencias_2025;
+  // Determinar el año a usar y los datos de competencias / globales
+  const targetYear = yearOverride ?? (parseInt(document.getElementById('selAnioProgRadar')?.value, 10) || 2025);
+  const histYear = (p.radar_historico || {})[String(targetYear)];
+
+  // Si el año seleccionado tiene historial, lo usamos; si no, fallback a competencias_2025
+  let comps, globalProg, globalNbc, nProg, nNbc;
+  if (histYear && Array.isArray(histYear.competencias) && histYear.competencias.length > 0) {
+    comps = histYear.competencias.map(c => ({
+      prueba: c.competencia,
+      puntaje_programa: c.puntaje_programa,
+      puntaje_nbc_nacional: c.puntaje_nbc_nacional
+    }));
+    globalProg = histYear.global_programa;
+    globalNbc = histYear.global_nbc_nacional;
+    nProg = histYear.n_programa || 0;
+    nNbc = histYear.n_nbc_nacional || 0;
+  } else {
+    comps = p.competencias_2025 || [];
+    globalProg = p.global_2025;
+    globalNbc = p.global_nbc_nacional_2025;
+    nProg = p.n_2025 || 0;
+    nNbc = p.n_nbc_nacional_2025 || 0;
+  }
+
   if (!comps || comps.length === 0) {
-    container.innerHTML = '<div class="placeholder">Sin datos de competencias genéricas</div>';
+    container.innerHTML = '<div class="placeholder">Sin datos de competencias para este año</div>';
     return;
   }
 
-  const w = 360;
-  const h = 260;
+  // Actualizar la etiqueta del año en el título del card
+  const yrLbl = document.getElementById('progRadarYearLbl');
+  if (yrLbl) yrLbl.textContent = targetYear;
+
+  // 6 ejes = 5 competencias + Puntaje Global del programa
+  const shortLabel = (name) => ({
+    'RAZONAMIENTO CUANTITATIVO': 'Razonamiento\nCuantitativo',
+    'COMPETENCIAS CIUDADANAS': 'Competencias\nCiudadanas',
+    'COMUNICACIÓN ESCRITA': 'Comunicación\nEscrita',
+    'LECTURA CRÍTICA': 'Lectura Crítica',
+    'INGLÉS': 'Inglés'
+  })[name] || name;
+
+  const axes = [
+    ...comps.map(c => ({
+      full: c.prueba,
+      label: shortLabel(c.prueba),
+      prog: c.puntaje_programa,
+      nbc: c.puntaje_nbc_nacional
+    })),
+    {
+      full: 'Puntaje Global',
+      label: 'Puntaje Global',
+      prog: globalProg,
+      nbc: globalNbc
+    }
+  ];
+
+  // viewBox más cuadrado y radio mayor: la figura llena más la columna del card combinado
+  const w = 580;
+  const h = 540;
   const cx = w / 2;
-  const cy = h / 2;
-  const rMax = 80;
-  const totalAxes = comps.length;
+  const cy = h / 2 + 4;
+  const rMax = 165;
+  const n = axes.length;
 
   const svg = createSVGEl('svg', { viewBox: `0 0 ${w} ${h}`, class: 'svg-chart' });
 
-  // Pentágonos concéntricos
-  const steps = 4;
+  // Colores: azul para programa, verde para NBC (igual que Panorama)
+  const COLOR_PROG = PANORAMA_UM;
+  const COLOR_NBC = PANORAMA_NAT;
+
+  // Escala fija 100-160 (como el institucional)
+  const minScale = 100;
+  const maxScale = 160;
+  const scoreToRadius = (s) => Math.max(0, Math.min(1, (s - minScale) / (maxScale - minScale))) * rMax;
+
+  // Polígonos concéntricos
+  const steps = 5;
   for (let i = 1; i <= steps; i++) {
     const ratio = i / steps;
-    const rCurrent = rMax * ratio;
+    const r = rMax * ratio;
     const pts = [];
-    for (let a = 0; a < totalAxes; a++) {
-      const angle = a * (2 * Math.PI / totalAxes) - Math.PI / 2;
-      pts.push(`${cx + rCurrent * Math.cos(angle)},${cy + rCurrent * Math.sin(angle)}`);
+    for (let a = 0; a < n; a++) {
+      const angle = a * (2 * Math.PI / n) - Math.PI / 2;
+      pts.push(`${cx + r * Math.cos(angle)},${cy + r * Math.sin(angle)}`);
     }
-    const polygon = createSVGEl('polygon', {
+    svg.appendChild(createSVGEl('polygon', {
       points: pts.join(' '),
-      fill: 'none', stroke: 'var(--border)', 'stroke-width': '0.7', 'stroke-dasharray': '3,3'
-    });
-    svg.appendChild(polygon);
-
-    const valText = createSVGEl('text', {
-      x: cx + rCurrent * Math.cos(-Math.PI / 2) + 4,
-      y: cy + rCurrent * Math.sin(-Math.PI / 2) - 2,
-      class: 'axis-label', style: 'font-size: 7px; opacity: 0.7;'
-    });
-    valText.textContent = Math.round(200 * ratio);
-    svg.appendChild(valText);
+      fill: 'none',
+      stroke: 'var(--border)',
+      'stroke-width': '0.6',
+      'stroke-dasharray': i === steps ? '0' : '2,3',
+      opacity: i === steps ? '0.55' : '0.4'
+    }));
   }
 
-  // Ejes y Etiquetas
-  for (let a = 0; a < totalAxes; a++) {
-    const angle = a * (2 * Math.PI / totalAxes) - Math.PI / 2;
-    const targetX = cx + rMax * Math.cos(angle);
-    const targetY = cy + rMax * Math.sin(angle);
-
-    // Eje line
-    const axis = createSVGEl('line', { x1: cx, y1: cy, x2: targetX, y2: targetY, stroke: 'var(--border)', 'stroke-width': '0.8' });
-    svg.appendChild(axis);
-
-    // Etiqueta
-    let label = comps[a].prueba;
-    if (label === 'RAZONAMIENTO CUANTITATIVO') label = 'Raz. Cuantitativo';
-    if (label === 'COMPETENCIAS CIUDADANAS') label = 'Ciudadanas';
-    if (label === 'COMUNICACIÓN ESCRITA') label = 'Com. Escrita';
-    if (label === 'LECTURA CRÍTICA') label = 'Lectura Crítica';
-    if (label === 'INGLÉS') label = 'Inglés';
-
-    const textX = cx + (rMax + 10) * Math.cos(angle);
-    const textY = cy + (rMax + 10) * Math.sin(angle);
-
-    const text = createSVGEl('text', {
-      x: textX, y: textY + 3,
-      'text-anchor': Math.abs(Math.cos(angle)) < 0.1 ? 'middle' : Math.cos(angle) > 0 ? 'start' : 'end',
-      class: 'axis-label', style: 'font-size: 8px; font-weight: 600;'
-    });
-    text.textContent = label;
-    svg.appendChild(text);
+  // Ejes radiales
+  for (let a = 0; a < n; a++) {
+    const angle = a * (2 * Math.PI / n) - Math.PI / 2;
+    svg.appendChild(createSVGEl('line', {
+      x1: cx, y1: cy,
+      x2: cx + rMax * Math.cos(angle),
+      y2: cy + rMax * Math.sin(angle),
+      stroke: 'var(--border)',
+      'stroke-width': '0.6',
+      opacity: '0.5'
+    }));
   }
 
-  // Polígonos de Datos (Programa vs NBC)
-  const scoreToRadius = (score) => (Math.min(Math.max(score, 0), 200) / 200) * rMax;
+  // Nombres de competencias (afuera de los valores)
+  for (let a = 0; a < n; a++) {
+    const angle = a * (2 * Math.PI / n) - Math.PI / 2;
+    const labelDist = rMax + 42;
+    const lx = cx + labelDist * Math.cos(angle);
+    const ly = cy + labelDist * Math.sin(angle);
+    const anchor = Math.abs(Math.cos(angle)) < 0.15 ? 'middle' : (Math.cos(angle) > 0 ? 'start' : 'end');
 
-  const ptsProg = [];
-  const ptsNbc = [];
-
-  for (let a = 0; a < totalAxes; a++) {
-    const angle = a * (2 * Math.PI / totalAxes) - Math.PI / 2;
-    const rProg = scoreToRadius(comps[a].puntaje_programa);
-    const rNbc = scoreToRadius(comps[a].puntaje_nbc_nacional);
-
-    ptsProg.push(`${cx + rProg * Math.cos(angle)},${cy + rProg * Math.sin(angle)}`);
-    ptsNbc.push(`${cx + rNbc * Math.cos(angle)},${cy + rNbc * Math.sin(angle)}`);
-  }
-
-  // Polígono NBC (Naranja)
-  const polyNbc = createSVGEl('polygon', {
-    points: ptsNbc.join(' '),
-    fill: COLOR_REF, 'fill-opacity': '0.1', stroke: COLOR_REF, 'stroke-width': '1.8', class: 'chart-poly'
-  });
-  svg.appendChild(polyNbc);
-
-  // Polígono Programa (Azul)
-  const polyProg = createSVGEl('polygon', {
-    points: ptsProg.join(' '),
-    fill: COLOR_UM, 'fill-opacity': '0.24', stroke: COLOR_UM, 'stroke-width': '2.2', class: 'chart-poly'
-  });
-  svg.appendChild(polyProg);
-
-  // Círculos interactivos
-  const drawDots = (dataKey, color, name) => {
-    for (let a = 0; a < totalAxes; a++) {
-      const angle = a * (2 * Math.PI / totalAxes) - Math.PI / 2;
-      const score = comps[a][dataKey];
-      const r = scoreToRadius(score);
-      const px = cx + r * Math.cos(angle);
-      const py = cy + r * Math.sin(angle);
-
-      const circle = createSVGEl('circle', {
-        cx: px, cy: py, r: 4.5, fill: color, class: 'chart-dot'
+    const lines = axes[a].label.split('\n');
+    const lineHeight = 13;
+    const startY = ly - ((lines.length - 1) * lineHeight) / 2 + 4;
+    lines.forEach((line, idx) => {
+      const t = createSVGEl('text', {
+        x: lx,
+        y: startY + idx * lineHeight,
+        'text-anchor': anchor,
+        style: 'font-family: var(--font-display); font-weight: 700; font-size: 11px; fill: var(--brand-primary-dark);'
       });
+      t.textContent = line;
+      svg.appendChild(t);
+    });
+  }
 
-      circle.addEventListener('mouseenter', (e) => {
-        showTooltip(e, `<strong>${name}</strong>${comps[a].prueba}: ${score} pts`);
-      });
-      circle.addEventListener('mousemove', moveTooltip);
-      circle.addEventListener('mouseleave', hideTooltip);
-
-      svg.appendChild(circle);
+  // Polígonos de datos
+  const buildPts = (key) => {
+    const pts = [];
+    for (let a = 0; a < n; a++) {
+      const angle = a * (2 * Math.PI / n) - Math.PI / 2;
+      const r = scoreToRadius(axes[a][key]);
+      pts.push([cx + r * Math.cos(angle), cy + r * Math.sin(angle)]);
     }
+    return pts;
   };
+  const ptsNbc = buildPts('nbc');
+  const ptsProg = buildPts('prog');
 
-  drawDots('puntaje_nbc_nacional', COLOR_REF, 'Promedio NBC');
-  drawDots('puntaje_programa', COLOR_UM, 'Programa');
+  // Polígono NBC nacional (verde tenue)
+  svg.appendChild(createSVGEl('polygon', {
+    points: ptsNbc.map(p => p.join(',')).join(' '),
+    fill: COLOR_NBC,
+    'fill-opacity': '0.06',
+    stroke: COLOR_NBC,
+    'stroke-width': '2.4',
+    'stroke-linejoin': 'round'
+  }));
 
-  // Leyenda
-  const legend = createLegend([
-    { color: COLOR_UM, text: 'Programa' },
-    { color: COLOR_REF, text: `Ref. NBC (${p.nbc_nombre})` }
-  ], cx - 110, h - 15);
-  svg.appendChild(legend);
+  // Polígono Programa (azul institucional)
+  svg.appendChild(createSVGEl('polygon', {
+    points: ptsProg.map(p => p.join(',')).join(' '),
+    fill: COLOR_PROG,
+    'fill-opacity': '0.08',
+    stroke: COLOR_PROG,
+    'stroke-width': '2.8',
+    'stroke-linejoin': 'round'
+  }));
+
+  // Puntos y etiquetas numéricas separadas perpendicularmente al eje
+  for (let a = 0; a < n; a++) {
+    const angle = a * (2 * Math.PI / n) - Math.PI / 2;
+    const cosA = Math.cos(angle);
+    const sinA = Math.sin(angle);
+    const perpX = -sinA;
+    const perpY = cosA;
+
+    const [progX, progY] = ptsProg[a];
+    const [nbcX, nbcY] = ptsNbc[a];
+
+    // Tooltips por línea: cada uno muestra la info de la serie que el usuario apunta
+    const nbcName = p.nbc_nombre ? titleCase(p.nbc_nombre) : 'su NBC';
+    const progName = p.programa ? titleCase(p.programa) : 'Programa';
+    const compLabel = titleCase(axes[a].full);
+    const nProgFmt = NUM.format(nProg);
+    const nNbcFmt = NUM.format(nNbc);
+
+    // Punto del Programa (azul) — muestra info de Unimagdalena
+    const dotProg = createSVGEl('circle', {
+      cx: progX, cy: progY, r: 4.8,
+      fill: COLOR_PROG, stroke: '#fff', 'stroke-width': '1.6',
+      class: 'chart-dot'
+    });
+    dotProg.addEventListener('mouseenter', (e) => showTooltip(e, `<strong>${progName} · Unimagdalena</strong>${compLabel}: <strong>${axes[a].prog} pts</strong><br><span style="opacity:.78">Evaluados del programa: ${nProgFmt}</span>`));
+    dotProg.addEventListener('mousemove', moveTooltip);
+    dotProg.addEventListener('mouseleave', hideTooltip);
+    svg.appendChild(dotProg);
+
+    // Punto NBC Nacional (verde) — muestra info del NBC del programa
+    const dotNbc = createSVGEl('circle', {
+      cx: nbcX, cy: nbcY, r: 4.2,
+      fill: COLOR_NBC, stroke: '#fff', 'stroke-width': '1.4',
+      class: 'chart-dot'
+    });
+    dotNbc.addEventListener('mouseenter', (e) => showTooltip(e, `<strong>NBC ${nbcName} · Nacional</strong>${compLabel}: <strong>${axes[a].nbc} pts</strong><br><span style="opacity:.78">Evaluados a nivel nacional del NBC: ${nNbcFmt}</span>`));
+    dotNbc.addEventListener('mousemove', moveTooltip);
+    dotNbc.addEventListener('mouseleave', hideTooltip);
+    svg.appendChild(dotNbc);
+
+    // Etiquetas a distancia fija del centro, separadas perpendicularmente
+    const valueLabelDist = rMax + 16;
+    const baseX = cx + valueLabelDist * cosA;
+    const baseY = cy + valueLabelDist * sinA;
+    const tangentSep = 22;
+
+    const progLbl = createSVGEl('text', {
+      x: baseX + tangentSep * perpX,
+      y: baseY + tangentSep * perpY + 4,
+      'text-anchor': 'middle',
+      style: `font-family: var(--font-display); font-weight: 800; font-size: 13px; fill: ${COLOR_PROG};`
+    });
+    progLbl.textContent = axes[a].prog;
+    svg.appendChild(progLbl);
+
+    const nbcLbl = createSVGEl('text', {
+      x: baseX - tangentSep * perpX,
+      y: baseY - tangentSep * perpY + 4,
+      'text-anchor': 'middle',
+      style: `font-family: var(--font-display); font-weight: 800; font-size: 13px; fill: ${COLOR_NBC};`
+    });
+    nbcLbl.textContent = axes[a].nbc;
+    svg.appendChild(nbcLbl);
+  }
+
+  // Leyenda inferior unificada
+  svg.appendChild(createLegend([
+    { color: COLOR_PROG, text: 'Programa' },
+    { color: COLOR_NBC, text: 'Promedio nacional del NBC' }
+  ], cx - 195, h - 14, { fontSize: 13, rectW: 20, rectH: 10, gap: 270, textGap: 30, fontWeight: 700 }));
 
   container.innerHTML = '';
   container.appendChild(svg);
 }
 
-// Sub-Gráfico 2: Barras de específicas vs NBC
-function renderExplorerSpecifics(p) {
+// Sub-Gráfico 2: Barras de específicas vs NBC (paleta azul/verde, filtrable por año)
+function renderExplorerSpecifics(p, yearOverride) {
   const card = document.getElementById('progSpecCard');
   const container = document.getElementById('progSpecBar');
   if (!container || !card) return;
 
-  const specs = p.especificas_2025;
+  // Determinar año a usar y datos correspondientes
+  const targetYear = yearOverride ?? (parseInt(document.getElementById('selAnioProgSpec')?.value, 10) || 2025);
+  const histYear = (p.especificas_historico || {})[String(targetYear)];
+  const specs = (Array.isArray(histYear) && histYear.length > 0) ? histYear : (p.especificas_2025 || []);
+
   if (!specs || specs.length === 0) {
-    card.style.display = 'none'; // Ocultar bloque si no tiene específicas
+    card.style.display = 'none';
     return;
   }
-  card.style.display = 'block';
+  card.style.display = '';
 
-  const w = 360;
-  const h = 260;
-  const margin = { top: 20, right: 30, bottom: 45, left: 120 };
+  // Actualizar etiqueta del año en el título
+  const yrLbl = document.getElementById('progSpecYearLbl');
+  if (yrLbl) yrLbl.textContent = targetYear;
+
+  const COLOR_PROG = PANORAMA_UM;   // azul institucional
+  const COLOR_NBC = PANORAMA_NAT;   // verde
+  const nbcName = p.nbc_nombre ? titleCase(p.nbc_nombre) : 'su NBC';
+  const progName = p.programa ? titleCase(p.programa) : 'Programa';
+
+  // n del programa para el año seleccionado (del histórico global)
+  const histGlobal = (p.historico || []).find(h => h.anio === targetYear);
+  const nProgYear = histGlobal?.n ?? p.n_2025 ?? 0;
+  // n nacional NBC: usa el dato más completo disponible (el del año, sino el 2025)
+  const nNbcYear = specs[0]?.n_nbc_nacional ?? p.n_nbc_nacional_2025 ?? 0;
+  const nProgFmt = NUM.format(nProgYear);
+  const nNbcFmt = NUM.format(nNbcYear);
+
+  // Rango Y a partir de los datos con padding (con guardas si no hay datos válidos)
+  const allVals = specs.flatMap(s => [s.puntaje_programa, s.puntaje_nbc_nacional]).filter(v => v != null && isFinite(v));
+  if (allVals.length === 0) {
+    container.innerHTML = '<div class="placeholder">Sin datos suficientes</div>';
+    return;
+  }
+  const dMin = Math.min(...allVals);
+  const dMax = Math.max(...allVals);
+  let minVal = Math.floor((dMin - 8) / 10) * 10;
+  let maxVal = Math.ceil((dMax + 8) / 10) * 10;
+  if (maxVal - minVal < 30) maxVal = minVal + 30;   // rango mínimo para que las barras no colapsen
+
+  // viewBox cuadrado para encajar en la columna del card combinado y aprovechar más alto
+  const w = 580;
+  const h = 540;
+  const margin = { top: 18, right: 50, bottom: 70, left: 180 };
+  const innerW = w - margin.left - margin.right;
+  const innerH = h - margin.top - margin.bottom;
 
   const svg = createSVGEl('svg', { viewBox: `0 0 ${w} ${h}`, class: 'svg-chart' });
 
-  const totalBars = specs.length;
-  const blockHeight = (h - margin.top - margin.bottom) / totalBars;
-  const barHeight = blockHeight * 0.35; // Espacio para bar programa y bar NBC
+  const getX = v => margin.left + ((v - minVal) / (maxVal - minVal)) * innerW;
+  const totalGroups = specs.length;
+  const groupSlot = innerH / totalGroups;
+  // Barras más gruesas; cuando hay 1 o 2 específicas, llenan el espacio sin verse "perdidas"
+  const barH = Math.min(64, groupSlot * 0.38);
+  const barGap = Math.min(10, groupSlot * 0.06);
 
-  const minVal = 80;
-  const maxVal = 200;
-
-  const getWidth = (val) => ((val - minVal) / (maxVal - minVal)) * (w - margin.left - margin.right);
-
-  // Rejilla vertical
-  const ticks = 3;
-  for (let i = 0; i <= ticks; i++) {
-    const val = minVal + (i / ticks) * (maxVal - minVal);
-    const x = margin.left + getWidth(val);
-
-    const line = createSVGEl('line', { x1: x, y1: margin.top, x2: x, y2: h - margin.bottom, class: 'grid-line' });
-    const text = createSVGEl('text', { x: x, y: h - margin.bottom + 14, 'text-anchor': 'middle', class: 'axis-label' });
-    text.textContent = Math.round(val);
-    svg.appendChild(line);
-    svg.appendChild(text);
+  // Rejilla vertical + ticks múltiplos de 10
+  for (let v = minVal; v <= maxVal; v += 10) {
+    const x = getX(v);
+    svg.appendChild(createSVGEl('line', {
+      x1: x, y1: margin.top, x2: x, y2: margin.top + innerH,
+      stroke: 'var(--border)', 'stroke-width': '0.6',
+      'stroke-dasharray': '2,4', opacity: '0.6'
+    }));
+    const lbl = createSVGEl('text', {
+      x, y: margin.top + innerH + 18, 'text-anchor': 'middle',
+      style: 'font-family: var(--font-display); font-size: 11px; font-weight: 500; fill: var(--text-soft);'
+    });
+    lbl.textContent = v;
+    svg.appendChild(lbl);
   }
 
-  // Dibujar las barras agrupadas
+  // Línea base del eje X
+  svg.appendChild(createSVGEl('line', {
+    x1: margin.left, y1: margin.top + innerH,
+    x2: w - margin.right, y2: margin.top + innerH,
+    stroke: 'var(--border)', 'stroke-width': '1'
+  }));
+
+  // Función para acortar nombre de prueba (sin "...")
+  const shortenSpec = (name) => {
+    if (!name) return '';
+    const n = titleCase(name);
+    return n.length > 26 ? n.slice(0, 24).trim() + '…' : n;
+  };
+
+  // Dibujar grupos
   specs.forEach((spec, idx) => {
-    const yBlock = margin.top + idx * blockHeight;
-    
-    // Alturas de barras
-    const yProg = yBlock + blockHeight * 0.15;
-    const yNbc = yBlock + blockHeight * 0.5;
+    const groupCenterY = margin.top + groupSlot * (idx + 0.5);
+    const yProg = groupCenterY - barH - barGap / 2;
+    const yNbc  = groupCenterY + barGap / 2;
+    const xZero = margin.left;
+    const wProg = getX(spec.puntaje_programa) - xZero;
+    const wNbc  = getX(spec.puntaje_nbc_nacional) - xZero;
 
-    const wProg = getWidth(spec.puntaje_programa);
-    const wNbc = getWidth(spec.puntaje_nbc_nacional);
+    // Etiqueta de la prueba (izquierda)
+    const label = createSVGEl('text', {
+      x: margin.left - 14, y: groupCenterY + 5,
+      'text-anchor': 'end',
+      style: 'font-family: var(--font-display); font-size: 12px; font-weight: 700; fill: var(--brand-primary-dark);'
+    });
+    label.textContent = shortenSpec(spec.prueba);
+    // Tooltip en el label cuando el nombre fue truncado
+    label.addEventListener('mouseenter', (e) => showTooltip(e, `<strong>${titleCase(spec.prueba)}</strong>Programa: ${spec.puntaje_programa} pts<br>NBC nacional: ${spec.puntaje_nbc_nacional} pts`));
+    label.addEventListener('mousemove', moveTooltip);
+    label.addEventListener('mouseleave', hideTooltip);
+    svg.appendChild(label);
 
-    // Barra Programa (Azul)
+    // Barra Programa (azul) — encima
     const rectProg = createSVGEl('rect', {
-      x: margin.left, y: yProg, width: Math.max(wProg, 2), height: barHeight,
-      fill: COLOR_UM, rx: 2, class: 'chart-bar'
+      x: xZero, y: yProg, width: Math.max(wProg, 2), height: barH,
+      fill: COLOR_PROG, rx: 4, class: 'chart-bar'
     });
-    // Barra NBC (Naranja)
-    const rectNbc = createSVGEl('rect', {
-      x: margin.left, y: yNbc, width: Math.max(wNbc, 2), height: barHeight,
-      fill: COLOR_REF, rx: 2, class: 'chart-bar'
-    });
-
-    // Texto de la prueba específica
-    const nameText = createSVGEl('text', {
-      x: margin.left - 6, y: yBlock + blockHeight / 2 + 3,
-      'text-anchor': 'end', class: 'axis-label',
-      style: 'font-size: 7.5px; font-weight: 600;'
-    });
-    let cleanName = spec.prueba.replace('DISEÑO DE ', '').replace('ANÁLISIS DE ', '').replace('FORMULACIÓN DE ', '');
-    if (cleanName.length > 22) cleanName = cleanName.substring(0, 20) + '...';
-    nameText.textContent = cleanName;
-
-    // Agregar tooltips
-    rectProg.addEventListener('mouseenter', (e) => {
-      showTooltip(e, `<strong>Programa - Específica</strong>${spec.prueba}: ${spec.puntaje_programa} pts`);
-    });
+    rectProg.addEventListener('mouseenter', (e) => showTooltip(e, `<strong>${progName} · Unimagdalena</strong>${titleCase(spec.prueba)}: <strong>${spec.puntaje_programa} pts</strong><br><span style="opacity:.78">Evaluados del programa: ${nProgFmt}</span>`));
     rectProg.addEventListener('mousemove', moveTooltip);
     rectProg.addEventListener('mouseleave', hideTooltip);
+    svg.appendChild(rectProg);
 
-    rectNbc.addEventListener('mouseenter', (e) => {
-      showTooltip(e, `<strong>NBC (${p.nbc_nombre}) - Específica</strong>${spec.prueba}: ${spec.puntaje_nbc_nacional} pts`);
+    // Etiqueta numérica al final de la barra Programa
+    const lblProg = createSVGEl('text', {
+      x: xZero + wProg + 7, y: yProg + barH / 2 + 4,
+      style: `font-family: var(--font-display); font-weight: 800; font-size: 12px; fill: ${COLOR_PROG};`
     });
+    lblProg.textContent = spec.puntaje_programa;
+    svg.appendChild(lblProg);
+
+    // Barra NBC (verde) — debajo
+    const rectNbc = createSVGEl('rect', {
+      x: xZero, y: yNbc, width: Math.max(wNbc, 2), height: barH,
+      fill: COLOR_NBC, rx: 4, class: 'chart-bar'
+    });
+    rectNbc.addEventListener('mouseenter', (e) => showTooltip(e, `<strong>NBC ${nbcName} · Nacional</strong>${titleCase(spec.prueba)}: <strong>${spec.puntaje_nbc_nacional} pts</strong><br><span style="opacity:.78">Evaluados a nivel nacional del NBC: ${nNbcFmt}</span>`));
     rectNbc.addEventListener('mousemove', moveTooltip);
     rectNbc.addEventListener('mouseleave', hideTooltip);
-
-    svg.appendChild(rectProg);
     svg.appendChild(rectNbc);
-    svg.appendChild(nameText);
+
+    const lblNbc = createSVGEl('text', {
+      x: xZero + wNbc + 7, y: yNbc + barH / 2 + 4,
+      style: `font-family: var(--font-display); font-weight: 700; font-size: 12px; fill: ${COLOR_NBC};`
+    });
+    lblNbc.textContent = spec.puntaje_nbc_nacional;
+    svg.appendChild(lblNbc);
   });
 
-  // Leyenda
-  const legend = createLegend([
-    { color: COLOR_UM, text: 'Programa' },
-    { color: COLOR_REF, text: 'Promedio NBC' }
-  ], margin.left, h - 15);
-  svg.appendChild(legend);
+  // Leyenda inferior unificada (centrada para w=580, h=540)
+  svg.appendChild(createLegend([
+    { color: COLOR_PROG, text: 'Programa' },
+    { color: COLOR_NBC, text: 'Promedio nacional del NBC' }
+  ], (w / 2) - 170, h - 18, { fontSize: 12, rectW: 18, rectH: 10, gap: 220, textGap: 26, fontWeight: 700 }));
 
   container.innerHTML = '';
   container.appendChild(svg);
@@ -2108,101 +2311,119 @@ function renderExplorerHistory(p) {
     return;
   }
 
-  const w = 360;
-  const h = 260;
-  const margin = { top: 20, right: 20, bottom: 45, left: 45 };
+  // Cruzar histórico del programa con el histórico del NBC nacional (radar_historico)
+  // Solo dejamos años donde el programa tiene puntaje (los del array historico)
+  const radarHist = p.radar_historico || {};
+  const series = hist.map(pt => ({
+    anio: pt.anio,
+    prog: pt.puntaje,
+    nbc: radarHist[String(pt.anio)]?.global_nbc_nacional ?? null,
+    nProg: pt.n,
+    nNbc: radarHist[String(pt.anio)]?.n_nbc_nacional ?? null
+  })).filter(s => s.prog != null);
+
+  // viewBox ajustado al card normal (más ancho)
+  const w = 900;
+  const h = 360;
+  const margin = { top: 30, right: 40, bottom: 70, left: 60 };
+  const innerW = w - margin.left - margin.right;
+  const innerH = h - margin.top - margin.bottom;
 
   const svg = createSVGEl('svg', { viewBox: `0 0 ${w} ${h}`, class: 'svg-chart' });
 
-  const years = hist.map(h => h.anio);
-  const minVal = 110;
-  const maxVal = 190;
+  // Escala Y: usa el rango real con padding
+  const allVals = series.flatMap(s => [s.prog, s.nbc]).filter(v => v != null && isFinite(v));
+  const dataMin = Math.min(...allVals);
+  const dataMax = Math.max(...allVals);
+  const padding = Math.max(6, (dataMax - dataMin) * 0.25);
+  const minVal = Math.floor((dataMin - padding) / 5) * 5;
+  const maxVal = Math.ceil((dataMax + padding) / 5) * 5;
 
-  const getX = (idx) => margin.left + (idx / (years.length - 1)) * (w - margin.left - margin.right);
-  const getY = (val) => h - margin.bottom - ((val - minVal) / (maxVal - minVal)) * (h - margin.top - margin.bottom);
+  const getX = (idx) => margin.left + (idx / Math.max(1, series.length - 1)) * innerW;
+  const getY = (val) => margin.top + innerH - ((val - minVal) / (maxVal - minVal)) * innerH;
 
-  // Rejilla Y
-  const ticks = 4;
+  // Rejilla Y horizontal (5 niveles)
+  const ticks = 5;
   for (let i = 0; i <= ticks; i++) {
     const val = minVal + (i / ticks) * (maxVal - minVal);
     const y = getY(val);
-
-    const line = createSVGEl('line', { x1: margin.left, y1: y, x2: w - margin.right, y2: y, class: 'grid-line' });
-    const text = createSVGEl('text', { x: margin.left - 6, y: y + 4, 'text-anchor': 'end', class: 'axis-label' });
-    text.textContent = Math.round(val);
+    const line = createSVGEl('line', {
+      x1: margin.left, y1: y, x2: w - margin.right, y2: y,
+      stroke: 'var(--border)', 'stroke-width': '1',
+      'stroke-dasharray': i === ticks ? '0' : '3,3',
+      opacity: '0.55'
+    });
     svg.appendChild(line);
+    const text = createSVGEl('text', {
+      x: margin.left - 10, y: y + 4, 'text-anchor': 'end',
+      style: 'font-family: var(--font-display); font-size: 12px; fill: var(--muted); font-weight: 600;'
+    });
+    text.textContent = Math.round(val);
     svg.appendChild(text);
   }
 
-  // Eje X
-  years.forEach((yr, idx) => {
+  // Eje X (años)
+  series.forEach((s, idx) => {
     const x = getX(idx);
-    const text = createSVGEl('text', { x: x, y: h - margin.bottom + 16, 'text-anchor': 'middle', class: 'axis-label', style: 'font-weight: 600;' });
-    text.textContent = yr;
+    const text = createSVGEl('text', {
+      x, y: margin.top + innerH + 22, 'text-anchor': 'middle',
+      style: 'font-family: var(--font-display); font-size: 13px; fill: var(--text); font-weight: 700;'
+    });
+    text.textContent = s.anio;
     svg.appendChild(text);
   });
 
-  // Trazar camino del programa
-  let dPath = '';
-  hist.forEach((pt, idx) => {
-    const x = getX(idx);
-    const y = getY(pt.puntaje);
-    dPath += `${idx === 0 ? 'M' : 'L'} ${x} ${y} `;
-  });
+  const COLOR_PROG = PANORAMA_UM;   // azul institucional
+  const COLOR_NBC = PANORAMA_NAT;   // verde
 
-  const path = createSVGEl('path', {
-    d: dPath, stroke: COLOR_UM, fill: 'none', class: 'chart-line', style: 'stroke-width: 3;'
-  });
-  svg.appendChild(path);
+  // Helper para trazar una línea con puntos + labels arriba
+  const drawLine = (key, color, labelOffset, isDashed) => {
+    const pts = series.map((s, i) => ({ x: getX(i), y: s[key] != null ? getY(s[key]) : null, val: s[key], anio: s.anio, n: key === 'prog' ? s.nProg : s.nNbc }));
+    const validPts = pts.filter(pt => pt.y != null);
+    if (validPts.length < 2) return;
 
-  // Línea del promedio de salida NBC nacional (línea horizontal actual en 2025 para comparar)
-  if (p.global_nbc_nacional_2025) {
-    const yNbc = getY(p.global_nbc_nacional_2025);
-    const lineNbc = createSVGEl('line', {
-      x1: margin.left, y1: yNbc,
-      x2: w - margin.right, y2: yNbc,
-      stroke: COLOR_REF,
-      'stroke-width': '1.5',
-      'stroke-dasharray': '4,4'
+    // Path
+    let d = '';
+    validPts.forEach((pt, i) => { d += `${i === 0 ? 'M' : 'L'} ${pt.x} ${pt.y} `; });
+    const pathEl = createSVGEl('path', {
+      d, stroke: color, fill: 'none',
+      'stroke-width': '2.6',
+      'stroke-linejoin': 'round', 'stroke-linecap': 'round',
+      ...(isDashed ? { 'stroke-dasharray': '6,4' } : {})
     });
-    
-    // Etiqueta del promedio NBC
-    const tag = createSVGEl('text', {
-      x: w - margin.right - 5, y: yNbc - 4,
-      'text-anchor': 'end',
-      class: 'axis-label',
-      style: `font-size: 7px; fill: ${COLOR_REF}; font-weight: 700;`
+    svg.appendChild(pathEl);
+
+    // Puntos + labels
+    validPts.forEach(pt => {
+      const c = createSVGEl('circle', {
+        cx: pt.x, cy: pt.y, r: 4.5, fill: color, stroke: '#fff', 'stroke-width': '1.5'
+      });
+      const labelKey = key === 'prog' ? 'Programa' : `NBC nacional`;
+      c.addEventListener('mouseenter', (e) => showTooltip(e, `<strong>${labelKey} · ${pt.anio}</strong>Puntaje Global: <strong>${pt.val} pts</strong>${pt.n != null ? `<br><span style="opacity:.78">Evaluados: ${NUM.format(pt.n)}</span>` : ''}`));
+      c.addEventListener('mousemove', moveTooltip);
+      c.addEventListener('mouseleave', hideTooltip);
+      svg.appendChild(c);
+
+      // Etiqueta del valor (arriba o abajo según labelOffset)
+      const lbl = createSVGEl('text', {
+        x: pt.x, y: pt.y + labelOffset, 'text-anchor': 'middle',
+        style: `font-family: var(--font-display); font-size: 12px; fill: ${color}; font-weight: 800;`
+      });
+      lbl.textContent = pt.val;
+      svg.appendChild(lbl);
     });
-    tag.textContent = `NBC 2025: ${p.global_nbc_nacional_2025}`;
+  };
 
-    svg.appendChild(lineNbc);
-    svg.appendChild(tag);
-  }
+  // Línea NBC (verde, abajo) primero para que el azul del programa quede encima
+  drawLine('nbc', COLOR_NBC, 16, false);
+  // Línea programa (azul, etiqueta arriba)
+  drawLine('prog', COLOR_PROG, -10, false);
 
-  // Puntos interactivos
-  hist.forEach((pt, idx) => {
-    const x = getX(idx);
-    const y = getY(pt.puntaje);
-
-    const circle = createSVGEl('circle', {
-      cx: x, cy: y, r: 4.5, fill: COLOR_UM, class: 'chart-dot'
-    });
-
-    circle.addEventListener('mouseenter', (e) => {
-      showTooltip(e, `<strong>Año ${pt.anio}</strong>Puntaje Global: ${pt.puntaje} pts<br>Evaluados: ${NUM.format(pt.n)}`);
-    });
-    circle.addEventListener('mousemove', moveTooltip);
-    circle.addEventListener('mouseleave', hideTooltip);
-
-    svg.appendChild(circle);
-  });
-
-  // Leyenda
-  const legend = createLegend([
-    { color: COLOR_UM, text: 'Programa (Historial)' },
-    { color: COLOR_REF, text: 'Ref. NBC (Vigente)' }
-  ], margin.left, h - 15);
-  svg.appendChild(legend);
+  // Leyenda inferior (centrada)
+  svg.appendChild(createLegend([
+    { color: COLOR_PROG, text: 'Programa' },
+    { color: COLOR_NBC, text: 'Promedio nacional del NBC' }
+  ], (w / 2) - 180, h - 12, { fontSize: 13, rectW: 20, rectH: 10, gap: 240, textGap: 30, fontWeight: 700 }));
 
   container.innerHTML = '';
   container.appendChild(svg);
