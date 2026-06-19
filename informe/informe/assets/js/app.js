@@ -40,6 +40,7 @@ async function init() {
   initSidebarToggle();
   initSidebarNavTooltip();
   initScrollSpy();
+  initSectionReveal();
 
   // Renderizadores de Gráficos (Etapa 5)
   initRadarYearPicker(d);
@@ -124,8 +125,6 @@ function createSVGEl(type, attrs = {}) {
 
 /* ---------- Meta (pie de barra lateral) ---------- */
 function renderMeta(d) {
-  const yr = d.meta?.anio_vigente ?? '—';
-  document.getElementById('footYear').textContent = yr;
   const gen = d.meta?.fecha_generacion ? new Date(d.meta.fecha_generacion) : null;
   if (gen) {
     document.getElementById('footGen').textContent =
@@ -3041,6 +3040,35 @@ function renderHeatmap(d, yearOverride) {
   container.innerHTML = '';
   container.appendChild(table);
   container.appendChild(tfoot);
+}
+
+/* ---------- Aparición progresiva de secciones al hacer scroll ---------- */
+function initSectionReveal() {
+  const sections = [...document.querySelectorAll('.section')];
+  if (sections.length === 0) return;
+
+  // Si el navegador no soporta IntersectionObserver, mostramos todo de una vez
+  if (!('IntersectionObserver' in window)) {
+    sections.forEach(s => s.classList.add('is-revealed'));
+    return;
+  }
+
+  // La primera sección se revela inmediatamente (está en viewport al cargar)
+  sections[0].classList.add('is-revealed');
+
+  const obs = new IntersectionObserver((entries, observer) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('is-revealed');
+        observer.unobserve(e.target);  // animación una sola vez
+      }
+    });
+  }, {
+    threshold: 0.12,
+    rootMargin: '0px 0px -80px 0px'
+  });
+
+  sections.slice(1).forEach(s => obs.observe(s));
 }
 
 /* ---------- Scroll-spy ---------- */

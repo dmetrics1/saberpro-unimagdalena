@@ -58,7 +58,44 @@ html { scroll-behavior: smooth; scroll-padding-top: var(--sp-5); }
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
   * { animation-duration: .01ms !important; transition-duration: .01ms !important; }
+  .section { opacity: 1 !important; transform: none !important; }
 }
+
+/* ============================================================
+   Aparición progresiva de secciones al hacer scroll
+   ============================================================ */
+.section {
+  opacity: 0;
+  transform: translateY(36px);
+  transition:
+    opacity .7s cubic-bezier(.16,1,.3,1),
+    transform .7s cubic-bezier(.16,1,.3,1);
+  will-change: opacity, transform;
+}
+.section.is-revealed {
+  opacity: 1;
+  transform: translateY(0);
+}
+/* Sutil stagger por bloques dentro de cada sección */
+.section.is-revealed .card,
+.section.is-revealed .kpi-card,
+.section.is-revealed .cuadrante-card,
+.section.is-revealed .convenciones,
+.section.is-revealed .explorer-controls,
+.section.is-revealed .metodologia-block {
+  animation: blockRise .55s cubic-bezier(.16,1,.3,1) both;
+}
+.section.is-revealed > * { --reveal-i: 0; animation-delay: calc(var(--reveal-i) * 70ms); }
+.section.is-revealed > *:nth-child(2) { --reveal-i: 1; }
+.section.is-revealed > *:nth-child(3) { --reveal-i: 2; }
+.section.is-revealed > *:nth-child(4) { --reveal-i: 3; }
+.section.is-revealed > *:nth-child(5) { --reveal-i: 4; }
+@keyframes blockRise {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+/* La primera sección visible (panorama) no debe esperar al scroll para mostrarse */
+.section:first-of-type { opacity: 1; transform: none; }
 
 body {
   margin: 0;
@@ -161,7 +198,15 @@ body.sidebar-collapsed .sidebar__brand {
   margin-bottom: 22px;
 }
 body.sidebar-collapsed .sidebar__title { display: none; }
-body.sidebar-collapsed .sidebar__foot { display: none; }
+/* Footer en estado colapsado: mostrar solo "OAP" centrado, sin la fecha */
+body.sidebar-collapsed .sidebar__foot {
+  align-items: center;
+  text-align: center;
+  padding-top: 14px;
+  border-top: 1px solid rgba(255,255,255,.06);
+}
+body.sidebar-collapsed .sidebar__foot-full { display: none; }
+body.sidebar-collapsed #footGen { display: none; }
 
 /* Nav: solo icono visible */
 body.sidebar-collapsed .nav__item {
@@ -275,13 +320,29 @@ body.sidebar-collapsed .sidebar-toggle {
   font-size: .7rem;
   color: rgba(127,155,187,.85);
   border-top: 1px solid rgba(255,255,255,.06);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
 }
 .sidebar__foot strong {
   color: #cfe0f1;
   display: block;
   font-size: .85rem;
   font-weight: 600;
-  margin-top: 4px;
+  line-height: 1.3;
+}
+/* Por defecto solo se muestra el nombre completo; "OAP" aparece sólo si está colapsado */
+.sidebar__foot-short { display: none; }
+body.sidebar-collapsed .sidebar__foot-short {
+  display: inline-block;
+  font-size: 0.92rem;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  color: #cfe0f1;
+  background: rgba(255,255,255,.06);
+  padding: 6px 10px;
+  border-radius: 8px;
+  border: 1px solid rgba(255,255,255,.10);
 }
 
 .content {
