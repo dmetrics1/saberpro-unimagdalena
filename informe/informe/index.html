@@ -29,7 +29,7 @@
       <a class="nav__item" href="#facultades"><span class="nav__num">04</span> Facultades</a>
       <a class="nav__item" href="#programas"><span class="nav__num">05</span> Programas</a>
       <a class="nav__item" href="#competencias"><span class="nav__num">06</span> Competencias</a>
-      <a class="nav__item" href="#sintesis"><span class="nav__num">07</span> Síntesis</a>
+      <a class="nav__item" href="#metodologia"><span class="nav__num">07</span> Metodología</a>
     </nav>
     <div class="sidebar__foot">
       Año vigente
@@ -227,13 +227,18 @@
               </div>
             </div>
           </div>
-          <div class="card">
-            <h3 class="card__title">Evolución histórica global <span class="card__title-soft">2020 – 2025</span></h3>
-            <div class="chart-container" id="progHist"></div>
-          </div>
-          <div class="card">
-            <h3 class="card__title">Distribución por niveles de desempeño</h3>
-            <div class="chart-container" id="progNiveles"></div>
+          <!-- Card combinado: evolución de competencias + histórico global del programa -->
+          <div class="card prog-history-card">
+            <div class="prog-history-grid">
+              <div class="prog-history-side">
+                <h3 class="card__title prog-genspec-side__title">Competencias genéricas <span class="card__title-soft">evolución 2020 – 2025</span></h3>
+                <div class="chart-container" id="progNiveles"></div>
+              </div>
+              <div class="prog-history-side">
+                <h3 class="card__title prog-genspec-side__title">Histórico puntaje global <span class="card__title-soft">programa vs. NBC nacional</span></h3>
+                <div class="chart-container" id="progHist"></div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -241,51 +246,190 @@
 
     <section class="section" id="competencias">
       <div class="section__eyebrow">06 · Competencias</div>
-      <h2 class="section__title">Fortalezas transversales y niveles de logro</h2>
-      <p class="section__lead" id="leadComp"></p>
-      
+
       <div class="charts-grid charts-grid--stacked">
         <div class="card">
           <div class="card__header-flex">
-            <h3 class="card__title">Top 10 Programas Líderes</h3>
-            <div class="tabs" id="topTabs"></div>
+            <h3 class="card__title">Top 10 programas líderes por competencia <span id="topYearLbl">2025</span></h3>
+            <div class="select-wrapper">
+              <select id="selAnioTop" class="control-select"></select>
+            </div>
           </div>
-          <p class="card__subtitle">Programas con mejores promedios en la competencia seleccionada.</p>
+          <div class="tabs" id="topTabs"></div>
           <div class="chart-container" id="chartTop10"></div>
-        </div>
-        
-        <div class="card">
-          <h3 class="card__title">Niveles de Desempeño Institucional</h3>
-          <p class="card__subtitle">Distribución porcentual por nivel (1 al 5) en la universidad vs. el país.</p>
-          <div class="chart-container" id="chartNiveles"></div>
         </div>
       </div>
     </section>
 
-    <section class="section" id="sintesis">
-      <div class="section__eyebrow">07 · Síntesis</div>
-      <h2 class="section__title">Lectura estratégica y recomendaciones</h2>
-      <p class="section__lead" id="leadSint"></p>
+    <section class="section" id="metodologia">
+      <div class="section__eyebrow">07 · Metodología</div>
 
-      <div class="dofa-container">
-        <div class="dofa-grid">
-          <div class="dofa-card dofa-card--fortaleza">
-            <div class="dofa-card__header">Fortalezas</div>
-            <ul class="dofa-card__list" id="dofaFortalezas"></ul>
+      <div class="metodologia-wrap">
+
+        <!-- Bloque 1: Fuentes de datos -->
+        <div class="card metodologia-block">
+          <div class="metodologia-block__head">
+            <span class="metodologia-block__icon" aria-hidden="true">📚</span>
+            <h3 class="card__title">Fuentes de los datos</h3>
           </div>
-          <div class="dofa-card dofa-card--debilidad">
-            <div class="dofa-card__header">Debilidades</div>
-            <ul class="dofa-card__list" id="dofaDebilidades"></ul>
-          </div>
-          <div class="dofa-card dofa-card--oportunidad">
-            <div class="dofa-card__header">Oportunidades</div>
-            <ul class="dofa-card__list" id="dofaOportunidades"></ul>
-          </div>
-          <div class="dofa-card dofa-card--amenaza">
-            <div class="dofa-card__header">Amenazas</div>
-            <ul class="dofa-card__list" id="dofaAmenazas"></ul>
+          <p class="metodologia-block__lead">
+            Toda la información que alimenta este informe es <strong>oficial del Instituto Colombiano para la
+            Evaluación de la Educación (ICFES)</strong>. Provenimos de dos publicaciones distintas que el ICFES libera
+            cada año y que no se mezclan entre sí.
+          </p>
+          <div class="metodologia-sources">
+            <div class="metodologia-source metodologia-source--a">
+              <div class="metodologia-source__tag">Resultados agregados</div>
+              <h4>Bases publicadas anualmente por el ICFES</h4>
+              <p class="metodologia-source__desc">
+                El ICFES publica cada año los <strong>resultados agregados de Saber Pro</strong> por institución,
+                programa académico y NBC, indicando puntajes promedios y número de evaluados.
+              </p>
+              <p class="metodologia-source__meta">
+                Periodo cubierto en este informe: <strong>2020 – 2025</strong> · Alimenta el panorama institucional,
+                el ranking SUE, el comparativo regional, las facultades, los programas, el Top 10 y los niveles de
+                desempeño.
+              </p>
+              <p class="metodologia-source__link">
+                Disponibles en:
+                <a href="https://www.icfes.gov.co/evaluaciones-icfes/acerca-del-examen-saber-pro/resultados-del-examen-saber-pro/" target="_blank" rel="noopener noreferrer">icfes.gov.co — Resultados del examen Saber Pro</a>
+              </p>
+            </div>
+            <div class="metodologia-source metodologia-source--b">
+              <div class="metodologia-source__tag">Datos de cruce</div>
+              <h4>Cruce Saber 11 ↔ Saber Pro del ICFES</h4>
+              <p class="metodologia-source__desc">
+                Es una base que el ICFES construye internamente: por cada estudiante que presentó Saber Pro, recupera
+                el puntaje que ese mismo estudiante obtuvo años antes en Saber 11. Permite ver cómo cambió cada
+                persona entre la entrada al bachillerato terminado y la salida de la universidad.
+              </p>
+              <p class="metodologia-source__meta">
+                Periodo cubierto en este informe: <strong>2020 – 2024</strong> · Alimenta el análisis de valor
+                agregado (los cuadrantes y la trayectoria histórica de la universidad).
+              </p>
+            </div>
           </div>
         </div>
+
+        <!-- Bloque 2: El cruce -->
+        <div class="card metodologia-block">
+          <div class="metodologia-block__head">
+            <span class="metodologia-block__icon" aria-hidden="true">🔗</span>
+            <h3 class="card__title">¿Qué es el cruce Saber 11 → Saber Pro?</h3>
+          </div>
+          <p>
+            Es un emparejamiento que hace el ICFES, estudiante por estudiante, entre el puntaje que obtuvo al terminar
+            el bachillerato (<strong>Saber 11</strong>) y el puntaje que obtuvo años después al terminar su carrera
+            (<strong>Saber Pro</strong>).
+          </p>
+          <p>
+            Con esos dos puntajes podemos calcular el <strong>valor agregado</strong> de la universidad: cuánto eleva
+            la formación universitaria el puntaje promedio de cada cohorte respecto al nivel con el que entró,
+            comparado con lo que sucede a nivel nacional.
+          </p>
+          <p>
+            Para que las comparaciones sean confiables, solo se reportan los grupos de programas que cuentan con un
+            número suficiente de estudiantes con ambos puntajes registrados. Cuando son pocos, los promedios se
+            vuelven inestables y no se publican.
+          </p>
+        </div>
+
+        <!-- Bloque 3: Cómo se construye el informe -->
+        <div class="card metodologia-block">
+          <div class="metodologia-block__head">
+            <span class="metodologia-block__icon" aria-hidden="true">⚙️</span>
+            <h3 class="card__title">Cómo se construye el informe</h3>
+          </div>
+          <p>
+            Los datos crudos del ICFES pasan por un proceso de tres etapas hasta convertirse en las gráficas que
+            usted ve en el informe. Todo el procesamiento se hace en el computador de la Oficina Asesora de
+            Planeación; no se modifica ni se reinterpreta ninguna cifra del ICFES.
+          </p>
+          <div class="metodologia-flow">
+            <div class="metodologia-flow__step">
+              <div class="metodologia-flow__num">1</div>
+              <div>
+                <strong>Carga y limpieza</strong>
+                <p>Se descargan las bases del ICFES y se uniforman los nombres de instituciones, programas y NBC para
+                que las comparaciones sean correctas (por ejemplo, "Universidad de Nariño" y "Universidad de Narino"
+                son la misma institución).</p>
+              </div>
+            </div>
+            <div class="metodologia-flow__step">
+              <div class="metodologia-flow__num">2</div>
+              <div>
+                <strong>Cálculo de indicadores</strong>
+                <p>Se calculan los puntajes promedios institucionales, por facultad y por programa; las brechas con
+                el promedio nacional y con el NBC de cada programa; las posiciones en el SUE; y los cuadrantes de
+                valor agregado.</p>
+              </div>
+            </div>
+            <div class="metodologia-flow__step">
+              <div class="metodologia-flow__num">3</div>
+              <div>
+                <strong>Publicación interactiva</strong>
+                <p>Los resultados se llevan a este informe interactivo, donde el lector puede navegar por sección,
+                cambiar el año de análisis y profundizar en cada facultad o programa.</p>
+              </div>
+            </div>
+          </div>
+          <p class="metodologia-note">
+            El informe se actualiza cada vez que el ICFES libera una nueva edición anual de los resultados Saber Pro.
+          </p>
+        </div>
+
+        <!-- Bloque 4: Reglas y cobertura -->
+        <div class="card metodologia-block">
+          <div class="metodologia-block__head">
+            <span class="metodologia-block__icon" aria-hidden="true">📏</span>
+            <h3 class="card__title">Reglas de interpretación</h3>
+          </div>
+          <div class="metodologia-rules">
+            <div class="metodologia-rule">
+              <h4>Rangos de años distintos</h4>
+              <p>El análisis de <strong>valor agregado</strong> (cuadrantes y trayectoria) llega hasta
+                <strong>2024</strong> porque el ICFES aún no ha publicado el cruce de 2025. El resto del informe
+                (panorama, posicionamiento, facultades, programas y Top 10) llega hasta <strong>2025</strong>.</p>
+            </div>
+            <div class="metodologia-rule">
+              <h4>Programas con pocos evaluados</h4>
+              <p>Cuando un programa cuenta con menos de <strong>5 estudiantes evaluados</strong> en el año vigente
+                aparece marcado con <span class="warn-badge warn-badge--inline">⚠️ Evaluados bajos</span>. Sus
+                números deben leerse con cautela porque cualquier estudiante puede mover el promedio varios
+                puntos.</p>
+            </div>
+            <div class="metodologia-rule">
+              <h4>Comparativos siempre referenciados</h4>
+              <p>Todo dato comparativo de este informe lleva su referencia explícita: <em>frente al promedio
+                nacional</em>, <em>frente al NBC del programa</em> o <em>frente al año anterior</em>. Nunca se
+                presentan puntajes "a secas" para evitar lecturas ambiguas.</p>
+            </div>
+            <div class="metodologia-rule">
+              <h4>Cifras oficiales sin retoque</h4>
+              <p>Los puntajes y conteos provienen tal cual del ICFES. La Oficina Asesora de Planeación organiza la
+                información y construye las visualizaciones, pero no recalcula ni ajusta los promedios.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Bloque 5: Glosario corto -->
+        <div class="card metodologia-block">
+          <div class="metodologia-block__head">
+            <span class="metodologia-block__icon" aria-hidden="true">📖</span>
+            <h3 class="card__title">Glosario rápido</h3>
+          </div>
+          <dl class="metodologia-glossary">
+            <div><dt>Saber Pro</dt><dd>Examen de Estado que aplica el ICFES a todos los estudiantes próximos a graduarse de programas de pregrado.</dd></div>
+            <div><dt>Saber 11</dt><dd>Examen que presentan los estudiantes al terminar el bachillerato. Se usa como punto de partida para medir cuánto agrega la universidad.</dd></div>
+            <div><dt>NBC</dt><dd>Núcleo Básico del Conocimiento. Agrupación oficial del ICFES que reúne programas afines (por ejemplo, "Administración" o "Biología, microbiología y afines"). Cada programa pertenece a un NBC y se compara contra el promedio nacional de ese grupo.</dd></div>
+            <div><dt>SUE</dt><dd>Sistema Universitario Estatal: el conjunto de universidades públicas de Colombia. Unimagdalena se compara con sus pares del SUE en la sección 02.</dd></div>
+            <div><dt>Valor agregado</dt><dd>Cuánto eleva la universidad el puntaje de sus estudiantes entre Saber 11 y Saber Pro, comparado con lo que ocurre a nivel nacional. Si la universidad aporta más que la media, agrega valor.</dd></div>
+            <div><dt>Cuadrantes</dt><dd>Vista que cruza dos preguntas: "¿con qué nivel entraron los estudiantes?" y "¿con qué nivel salieron?". Da cuatro categorías: Alto Desempeño, Alto Aporte, Base Baja y Alerta.</dd></div>
+            <div><dt>Competencias genéricas</dt><dd>Las cinco que evalúa Saber Pro a todos los estudiantes: Lectura Crítica, Razonamiento Cuantitativo, Competencias Ciudadanas, Comunicación Escrita e Inglés.</dd></div>
+            <div><dt>Competencias específicas</dt><dd>Pruebas adicionales propias de cada NBC, que dependen del área de estudio. Solo aparecen cuando el programa las rinde.</dd></div>
+          </dl>
+        </div>
+
       </div>
     </section>
 

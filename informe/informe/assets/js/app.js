@@ -52,7 +52,6 @@ async function init() {
   renderFacultades(d);
   renderProgramExplorer(d);
   renderTop10(d);
-  renderNivelesInstitucional(d);
   initHeatmapYearPicker(d);
   renderHeatmapAndDofa(d);
 }
@@ -220,7 +219,6 @@ function setLeads(d) {
   set('leadFac', `Comparativo del desempeño global de las ${d.facultades.length} facultades de la universidad.`);
   set('leadProg', `${sobre} de los ${progs.length} programas evaluados superan el promedio nacional de su grupo de referencia (NBC).`);
   set('leadComp', `Competencias genéricas fuertes y distribución porcentual por niveles de logro frente al país.`);
-  set('leadSint', `Lectura integrada de fortalezas, brechas y recomendaciones estratégicas a partir de los resultados.`);
 }
 function set(id, txt) { const el = document.getElementById(id); if (el) el.textContent = txt; }
 
@@ -1677,7 +1675,7 @@ function renderFacultades(d, yearOverride) {
   const lblComp = document.getElementById('facultadCompLbl');
   if (lblComp) lblComp.textContent = compKey === 'global' ? 'Puntaje global' : titleCase(compKey);
 
-  const sortedFacs = sorted(dataWithValue, key => valueOf(key), true);
+  const sortedFacs = [...dataWithValue].sort((a, b) => valueOf(b) - valueOf(a));
 
   const w = 1000;
   const h = 400;
@@ -1957,12 +1955,12 @@ function renderExplorerRadar(p, yearOverride) {
     }
   ];
 
-  // viewBox más cuadrado y radio mayor: la figura llena más la columna del card combinado
-  const w = 580;
-  const h = 540;
+  // viewBox cuadrado generoso para que el radar tenga la misma presencia que la referencia
+  const w = 600;
+  const h = 600;
   const cx = w / 2;
-  const cy = h / 2 + 4;
-  const rMax = 165;
+  const cy = h / 2 + 6;
+  const rMax = 195;
   const n = axes.length;
 
   const svg = createSVGEl('svg', { viewBox: `0 0 ${w} ${h}`, class: 'svg-chart' });
@@ -2130,11 +2128,11 @@ function renderExplorerRadar(p, yearOverride) {
     svg.appendChild(nbcLbl);
   }
 
-  // Leyenda inferior unificada
+  // Leyenda inferior unificada (centrada bajo el radar w=600 h=600)
   svg.appendChild(createLegend([
     { color: COLOR_PROG, text: 'Programa' },
     { color: COLOR_NBC, text: 'Promedio nacional del NBC' }
-  ], cx - 195, h - 14, { fontSize: 13, rectW: 20, rectH: 10, gap: 270, textGap: 30, fontWeight: 700 }));
+  ], cx - 200, h - 22, { fontSize: 14, rectW: 22, rectH: 12, gap: 280, textGap: 32, fontWeight: 700 }));
 
   container.innerHTML = '';
   container.appendChild(svg);
@@ -2186,10 +2184,10 @@ function renderExplorerSpecifics(p, yearOverride) {
   let maxVal = Math.ceil((dMax + 8) / 10) * 10;
   if (maxVal - minVal < 30) maxVal = minVal + 30;   // rango mínimo para que las barras no colapsen
 
-  // viewBox cuadrado para encajar en la columna del card combinado y aprovechar más alto
-  const w = 580;
-  const h = 540;
-  const margin = { top: 18, right: 50, bottom: 70, left: 180 };
+  // viewBox cuadrado para encajar en la columna del card combinado (mismo aspecto que el radar)
+  const w = 600;
+  const h = 600;
+  const margin = { top: 30, right: 56, bottom: 86, left: 200 };
   const innerW = w - margin.left - margin.right;
   const innerH = h - margin.top - margin.bottom;
 
@@ -2290,11 +2288,11 @@ function renderExplorerSpecifics(p, yearOverride) {
     svg.appendChild(lblNbc);
   });
 
-  // Leyenda inferior unificada (centrada para w=580, h=540)
+  // Leyenda inferior unificada (centrada para w=600 h=600, mismo estilo que el radar)
   svg.appendChild(createLegend([
     { color: COLOR_PROG, text: 'Programa' },
     { color: COLOR_NBC, text: 'Promedio nacional del NBC' }
-  ], (w / 2) - 170, h - 18, { fontSize: 12, rectW: 18, rectH: 10, gap: 220, textGap: 26, fontWeight: 700 }));
+  ], (w / 2) - 200, h - 22, { fontSize: 14, rectW: 22, rectH: 12, gap: 280, textGap: 32, fontWeight: 700 }));
 
   container.innerHTML = '';
   container.appendChild(svg);
@@ -2322,10 +2320,10 @@ function renderExplorerHistory(p) {
     nNbc: radarHist[String(pt.anio)]?.n_nbc_nacional ?? null
   })).filter(s => s.prog != null);
 
-  // viewBox ajustado al card normal (más ancho)
-  const w = 900;
-  const h = 360;
-  const margin = { top: 30, right: 40, bottom: 70, left: 60 };
+  // viewBox para columna de 2-pares (más cuadrado: aspecto ~1.3)
+  const w = 580;
+  const h = 440;
+  const margin = { top: 24, right: 28, bottom: 70, left: 54 };
   const innerW = w - margin.left - margin.right;
   const innerH = h - margin.top - margin.bottom;
 
@@ -2398,7 +2396,8 @@ function renderExplorerHistory(p) {
       const c = createSVGEl('circle', {
         cx: pt.x, cy: pt.y, r: 4.5, fill: color, stroke: '#fff', 'stroke-width': '1.5'
       });
-      const labelKey = key === 'prog' ? 'Programa' : `NBC nacional`;
+      const progLbl = p.programa ? titleCase(p.programa) : 'Programa';
+      const labelKey = key === 'prog' ? progLbl : `NBC ${p.nbc_nombre ? titleCase(p.nbc_nombre) : 'nacional'}`;
       c.addEventListener('mouseenter', (e) => showTooltip(e, `<strong>${labelKey} · ${pt.anio}</strong>Puntaje Global: <strong>${pt.val} pts</strong>${pt.n != null ? `<br><span style="opacity:.78">Evaluados: ${NUM.format(pt.n)}</span>` : ''}`));
       c.addEventListener('mousemove', moveTooltip);
       c.addEventListener('mouseleave', hideTooltip);
@@ -2419,136 +2418,175 @@ function renderExplorerHistory(p) {
   // Línea programa (azul, etiqueta arriba)
   drawLine('prog', COLOR_PROG, -10, false);
 
-  // Leyenda inferior (centrada)
+  // Leyenda inferior (centrada para w=580, h=440)
   svg.appendChild(createLegend([
     { color: COLOR_PROG, text: 'Programa' },
     { color: COLOR_NBC, text: 'Promedio nacional del NBC' }
-  ], (w / 2) - 180, h - 12, { fontSize: 13, rectW: 20, rectH: 10, gap: 240, textGap: 30, fontWeight: 700 }));
+  ], (w / 2) - 160, h - 16, { fontSize: 12, rectW: 18, rectH: 10, gap: 210, textGap: 26, fontWeight: 700 }));
 
   container.innerHTML = '';
   container.appendChild(svg);
 }
 
 // Sub-Gráfico 4: Niveles de desempeño del programa vs NBC
+// Sub-Gráfico 4: Evolución de competencias genéricas por año (barras agrupadas)
+// Reemplaza al gráfico anterior de distribución por niveles.
 function renderExplorerLevels(p) {
   const container = document.getElementById('progNiveles');
   if (!container) return;
 
-  const niveles = p.niveles_2025;
-  if (!niveles || niveles.length === 0) {
-    container.innerHTML = '<div class="placeholder">Sin datos de distribución por niveles</div>';
+  const radarHist = p.radar_historico || {};
+  const yearsAll = Object.keys(radarHist)
+    .map(y => parseInt(y, 10))
+    .filter(y => !isNaN(y))
+    .sort((a, b) => a - b);
+
+  if (yearsAll.length === 0) {
+    container.innerHTML = '<div class="placeholder">Sin histórico de competencias</div>';
     return;
   }
 
-  const w = 360;
-  const h = 260;
-  const margin = { top: 10, right: 20, bottom: 45, left: 100 };
+  // Lista canónica de competencias y etiquetas cortas
+  const COMP_ORDER = ['LECTURA CRÍTICA', 'RAZONAMIENTO CUANTITATIVO', 'COMPETENCIAS CIUDADANAS', 'COMUNICACIÓN ESCRITA', 'INGLÉS'];
+  const COMP_SHORT = {
+    'LECTURA CRÍTICA': 'Lectura Crítica',
+    'RAZONAMIENTO CUANTITATIVO': 'Raz. Cuantitativo',
+    'COMPETENCIAS CIUDADANAS': 'Ciudadanas',
+    'COMUNICACIÓN ESCRITA': 'Com. Escrita',
+    'INGLÉS': 'Inglés'
+  };
+
+  // Construir matriz: [{competencia, label, valores: {year: puntaje}}]
+  const matrix = COMP_ORDER.map(comp => {
+    const valores = {};
+    yearsAll.forEach(y => {
+      const yearObj = radarHist[String(y)];
+      if (!yearObj || !Array.isArray(yearObj.competencias)) return;
+      const found = yearObj.competencias.find(c => c.competencia === comp);
+      if (found && found.puntaje_programa != null) {
+        valores[y] = found.puntaje_programa;
+      }
+    });
+    return { competencia: comp, label: COMP_SHORT[comp] || comp, valores };
+  }).filter(m => Object.keys(m.valores).length > 0);
+
+  if (matrix.length === 0) {
+    container.innerHTML = '<div class="placeholder">Sin histórico de competencias</div>';
+    return;
+  }
+
+  // Paleta por año (similar a la referencia institucional)
+  const YEAR_COLORS = {
+    2020: '#4472C4',  // azul
+    2021: '#ED7D31',  // naranja
+    2022: '#A5A5A5',  // gris
+    2023: '#FFC000',  // amarillo
+    2024: '#5B9BD5',  // azul claro
+    2025: '#70AD47'   // verde
+  };
+
+  // Escala Y adaptativa basada en min/max reales
+  const allScores = matrix.flatMap(m => Object.values(m.valores));
+  const dataMin = Math.min(...allScores);
+  const dataMax = Math.max(...allScores);
+  const pad = Math.max(8, (dataMax - dataMin) * 0.18);
+  const minVal = Math.floor((dataMin - pad) / 10) * 10;
+  const maxVal = Math.ceil((dataMax + pad) / 10) * 10;
+
+  // viewBox para columna de 2-pares (mismo aspecto que el histórico global)
+  const w = 580;
+  const h = 440;
+  const margin = { top: 20, right: 20, bottom: 86, left: 48 };
+  const innerW = w - margin.left - margin.right;
+  const innerH = h - margin.top - margin.bottom;
 
   const svg = createSVGEl('svg', { viewBox: `0 0 ${w} ${h}`, class: 'svg-chart' });
 
-  const totalComps = niveles.length;
-  const blockHeight = (h - margin.top - margin.bottom) / totalComps;
-  const barHeight = blockHeight * 0.32; // para las dos barras
-
-  // Colores fijos de los 5 niveles (de rojo/alerta a verde/alto)
-  const colorsNiv = ['#E53935', '#FB8C00', '#FDD835', '#7CB342', '#2E7D32'];
-
-  const getXWidth = (pct) => pct * (w - margin.left - margin.right);
-
-  niveles.forEach((niv, idx) => {
-    const yBlock = margin.top + idx * blockHeight;
-    const yProg = yBlock + blockHeight * 0.15;
-    const yNbc = yBlock + blockHeight * 0.52;
-
-    // Dibujar barra apilada del Programa
-    let startXProg = margin.left;
-    niv.distribucion_programa.forEach((pct, nIdx) => {
-      const barW = getXWidth(pct);
-      if (barW > 0.5) {
-        const rect = createSVGEl('rect', {
-          x: startXProg, y: yProg, width: barW, height: barHeight,
-          fill: colorsNiv[nIdx],
-          class: 'chart-bar'
-        });
-
-        rect.addEventListener('mouseenter', (e) => {
-          showTooltip(e, `<strong>Programa - Nivel ${nIdx + 1}</strong>Distribución: ${(pct * 100).toFixed(1)}%`);
-        });
-        rect.addEventListener('mousemove', moveTooltip);
-        rect.addEventListener('mouseleave', hideTooltip);
-
-        svg.appendChild(rect);
-      }
-      startXProg += barW;
+  // Rejilla Y
+  const ticks = 5;
+  for (let i = 0; i <= ticks; i++) {
+    const val = minVal + (i / ticks) * (maxVal - minVal);
+    const y = margin.top + innerH - ((val - minVal) / (maxVal - minVal)) * innerH;
+    const line = createSVGEl('line', {
+      x1: margin.left, y1: y, x2: w - margin.right, y2: y,
+      stroke: 'var(--border)', 'stroke-width': '1',
+      'stroke-dasharray': i === 0 ? '0' : '3,3',
+      opacity: '0.55'
     });
-
-    // Dibujar barra apilada de la referencia NBC
-    let startXNbc = margin.left;
-    niv.distribucion_nbc_nacional.forEach((pct, nIdx) => {
-      const barW = getXWidth(pct);
-      if (barW > 0.5) {
-        const rect = createSVGEl('rect', {
-          x: startXNbc, y: yNbc, width: barW, height: barHeight,
-          fill: colorsNiv[nIdx],
-          class: 'chart-bar'
-        });
-
-        rect.addEventListener('mouseenter', (e) => {
-          showTooltip(e, `<strong>Ref. NBC - Nivel ${nIdx + 1}</strong>Distribución: ${(pct * 100).toFixed(1)}%`);
-        });
-        rect.addEventListener('mousemove', moveTooltip);
-        rect.addEventListener('mouseleave', hideTooltip);
-
-        svg.appendChild(rect);
-      }
-      startXNbc += barW;
-    });
-
-    // Etiqueta del bloque
-    let label = niv.competencia;
-    if (label === 'RAZONAMIENTO CUANTITATIVO') label = 'Raz. Cuantitativo';
-    if (label === 'COMPETENCIAS CIUDADANAS') label = 'Ciudadanas';
-    if (label === 'COMUNICACIÓN ESCRITA') label = 'Com. Escrita';
-    if (label === 'LECTURA CRÍTICA') label = 'Lectura Crítica';
-    if (label === 'INGLÉS') label = 'Inglés';
-
+    svg.appendChild(line);
     const text = createSVGEl('text', {
-      x: margin.left - 8, y: yBlock + blockHeight / 2 + 3,
-      'text-anchor': 'end',
-      class: 'axis-label',
-      style: 'font-weight: 600; font-size: 7.5px;'
+      x: margin.left - 8, y: y + 4, 'text-anchor': 'end',
+      style: 'font-family: var(--font-display); font-size: 12px; fill: var(--muted); font-weight: 600;'
     });
-    text.textContent = label;
+    text.textContent = Math.round(val);
     svg.appendChild(text);
+  }
 
-    // Escribir badge P/N para distinguir programa vs nbc
-    const textP = createSVGEl('text', { x: margin.left + 3, y: yProg + barHeight - 2, class: 'axis-label', style: 'fill: #fff; font-size: 6px; font-weight:800;' });
-    textP.textContent = 'P';
-    const textN = createSVGEl('text', { x: margin.left + 3, y: yNbc + barHeight - 2, class: 'axis-label', style: 'fill: #fff; font-size: 6px; font-weight:800;' });
-    textN.textContent = 'N';
-    svg.appendChild(textP);
-    svg.appendChild(textN);
+  // Anchos por grupo y por barra
+  const nGroups = matrix.length;
+  const groupSlot = innerW / nGroups;
+  const groupPad = groupSlot * 0.18;
+  const groupW = groupSlot - groupPad * 2;
+  const nYears = yearsAll.length;
+  const barW = groupW / nYears;
+
+  matrix.forEach((m, gi) => {
+    const groupX0 = margin.left + gi * groupSlot + groupPad;
+
+    yearsAll.forEach((yr, yi) => {
+      const val = m.valores[yr];
+      if (val == null) return;
+      const x = groupX0 + yi * barW;
+      const yBar = margin.top + innerH - ((val - minVal) / (maxVal - minVal)) * innerH;
+      const barH = (margin.top + innerH) - yBar;
+      const color = YEAR_COLORS[yr] || PANORAMA_UM;
+
+      const rect = createSVGEl('rect', {
+        x, y: yBar, width: Math.max(0, barW - 1), height: barH,
+        fill: color,
+        rx: '1'
+      });
+      const progLbl = p.programa ? titleCase(p.programa) : 'Programa';
+      rect.addEventListener('mouseenter', (e) => showTooltip(e, `<strong>${progLbl} · ${yr}</strong>${m.label}: <strong>${val} pts</strong>`));
+      rect.addEventListener('mousemove', moveTooltip);
+      rect.addEventListener('mouseleave', hideTooltip);
+      svg.appendChild(rect);
+
+      // Valor encima de la barra
+      const valTxt = createSVGEl('text', {
+        x: x + (barW - 1) / 2, y: yBar - 4, 'text-anchor': 'middle',
+        style: `font-family: var(--font-display); font-size: 10px; fill: ${color}; font-weight: 800;`
+      });
+      valTxt.textContent = val;
+      svg.appendChild(valTxt);
+    });
+
+    // Etiqueta del grupo (competencia)
+    const gx = margin.left + gi * groupSlot + groupSlot / 2;
+    const gText = createSVGEl('text', {
+      x: gx, y: margin.top + innerH + 18, 'text-anchor': 'middle',
+      style: 'font-family: var(--font-display); font-size: 12px; fill: var(--text); font-weight: 700;'
+    });
+    gText.textContent = m.label;
+    svg.appendChild(gText);
   });
 
-  // Rejilla inferior de porcentaje
-  [0, 0.25, 0.5, 0.75, 1].forEach(pct => {
-    const x = margin.left + getXWidth(pct);
-    const label = createSVGEl('text', { x: x, y: h - margin.bottom + 12, 'text-anchor': 'middle', class: 'axis-label', style: 'font-size: 8px;' });
-    label.textContent = `${Math.round(pct * 100)}%`;
-    svg.appendChild(label);
+  // Leyenda inferior: una píldora por año (centrada bajo el eje X de la columna estrecha)
+  const legendItems = yearsAll.map(yr => ({ color: YEAR_COLORS[yr] || PANORAMA_UM, text: String(yr) }));
+  const itemW = 60;
+  const totalLegendW = legendItems.length * itemW;
+  const legendStartX = (w - totalLegendW) / 2;
+  legendItems.forEach((item, i) => {
+    const x = legendStartX + i * itemW;
+    const lr = createSVGEl('rect', { x, y: h - 28, width: 12, height: 9, fill: item.color, rx: 1 });
+    const lt = createSVGEl('text', {
+      x: x + 17, y: h - 19,
+      style: 'font-family: var(--font-display); font-size: 12px; fill: var(--text); font-weight: 700;'
+    });
+    lt.textContent = item.text;
+    svg.appendChild(lr);
+    svg.appendChild(lt);
   });
-
-  // Leyenda de colores de nivel
-  const legendG = createSVGEl('g', { class: 'legend' });
-  colorsNiv.forEach((col, nIdx) => {
-    const x = margin.left + nIdx * 52;
-    const rect = createSVGEl('rect', { x: x, y: h - 22, width: 8, height: 8, fill: col, rx: 1 });
-    const txt = createSVGEl('text', { x: x + 12, y: h - 15, class: 'axis-label', style: 'font-size: 7px; font-weight:600;' });
-    txt.textContent = `Niv ${nIdx + 1}`;
-    legendG.appendChild(rect);
-    legendG.appendChild(txt);
-  });
-  svg.appendChild(legendG);
 
   container.innerHTML = '';
   container.appendChild(svg);
@@ -2556,6 +2594,7 @@ function renderExplorerLevels(p) {
 
 /* ---------- G10: Top 10 por competencia ---------- */
 let activeTopCompetence = 'Global';
+let activeTopYear = null;
 
 function renderTop10(d) {
   const tabs = document.getElementById('topTabs');
@@ -2565,30 +2604,29 @@ function renderTop10(d) {
   const comps = Object.keys(d.top10.por_competencia || {});
   if (comps.length === 0) return;
 
-  // Poblar pestañas
+  // Selector de año (años disponibles = los que tenga al menos un programa en su historico)
+  initTopYearPicker(d);
+
+  // Tabs de competencia (Global + 5 genéricas)
   if (tabs && tabs.children.length === 0) {
     const allTabs = ['Global', ...comps];
     allTabs.forEach(tName => {
       const btn = document.createElement('button');
       btn.className = `tab-btn ${tName === activeTopCompetence ? 'is-active' : ''}`;
-      
       let label = tName;
       if (label === 'RAZONAMIENTO CUANTITATIVO') label = 'Raz. Cuantitativo';
       if (label === 'COMPETENCIAS CIUDADANAS') label = 'Ciudadanas';
       if (label === 'COMUNICACIÓN ESCRITA') label = 'Com. Escrita';
       if (label === 'LECTURA CRÍTICA') label = 'Lectura Crítica';
       if (label === 'INGLÉS') label = 'Inglés';
-
       btn.textContent = label;
       btn.dataset.comp = tName;
-
-      btn.addEventListener('click', (e) => {
+      btn.addEventListener('click', () => {
         [...tabs.querySelectorAll('.tab-btn')].forEach(b => b.classList.remove('is-active'));
         btn.classList.add('is-active');
         activeTopCompetence = btn.dataset.comp;
         drawTop10Plot(d);
       });
-
       tabs.appendChild(btn);
     });
   }
@@ -2596,17 +2634,68 @@ function renderTop10(d) {
   drawTop10Plot(d);
 }
 
+function initTopYearPicker(d) {
+  const sel = document.getElementById('selAnioTop');
+  if (!sel) return;
+
+  // Años disponibles: unión de años en histórico de cualquier programa
+  const yearSet = new Set();
+  (d.programas || []).forEach(p => {
+    (p.historico || []).forEach(h => yearSet.add(h.anio));
+  });
+  const years = [...yearSet].sort((a, b) => b - a);
+  if (years.length === 0) return;
+
+  sel.innerHTML = years.map(y => `<option value="${y}">${y}</option>`).join('');
+  const currentYear = d.meta?.anio_vigente ?? years[0];
+  activeTopYear = years.includes(currentYear) ? currentYear : years[0];
+  sel.value = String(activeTopYear);
+
+  const newSel = sel.cloneNode(true);
+  sel.parentNode.replaceChild(newSel, sel);
+  newSel.addEventListener('change', () => {
+    activeTopYear = parseInt(newSel.value, 10);
+    drawTop10Plot(d);
+  });
+}
+
+// Calcula el top 10 dinámicamente para el año + competencia seleccionados
+function computeTop10ForYearComp(d, year, comp) {
+  const items = [];
+  (d.programas || []).forEach(p => {
+    if (comp === 'Global') {
+      const histYear = (p.historico || []).find(h => h.anio === year);
+      if (histYear && histYear.puntaje != null) {
+        items.push({ programa: p.programa, puntaje: histYear.puntaje, n: histYear.n });
+      }
+    } else {
+      const radarY = (p.radar_historico || {})[String(year)];
+      if (radarY && Array.isArray(radarY.competencias)) {
+        const found = radarY.competencias.find(c => c.competencia === comp);
+        if (found && found.puntaje_programa != null) {
+          items.push({ programa: p.programa, puntaje: found.puntaje_programa, n: radarY.n_programa });
+        }
+      }
+    }
+  });
+  items.sort((a, b) => b.puntaje - a.puntaje);
+  return items.slice(0, 10);
+}
+
 function drawTop10Plot(d) {
   const container = document.getElementById('chartTop10');
-  let dataList = [];
+  if (!container) return;
 
-  if (activeTopCompetence === 'Global') {
-    dataList = d.top10.global;
-  } else {
-    dataList = d.top10.por_competencia[activeTopCompetence];
+  // Actualizar etiqueta del año
+  const yrLbl = document.getElementById('topYearLbl');
+  if (yrLbl) yrLbl.textContent = activeTopYear ?? '';
+
+  const dataList = computeTop10ForYearComp(d, activeTopYear, activeTopCompetence);
+
+  if (!dataList || dataList.length === 0) {
+    container.innerHTML = '<div class="placeholder">Sin datos para este año / competencia</div>';
+    return;
   }
-
-  if (!dataList || dataList.length === 0) return;
 
   const w = 500;
   const h = 320;
@@ -2681,123 +2770,6 @@ function drawTop10Plot(d) {
   container.appendChild(svg);
 }
 
-/* ---------- G11: Niveles de desempeño institucional ---------- */
-function renderNivelesInstitucional(d) {
-  const container = document.getElementById('chartNiveles');
-  if (!container) return;
-
-  const data = d.niveles_desempeno;
-  if (!data || data.length === 0) return;
-
-  const w = 500;
-  const h = 320;
-  const margin = { top: 15, right: 30, bottom: 40, left: 120 };
-
-  const svg = createSVGEl('svg', { viewBox: `0 0 ${w} ${h}`, class: 'svg-chart' });
-
-  const totalComps = data.length;
-  const blockHeight = (h - margin.top - margin.bottom) / totalComps;
-  const barHeight = blockHeight * 0.33;
-
-  const colorsNiv = ['#E53935', '#FB8C00', '#FDD835', '#7CB342', '#2E7D32'];
-  const getXWidth = (pct) => pct * (w - margin.left - margin.right);
-
-  data.forEach((item, idx) => {
-    const yBlock = margin.top + idx * blockHeight;
-    const yUM = yBlock + blockHeight * 0.15;
-    const yNat = yBlock + blockHeight * 0.52;
-
-    // Barra apilada UNIMAGDALENA
-    let startXUM = margin.left;
-    item.distribucion_unimag.forEach((pct, nIdx) => {
-      const barW = getXWidth(pct);
-      if (barW > 0.5) {
-        const rect = createSVGEl('rect', {
-          x: startXUM, y: yUM, width: barW, height: barHeight,
-          fill: colorsNiv[nIdx], class: 'chart-bar'
-        });
-
-        rect.addEventListener('mouseenter', (e) => {
-          showTooltip(e, `<strong>Unimagdalena - Nivel ${nIdx + 1}</strong>Distribución: ${(pct * 100).toFixed(1)}%`);
-        });
-        rect.addEventListener('mousemove', moveTooltip);
-        rect.addEventListener('mouseleave', hideTooltip);
-
-        svg.appendChild(rect);
-      }
-      startXUM += barW;
-    });
-
-    // Barra apilada País
-    let startXNat = margin.left;
-    item.distribucion_nacional.forEach((pct, nIdx) => {
-      const barW = getXWidth(pct);
-      if (barW > 0.5) {
-        const rect = createSVGEl('rect', {
-          x: startXNat, y: yNat, width: barW, height: barHeight,
-          fill: colorsNiv[nIdx], class: 'chart-bar'
-        });
-
-        rect.addEventListener('mouseenter', (e) => {
-          showTooltip(e, `<strong>Nacional - Nivel ${nIdx + 1}</strong>Distribución: ${(pct * 100).toFixed(1)}%`);
-        });
-        rect.addEventListener('mousemove', moveTooltip);
-        rect.addEventListener('mouseleave', hideTooltip);
-
-        svg.appendChild(rect);
-      }
-      startXNat += barW;
-    });
-
-    // Etiqueta del eje
-    let label = item.competencia;
-    if (label === 'RAZONAMIENTO CUANTITATIVO') label = 'Raz. Cuantitativo';
-    if (label === 'COMPETENCIAS CIUDADANAS') label = 'Ciudadanas';
-    if (label === 'COMUNICACIÓN ESCRITA') label = 'Com. Escrita';
-    if (label === 'LECTURA CRÍTICA') label = 'Lectura Crítica';
-    if (label === 'INGLÉS') label = 'Inglés';
-
-    const text = createSVGEl('text', {
-      x: margin.left - 8, y: yBlock + blockHeight / 2 + 3,
-      'text-anchor': 'end', class: 'axis-label',
-      style: 'font-weight: 600; font-size: 8px;'
-    });
-    text.textContent = label;
-    svg.appendChild(text);
-
-    // Escribir badge UM / Col
-    const textU = createSVGEl('text', { x: margin.left + 3, y: yUM + barHeight - 2, class: 'axis-label', style: 'fill: #fff; font-size: 6px; font-weight:800;' });
-    textU.textContent = 'UM';
-    const textC = createSVGEl('text', { x: margin.left + 3, y: yNat + barHeight - 2, class: 'axis-label', style: 'fill: #fff; font-size: 6px; font-weight:800;' });
-    textC.textContent = 'Col';
-    svg.appendChild(textU);
-    svg.appendChild(textC);
-  });
-
-  // Rejilla de porcentajes
-  [0, 0.25, 0.5, 0.75, 1].forEach(pct => {
-    const x = margin.left + getXWidth(pct);
-    const label = createSVGEl('text', { x: x, y: h - margin.bottom + 12, 'text-anchor': 'middle', class: 'axis-label', style: 'font-size: 8px;' });
-    label.textContent = `${Math.round(pct * 100)}%`;
-    svg.appendChild(label);
-  });
-
-  // Leyenda de colores de nivel
-  const legendG = createSVGEl('g', { class: 'legend' });
-  colorsNiv.forEach((col, nIdx) => {
-    const x = margin.left + nIdx * 70;
-    const rect = createSVGEl('rect', { x: x, y: h - 18, width: 10, height: 10, fill: col, rx: 1.5 });
-    const txt = createSVGEl('text', { x: x + 14, y: h - 10, class: 'axis-label', style: 'font-size: 8px; font-weight:600;' });
-    txt.textContent = `Nivel ${nIdx + 1}`;
-    legendG.appendChild(rect);
-    legendG.appendChild(txt);
-  });
-  svg.appendChild(legendG);
-
-  container.innerHTML = '';
-  container.appendChild(svg);
-}
-
 /* ---------- G12: Mapa de calor (filtrable por año) ---------- */
 function initHeatmapYearPicker(d) {
   const sel = document.getElementById('selAnioHeatmap');
@@ -2818,7 +2790,6 @@ function initHeatmapYearPicker(d) {
 
 function renderHeatmapAndDofa(d) {
   renderHeatmap(d);
-  buildDofaDetails(d);
 }
 
 function renderHeatmap(d, yearOverride) {
@@ -2945,119 +2916,6 @@ function renderHeatmap(d, yearOverride) {
   container.innerHTML = '';
   container.appendChild(table);
   container.appendChild(tfoot);
-}
-
-function buildDofaDetails(d) {
-  const fortList = document.getElementById('dofaFortalezas');
-  const debList = document.getElementById('dofaDebilidades');
-  const opList = document.getElementById('dofaOportunidades');
-  const amList = document.getElementById('dofaAmenazas');
-
-  if (!fortList || !debList || !opList || !amList) return;
-
-  const comps = d.institucional.competencias;
-  const progs = d.programas || [];
-
-  // Calcular las brechas institucionales
-  const compBrechas = comps.map(c => ({
-    name: c.competencia,
-    brecha: c.puntaje_unimag - c.puntaje_nacional,
-    score: c.puntaje_unimag,
-    refScore: c.puntaje_nacional
-  }));
-
-  // Ordenar por tamaño de brecha (mejor a peor)
-  const brechasOrdenadas = sorted(compBrechas, key => key.brecha, true);
-
-  // 1. Fortalezas
-  const fortalezas = [];
-  const mejorBrecha = brechasOrdenadas[0];
-  if (mejorBrecha.brecha > 0) {
-    fortalezas.push(`Desempeño institucional destacado en <strong>${mejorBrecha.name}</strong>, superando el promedio nacional por +${mejorBrecha.brecha.toFixed(1)} puntos.`);
-  } else {
-    fortalezas.push(`Cercanía al promedio nacional en la competencia de <strong>${mejorBrecha.name}</strong> (brecha de solo ${mejorBrecha.brecha.toFixed(1)} puntos).`);
-  }
-
-  // Facultad líder
-  const sortedFacs = sorted(d.facultades, key => key.puntaje_global, true);
-  if (sortedFacs.length > 0) {
-    fortalezas.push(`Liderazgo interno de la <strong>${sortedFacs[0].facultad}</strong>, registrando el promedio global más alto de la institución (${sortedFacs[0].puntaje_global} pts).`);
-  }
-
-  // Programas sobre promedio NBC
-  const sobreNbcCount = progs.filter(p => p.global_2025 > p.global_nbc_nacional_2025).length;
-  fortalezas.push(`Un total de <strong>${sobreNbcCount} de ${progs.length} programas</strong> (${Math.round(100 * sobreNbcCount / progs.length)}%) superan la media de su respectivo Grupo de Referencia Nacional.`);
-
-  // 2. Debilidades
-  const debilidades = [];
-  const peorBrecha = brechasOrdenadas[brechasOrdenadas.length - 1];
-  debilidades.push(`Brecha crítica por cerrar en la competencia de <strong>${peorBrecha.name}</strong>, donde la universidad se encuentra ${Math.abs(peorBrecha.brecha).toFixed(1)} puntos por debajo de la media nacional.`);
-  
-  const segundaPeor = brechasOrdenadas[brechasOrdenadas.length - 2];
-  if (segundaPeor.brecha < 0) {
-    debilidades.push(`Margen de mejora prioritario en <strong>${segundaPeor.name}</strong>, registrando una brecha de ${segundaPeor.brecha.toFixed(1)} puntos con el país.`);
-  }
-
-  // Facultad que requiere acompañamiento
-  if (sortedFacs.length > 1) {
-    const peorFac = sortedFacs[sortedFacs.length - 1];
-    debilidades.push(`Necesidad de acompañamiento y plan de choque en la <strong>${peorFac.facultad}</strong>, que reporta el promedio más bajo de la universidad (${peorFac.puntaje_global} pts).`);
-  }
-
-  // 3. Oportunidades
-  const oportunidades = [];
-  oportunidades.push(`Aprovechar que Unimagdalena ocupa el puesto <strong>${d.sue_ranking.find(r => r.es_unimagdalena)?.rank}.º en el SUE</strong> para consolidar y mercadear la posición competitiva frente a otras universidades del Caribe.`);
-  
-  // Programas muy cerca del promedio nacional NBC
-  const cercaNBC = progs.filter(p => {
-    const diff = p.global_2025 - p.global_nbc_nacional_2025;
-    return diff >= -3 && diff < 0;
-  });
-  if (cercaNBC.length > 0) {
-    oportunidades.push(`Focalizar programas con brechas mínimas (como <strong>${cercaNBC.slice(0,2).map(p => p.programa).join(', ')}</strong>) que están a menos de 3 puntos de superar su NBC, para impulsar el indicador general.`);
-  }
-  oportunidades.push(`Explotar el análisis de **Valor Agregado (Cuadrantes)** en procesos de autoevaluación, demostrando el impacto formador en estudiantes con perfiles de ingreso heterogéneos.`);
-
-  // 4. Amenazas
-  const amenazas = [];
-  // Programas con bajo N
-  const bajoN = progs.filter(p => p.n_bajo);
-  if (bajoN.length > 0) {
-    amenazas.push(`Alta volatilidad en indicadores por programas con cohortes pequeñas (<strong>n &lt; 5</strong>) como ${bajoN.slice(0, 3).map(p => p.programa).join(', ')}. Unos pocos evaluados distorsionan el promedio.`);
-  }
-  
-  // Tendencia de brecha nacional
-  const globalHist = d.institucional.historico;
-  if (globalHist.length > 2) {
-    const ult = globalHist[globalHist.length - 1];
-    const pen = globalHist[globalHist.length - 2];
-    const nacDiff = ult.puntaje_nacional - pen.puntaje_nacional;
-    if (nacDiff > 1) {
-      amenazas.push(`Aumento de la exigencia del estándar nacional (el promedio país subió +${nacDiff.toFixed(1)} pts), obligando a acelerar las mejoras para no rezagarse en rankings.`);
-    }
-  }
-  amenazas.push(`Riesgo de estancamiento en la brecha de salida de las pruebas específicas en programas de Ingeniería por la rápida evolución de la estructura curricular de IES acreditadas.`);
-
-  // Inyectar en el HTML
-  const populateList = (el, items) => {
-    el.innerHTML = items.map(it => `<li>${it}</li>`).join('');
-  };
-  populateList(fortList, fortalezas);
-  populateList(debList, debilidades);
-  populateList(opList, oportunidades);
-  populateList(amList, amenazas);
-}
-
-// Utilidad simple para ordenar arrays
-function sorted(arr, keySelector, desc = false) {
-  return [...arr].sort((a, b) => {
-    const valA = keySelector(a);
-    const valB = keySelector(b);
-    if (valA === valB) return 0;
-    if (valA === null || valA === undefined) return desc ? 1 : -1;
-    if (valB === null || valB === undefined) return desc ? -1 : 1;
-    return desc ? (valB > valA ? 1 : -1) : (valA > valB ? 1 : -1);
-  });
 }
 
 /* ---------- Scroll-spy ---------- */

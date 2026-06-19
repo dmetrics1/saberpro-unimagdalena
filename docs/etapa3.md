@@ -45,10 +45,11 @@ programa). Aquí se sustituyen por **un único componente filtrable** (G9).
 | G6 | 4 | Cuadrantes de valor agregado (filtrable por año) | Dispersión | Esencial |
 | G7 | 4 | Trayectoria histórica de Unimagdalena | Recorrido temporal | Esencial |
 | G8 | 5 | Desempeño por facultad (filtrable por año y competencia) | Barras horizontales | Esencial |
-| G9 | 6 | Explorador de programas (componente filtrable) | Compuesto | Esencial |
-| G10 | 7 | Top 10 por competencia | Barras horizontales | Recomendado |
-| G11 | 7 | Niveles de desempeño institucional | Barras apiladas 100% | Recomendado |
-| G12 | 5 | Mapa de calor competencias × facultad (filtrable por año) | Heatmap | Esencial |
+| G9 | 5 | Explorador de programas (componente filtrable) | Compuesto | Esencial |
+| G10 | 6 | Top 10 por competencia (filtrable por año) | Barras horizontales | Esencial |
+| G12 | 4 | Mapa de calor competencias × facultad (filtrable por año) | Heatmap | Esencial |
+
+> **G11 (Niveles de desempeño institucional)** se retira del catálogo en v2.8: la información de niveles ya se cubre dentro del explorador de programas y dejaba el panorama institucional con una dimensión que el rector no usaba.
 
 ---
 
@@ -174,52 +175,47 @@ programa). Aquí se sustituyen por **un único componente filtrable** (G9).
 
 ---
 
-## SECCIÓN 6 — Programas
+## SECCIÓN 5 — Programas
 
 ### G9 · Explorador de programas (componente filtrable) — **Esencial**
-- **Tipo:** componente compuesto con **3 filtros arriba** (facultad → programa → año) que actualizan 3 cards.
+- **Tipo:** componente compuesto con **3 filtros arriba** (facultad → programa → año único compartido) que actualizan **dos cards combinados grandes** + dos cards regulares.
 - **Datos:** `programas[]` (39 programas) con los campos:
-  - `competencias_2025[]`, `especificas_2025[]`, `niveles_2025[]`, `historico[]` (rangos vigentes).
-  - **`radar_historico` (v2.7):** `{<año>: {global_programa, global_nbc_nacional, n_programa, n_nbc_nacional, competencias: [5 ejes con puntaje_programa, puntaje_nbc_nacional, n_nbc_nacional]}}` — alimenta el radar al cambiar año.
-  - **`especificas_historico` (v2.7):** `{<año>: [{prueba, puntaje_programa, puntaje_nbc_nacional, n_nbc_nacional}, …]}` — alimenta las barras específicas al cambiar año (solo años en que el programa rindió esa específica).
+  - `competencias_2025[]`, `especificas_2025[]`, `historico[]` (rangos vigentes).
+  - **`radar_historico` (v2.7):** `{<año>: {global_programa, global_nbc_nacional, n_programa, n_nbc_nacional, competencias: [5 ejes]}}` — alimenta el radar, las dos líneas del histórico global y las barras agrupadas por año.
+  - **`especificas_historico` (v2.7):** `{<año>: [{prueba, puntaje_programa, puntaje_nbc_nacional, n_nbc_nacional}, …]}` — alimenta las barras específicas (solo años en que el programa rindió).
   - `nbc_id`, `nbc_nombre`, `global_nbc_nacional_2025`, `n_nbc_nacional_2025`, `n_bajo`.
-- **Cards visibles (v2.7):**
-  1. **Card combinado "Competencias genéricas + específicas"** — radar a la izquierda y barras a la derecha, separadas por un divisor vertical sutil. Ambas comparten el **mismo selector de año** ubicado en la fila de filtros superior, por lo que siempre muestran el mismo periodo.
-     - **Radar** (PANORAMA_UM azul = programa; PANORAMA_NAT verde = NBC nacional): 6 ejes con el Puntaje Global como sexto eje, etiquetas a distancia fija con separación perpendicular para evitar superposición.
-     - **Barras específicas** (mismo par de colores): horizontales, agrupadas. Si el año seleccionado no tiene específicas, el card se oculta automáticamente.
-  2. **Card "Evolución histórica global 2020-2025"** — **dos líneas históricas** (programa en azul + NBC nacional en verde), con etiquetas de valor sobre cada punto. Reemplaza la antigua línea horizontal punteada de "Ref. NBC (vigente)" por una trayectoria comparativa real.
-  3. **Card "Distribución por niveles de desempeño"** — barras apiladas Nivel 1-5 del programa vs. NBC nacional.
+- **Layout (v2.8):**
+  1. **Card combinado A — "Competencias genéricas + Competencias específicas vs. NBC"** (radar izq. + barras horizontales der., con divisor vertical sutil). ViewBox cuadrado 600×600 en cada columna.
+  2. **Card combinado B — "Competencias genéricas evolución 2020-2025 + Histórico puntaje global"** (barras agrupadas por año izq. + dos líneas reales der., con divisor vertical sutil). ViewBox 580×440 en cada columna.
+- **Sub-vistas:**
+  - **Radar genéricas** (PANORAMA_UM azul = programa; PANORAMA_NAT verde = NBC nacional): 6 ejes incluyendo Puntaje Global.
+  - **Barras específicas** (mismo par de colores): horizontales agrupadas. Si el año seleccionado no tiene específicas, el card se oculta automáticamente.
+  - **Barras agrupadas año-a-año por competencia genérica** (v2.8): paleta tipo Excel institucional (2020 azul / 2021 naranja / 2022 gris / 2023 amarillo / 2024 azul claro / 2025 verde). Reemplaza el antiguo "Distribución por niveles de desempeño".
+  - **Histórico puntaje global** (v2.7): dos líneas reales (programa azul + NBC nacional verde) con etiquetas sobre cada punto.
 - **Mensaje:** "Cada programa frente a su grupo de referencia nacional, y su evolución."
 - **Decisión:** da a cada director su diagnóstico específico para el año que le interese revisar.
-- **Por qué un componente filtrable y NO 39 secciones:** elimina la redundancia del PPTX (~70 gráficos repetidos); un solo módulo interactivo cubre todos los programas y escala solo cuando se agregan más.
-- **Diseño:** badge `⚠️ Evaluados bajos (n<5)` para programas con `n_bajo: true`. El selector de año puebla la **unión** de años disponibles en `radar_historico` y `especificas_historico` del programa actual; al cambiar de programa, el año se preserva si está disponible y si no cae al año vigente.
+- **Por qué un componente filtrable y NO 39 secciones:** elimina la redundancia del PPTX (~70 gráficos repetidos); un solo módulo interactivo cubre todos los programas.
+- **Diseño:** badge `⚠️ Evaluados bajos (n<5)` para programas con `n_bajo: true`. El selector único de año puebla la **unión** de años disponibles en `radar_historico` y `especificas_historico` del programa actual y controla ambos cards combinados; al cambiar de programa, el año se preserva si está disponible y si no cae al año vigente.
+- **Tooltips:** todas las visualizaciones incluyen el nombre del programa en el tooltip (así el lector siempre sabe a qué programa pertenecen los números sin tener que mirar el selector).
 
 ---
 
-## SECCIÓN 7 — Competencias y Top 10
+## SECCIÓN 6 — Competencias
 
-### G10 · Top 10 por competencia — **Recomendado**
-- **Tipo:** barras horizontales, con pestañas por competencia.
-- **Datos:** `top10.por_competencia` (5 competencias, 10 programas c/u) + `top10.global`.
-- **Mensaje:** "Qué programas lideran cada competencia."
-- **Decisión:** identifica referentes internos y buenas prácticas replicables.
-- **Por qué recomendado:** reconocimiento y benchmarking interno; no es lo primero que ve el rector.
-
-### G11 · Niveles de desempeño institucional — **Recomendado**
-- **Tipo:** barras apiladas al 100% (Nivel 1-5), UM vs. nacional, por competencia.
-- **Datos:** `niveles_desempeno` (5 competencias con distribucion_unimag[5] y distribucion_nacional[5]).
-- **Mensaje:** "Cómo se distribuye nuestra población por nivel de logro — no solo el promedio."
-- **Decisión:** revela si el promedio esconde concentración en niveles bajos/altos. **Análisis nuevo que el PPTX no tiene.**
-- **Por qué recomendado:** aporta profundidad que el promedio oculta; valioso para vicerrectoría académica.
-- **Diseño:** barras apiladas con escala de color de rojo (Nivel 1) a verde (Nivel 5); par UM/nacional por competencia.
+### G10 · Top 10 por competencia (filtrable por año) — **Esencial**
+- **Tipo:** barras horizontales con tabs por competencia (Global · Lectura Crítica · Raz. Cuantitativo · Ciudadanas · Com. Escrita · Inglés) y selector de año en el header.
+- **Datos:** se calcula dinámicamente en el front desde `programas[].historico` (Global) y `programas[].radar_historico[<año>].competencias[]` (genéricas). El bloque estático `top10` del JSON queda como respaldo pero no se usa.
+- **Mensaje:** "Qué programas lideran cada competencia en el año que el usuario elige."
+- **Decisión:** identifica referentes internos y buenas prácticas replicables, con capacidad de ver evolución histórica.
+- **Diseño:** una sola card en la sección (en v2.8 se retira el antiguo card "Niveles de desempeño institucional"). Etiqueta de año dinámica en el título.
 
 ---
 
 ## TRANSVERSAL / OPCIONAL
 
-### G12 · Mapa de calor competencias × facultad — **Opcional**
-- **Tipo:** heatmap (6 facultades × 5 competencias).
-- **Datos:** `facultades[].competencias[]`.
+### G12 · Mapa de calor competencias × facultad — **Esencial**
+- **Tipo:** heatmap (6 facultades × 5 competencias) en la sección 4 Facultades (movido desde la antigua sección 7 en v2.6).
+- **Datos:** `facultades_historico[].competencias[]`.
 - **Mensaje:** "Dónde está cada fortaleza/brecha en la matriz facultad-competencia."
 - **Por qué opcional:** vista densa, más analítica que ejecutiva; útil para planeación, prescindible para el rector.
 

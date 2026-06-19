@@ -648,6 +648,30 @@ a { color: var(--brand-accent); }
 #programas .card__title {
   margin-bottom: 4px;
 }
+
+/* Competencias: mismo patrón que las otras secciones (1080px, padding compacto) */
+#competencias .charts-grid {
+  max-width: 1080px;
+  margin-left: auto;
+  margin-right: auto;
+}
+#competencias .card {
+  padding: 18px 24px 14px;
+}
+#competencias .card__title {
+  margin-bottom: 4px;
+}
+/* Tabs de competencia del Top 10: estilo píldora compacto */
+#competencias .tabs {
+  margin: 4px 0 8px;
+}
+/* Contenedores de las dos gráficas: altura uniforme */
+#competencias #chartTop10,
+#competencias #chartNiveles {
+  height: 420px;
+  min-height: 380px;
+  padding: 4px 0 6px;
+}
 /* El explorer-container se vuelve transparente para que los cards "vivan" en el grid normal */
 #programas .explorer-container {
   background: transparent;
@@ -663,14 +687,49 @@ a { color: var(--brand-accent); }
   min-width: 160px;
 }
 
+/* Card combinado "Evolución de competencias" + "Histórico global" (mismo patrón que prog-genspec-card) */
+#programas .prog-history-card {
+  padding: 22px 26px 16px;
+}
+.prog-history-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  align-items: stretch;
+}
+.prog-history-side {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+.prog-history-side .chart-container {
+  flex: 1;
+  min-height: 420px;
+  height: 420px;
+}
+/* Separador vertical sutil entre columnas en pantallas grandes */
+@media (min-width: 1101px) {
+  .prog-history-side + .prog-history-side {
+    border-left: 1px solid var(--border);
+    padding-left: 24px;
+  }
+}
+/* Stack en pantallas medianas/pequeñas */
+@media (max-width: 1100px) {
+  .prog-history-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+}
+
 /* Tarjeta combinada: Genéricas (radar) + Específicas (barras) lado a lado */
 #programas .prog-genspec-card {
-  padding: 14px 18px 10px;   /* padding compacto (igual a las otras cards del programa) */
+  padding: 22px 26px 16px;   /* un poco más de aire para la pareja grande */
 }
 .prog-genspec-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 20px;
+  gap: 24px;
   align-items: stretch;
 }
 .prog-genspec-side {
@@ -679,14 +738,15 @@ a { color: var(--brand-accent); }
   min-width: 0;
 }
 .prog-genspec-side__title {
-  margin: 0 0 6px;
+  margin: 0 0 10px;
   text-align: center;
-  font-size: 1rem;
+  font-size: 1.2rem;         /* títulos más prominentes (referencia) */
+  letter-spacing: -0.01em;
 }
 .prog-genspec-side .chart-container {
   flex: 1;
-  min-height: 460px;
-  height: 460px;             /* más alto que el resto: las gráficas necesitan más espacio */
+  min-height: 520px;
+  height: 520px;             /* radar y específicas llenan más espacio vertical */
 }
 /* En pantallas medianas (< 1100px) las dos columnas se apilan */
 @media (max-width: 1100px) {
@@ -1139,73 +1199,228 @@ a { color: var(--brand-accent); }
 }
 
 /* ============================================================
-   Matriz DOFA y Recomendaciones (Sección 7)
+   Sección 7 — Metodología
    ============================================================ */
-.dofa-container {
-  margin-top: var(--sp-6);
-}
-.dofa-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-  gap: var(--sp-5);
-}
-.dofa-card {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  box-shadow: var(--shadow);
-  overflow: hidden;
+#metodologia .metodologia-wrap {
+  max-width: 1080px;
+  margin: 0 auto;
   display: flex;
   flex-direction: column;
+  gap: 18px;
 }
-.dofa-card__header {
-  font-family: var(--font-display);
-  font-size: 1.15rem;
-  font-weight: 700;
-  color: #fff;
-  padding: var(--sp-4) var(--sp-5);
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
+.metodologia-block {
+  padding: 22px 28px 20px;
+}
+.metodologia-block__head {
   display: flex;
   align-items: center;
-  gap: var(--sp-2);
+  gap: 12px;
+  margin-bottom: 12px;
 }
-.dofa-card--fortaleza { border-top: 5px solid var(--pos); }
-.dofa-card--fortaleza .dofa-card__header { background: var(--pos); }
-.dofa-card--debilidad { border-top: 5px solid var(--neg); }
-.dofa-card--debilidad .dofa-card__header { background: var(--neg); }
-.dofa-card--oportunidad { border-top: 5px solid var(--brand-accent); }
-.dofa-card--oportunidad .dofa-card__header { background: var(--brand-accent); }
-.dofa-card--amenaza { border-top: 5px solid var(--ref); }
-.dofa-card--amenaza .dofa-card__header { background: var(--ref); }
-
-.dofa-card__list {
-  list-style: none;
-  padding: var(--sp-4) var(--sp-5);
+.metodologia-block__icon {
+  font-size: 1.4rem;
+  width: 38px;
+  height: 38px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  background: rgba(15, 79, 168, 0.08);
+}
+.metodologia-block__head .card__title {
   margin: 0;
-  display: flex;
-  flex-direction: column;
-  gap: var(--sp-3);
-  flex: 1;
+  font-size: 1.15rem;
 }
-.dofa-card__list li {
+.metodologia-block p {
+  color: var(--text);
+  font-size: 0.95rem;
+  line-height: 1.55;
+  margin: 0 0 10px;
+}
+.metodologia-block__lead {
+  color: var(--muted);
+  font-size: 0.95rem;
+}
+.metodologia-note {
   font-size: 0.85rem;
-  line-height: 1.45;
+  color: var(--muted);
+  font-style: italic;
+  margin-top: 6px;
+}
+.metodologia-block code {
+  font-family: ui-monospace, "SF Mono", Menlo, Monaco, Consolas, monospace;
+  font-size: 0.88em;
+  background: rgba(15, 79, 168, 0.07);
+  color: var(--brand-primary-dark, #0F4FA8);
+  padding: 1px 6px;
+  border-radius: 4px;
+}
+
+/* Fuentes A / B (lado a lado) */
+.metodologia-sources {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+  margin-top: 14px;
+}
+.metodologia-source {
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 16px 18px;
+  background: var(--surface);
   position: relative;
-  padding-left: var(--sp-4);
+}
+.metodologia-source--a { border-left: 4px solid #0F4FA8; }
+.metodologia-source--b { border-left: 4px solid #2BA85E; }
+.metodologia-source__tag {
+  display: inline-block;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 3px 8px;
+  border-radius: 4px;
+  margin-bottom: 6px;
+  color: #fff;
+}
+.metodologia-source--a .metodologia-source__tag { background: #0F4FA8; }
+.metodologia-source--b .metodologia-source__tag { background: #2BA85E; }
+.metodologia-source h4 {
+  margin: 0 0 10px;
+  font-size: 1rem;
+  font-weight: 700;
+}
+.metodologia-source__desc {
+  margin: 0 0 10px;
+  font-size: 0.9rem;
+  line-height: 1.55;
   color: var(--text);
 }
-.dofa-card__list li::before {
-  content: "•";
-  position: absolute;
-  left: 0;
-  top: 0;
-  font-weight: bold;
+.metodologia-source__meta {
+  margin: 0 0 10px;
+  font-size: 0.85rem;
+  line-height: 1.5;
+  color: var(--muted);
+  padding-top: 8px;
+  border-top: 1px dashed var(--border);
 }
-.dofa-card--fortaleza .dofa-card__list li::before { color: var(--pos); }
-.dofa-card--debilidad .dofa-card__list li::before { color: var(--neg); }
-.dofa-card--oportunidad .dofa-card__list li::before { color: var(--brand-accent); }
-.dofa-card--amenaza .dofa-card__list li::before { color: var(--ref); }
+.metodologia-source__link {
+  margin: 0;
+  font-size: 0.85rem;
+}
+.metodologia-source__link a {
+  color: #0F4FA8;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+  word-break: break-word;
+}
+.metodologia-source__link a:hover { opacity: 0.8; }
+
+/* Flujo de pipeline */
+.metodologia-flow {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin: 14px 0 4px;
+}
+.metodologia-flow__step {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 12px 14px;
+  background: rgba(15, 79, 168, 0.04);
+  border-radius: 10px;
+  border-left: 3px solid #0F4FA8;
+}
+.metodologia-flow__num {
+  flex: 0 0 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: #0F4FA8;
+  color: #fff;
+  font-weight: 800;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.95rem;
+}
+.metodologia-flow__step strong {
+  display: block;
+  margin-bottom: 2px;
+  font-size: 0.95rem;
+}
+.metodologia-flow__step p {
+  margin: 0;
+  font-size: 0.88rem;
+  color: var(--muted);
+  line-height: 1.5;
+}
+
+/* Reglas y umbrales */
+.metodologia-rules {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  margin-top: 12px;
+}
+.metodologia-rule {
+  padding: 14px 16px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+}
+.metodologia-rule h4 {
+  margin: 0 0 6px;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--brand-primary-dark, #0F4FA8);
+}
+.metodologia-rule p {
+  margin: 0;
+  font-size: 0.88rem;
+  line-height: 1.5;
+  color: var(--text);
+}
+.warn-badge--inline {
+  display: inline-flex;
+  font-size: 0.78rem;
+  padding: 2px 8px;
+  vertical-align: middle;
+}
+
+/* Glosario */
+.metodologia-glossary {
+  margin: 12px 0 0;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px 24px;
+}
+.metodologia-glossary > div {
+  padding: 10px 14px;
+  border-left: 3px solid var(--border);
+}
+.metodologia-glossary dt {
+  font-weight: 800;
+  color: var(--brand-primary-dark, #0F4FA8);
+  font-size: 0.92rem;
+  margin-bottom: 3px;
+}
+.metodologia-glossary dd {
+  margin: 0;
+  font-size: 0.88rem;
+  line-height: 1.45;
+  color: var(--text);
+}
+
+/* Responsive: 1 columna en pantallas estrechas */
+@media (max-width: 900px) {
+  .metodologia-sources,
+  .metodologia-rules,
+  .metodologia-glossary {
+    grid-template-columns: 1fr;
+  }
+}
 
 /* Adaptaciones adicionales para pantallas angostas */
 @media (max-width: 600px) {

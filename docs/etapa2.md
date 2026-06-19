@@ -18,9 +18,9 @@ temporal** (no solo "cómo está" sino "cómo llegó hasta aquí"). Esto respond
 directamente al propósito de socializar la evolución.
 
 ```
-PANORAMA  →  POSICIONAMIENTO  →  VALOR AGREGADO  →  FACULTADES  →  PROGRAMAS  →  COMPETENCIAS  →  SÍNTESIS
- (¿cómo      (¿frente a          (¿cuánto           (¿quién       (¿mi          (¿fortalezas    (¿qué
- estamos?)    quién?)             aportamos?)        lidera?)      programa?)     y brechas?)     hacer?)
+PANORAMA  →  POSICIONAMIENTO  →  VALOR AGREGADO  →  FACULTADES  →  PROGRAMAS  →  COMPETENCIAS  →  METODOLOGÍA
+ (¿cómo      (¿frente a          (¿cuánto           (¿quién       (¿mi          (¿quiénes        (¿cómo se
+ estamos?)    quién?)             aportamos?)        lidera?)      programa?)     lideran?)        hizo esto?)
 ```
 
 ---
@@ -99,13 +99,14 @@ directo** a su facultad o programa vía la navegación lateral.
 - **Fuente:** agregados.
 - **Perfil:** vicerrectoría académica.
 
-### Sección 8 — Síntesis + DOFA + recomendaciones
-- **Objetivo:** cerrar con una lectura estratégica y acciones.
-- **Historia:** "Esto es lo que los datos nos dicen, y esto es lo que sugieren hacer."
-- **Preguntas:** ¿Cuáles son nuestras fortalezas, debilidades, oportunidades y amenazas? ¿Qué decisiones priorizar?
-- **Indicadores:** matriz DOFA derivada de los datos; resumen de hallazgos clave. (El mapa de calor competencias×facultad vivió en esta sección hasta v2.5; en v2.6 se movió a la sección 5 — Facultades — donde es narrativamente más natural.)
-- **Fuente:** ambas (síntesis de todo el informe).
-- **Perfil:** alta dirección / planeación.
+### Sección 8 — Metodología *(en v2.8 reemplaza a la antigua "Síntesis + DOFA")*
+- **Objetivo:** explicar al lector de dónde salen los datos y cómo se construye el informe, sin jerga técnica.
+- **Historia:** "Toda esta información viene del ICFES, así se procesa y así se debe interpretar."
+- **Preguntas:** ¿Cuál es la fuente oficial? ¿Cómo se hace el cruce Saber 11 → Saber Pro? ¿Por qué algunos análisis llegan a 2024 y otros a 2025? ¿Qué significa "n bajo"? ¿Qué es NBC, SUE, valor agregado?
+- **Contenido:** 5 bloques — Fuentes de los datos (con enlace al ICFES) · ¿Qué es el cruce Saber 11 → Saber Pro? · Cómo se construye el informe (carga → cálculo → publicación) · Reglas de interpretación · Glosario rápido.
+- **Tono:** accesible y educativo; no menciona scripts, librerías ni nombres de archivo (el público objetivo no es técnico).
+- **Histórico:** hasta v2.7 esta sección fue una matriz DOFA dinámica (`buildDofaDetails`); en v2.8 se reemplaza por Metodología y la lógica DOFA se retira del JS y CSS. El mapa de calor competencias×facultad vivió aquí hasta v2.5; en v2.6 se movió a la sección 5 (Facultades).
+- **Perfil:** público externo, alta dirección, planeación, decanos, directores de programa.
 
 ---
 

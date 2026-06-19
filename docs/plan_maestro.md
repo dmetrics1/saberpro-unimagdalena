@@ -2,7 +2,7 @@
 
 ## Universidad del Magdalena - Oficina Asesora de Planeación
 
-**Versión:** 2.7
+**Versión:** 2.8
 **Fecha de actualización:** Junio 2026
 **Stack:** Python para procesamiento; HTML, CSS y JavaScript puro para el informe.
 **Arquitectura:** `datos crudos -> scripts Python -> JSON maestro -> informe HTML`.
@@ -57,8 +57,8 @@ informe/informe/index.html
 | 2 | Arquitectura narrativa | Mapa de secciones y perfiles de lector | Completada |
 | 3 | Catálogo de visualizaciones | 12 visualizaciones priorizadas | Completada |
 | 4 | Diseño y maquetación | Informe HTML, tokens CSS, navegación y KPIs | Completada — rediseño v2.2 (sidebar flotante permanente, hero con identidad ejecutiva y 3 KPIs incrustados) |
-| 5 | Visualizaciones | Gráficos interactivos en JavaScript puro | Completada — v2.7: rediseño de G9 (Programas). Filtros unificados arriba (facultad + programa + año único compartido). El radar de genéricas y las barras de específicas se fusionan en un **card combinado** con divisor vertical. Ambas gráficas son filtrables por año usando nuevos bloques `radar_historico` y `especificas_historico` en el JSON. La evolución histórica global pasa de "línea + ref. horizontal" a **dos líneas reales** (programa azul + NBC nacional verde). v2.6: G8 (facultades) usa tabs estilo píldora para cambiar de competencia + selector de año; G12 (mapa de calor) se movió de la sección 7 (Síntesis) a la sección 5 (Facultades) con selector de año, gradiente azul claro→azul institucional, texto blanco automático en celdas oscuras, marcadores ★/◇ para max/min y leyenda de rango al pie. v2.5: G2 (radar) con año, G4 (SUE vertical tri-color), G5 (universidades del Magdalena), G6 (cuadrantes con 4 capas: Unimagdalena, NBC, otras univ. del Magdalena, otras IES). |
-| 6 | Narrativa y síntesis | Leads dinámicos y DOFA derivada de datos | Completada (ver §7 para revisión editorial pendiente) |
+| 5 | Visualizaciones | Gráficos interactivos en JavaScript puro | Completada — v2.8: en Programas se fusionan los 4 sub-gráficos en **dos cards combinados** (genéricas+específicas y evolución de competencias+histórico global). El antiguo gráfico de "Niveles de desempeño" del programa se reemplaza por **barras agrupadas año a año por competencia genérica** (paleta tipo Excel institucional 2020-2025). En Competencias se elimina el card "Niveles de desempeño institucional" y el Top 10 se reescribe para **computarse dinámicamente por año** desde los históricos de cada programa (sin depender del bloque estático `top10`). v2.7: rediseño de G9 (Programas). Filtros unificados arriba (facultad + programa + año único compartido). Histórico global con dos líneas reales (programa azul + NBC nacional verde) usando los nuevos bloques `radar_historico` y `especificas_historico`. v2.6: G8 (facultades) usa tabs estilo píldora + selector de año; G12 (mapa de calor) se movió de la sección 7 a la sección 5 (Facultades). v2.5: G2 (radar) con año, G4 (SUE vertical tri-color), G5 (universidades del Magdalena), G6 (cuadrantes con 4 capas). |
+| 6 | Narrativa y metodología | Leads dinámicos + sección Metodología (v2.8) | Completada — v2.8: la antigua sección 07 Síntesis (matriz DOFA) se reemplaza por **07 Metodología**, que documenta para el lector no técnico las dos fuentes oficiales del ICFES (resultados agregados y datos de cruce Saber 11↔Saber Pro), el flujo de procesamiento, las reglas de interpretación y un glosario. Incluye enlace oficial al ICFES. La función `buildDofaDetails` y la lógica `dofa-*` se retiran del JS y CSS. |
 | 7 | Actualización y entrega | Guía operativa, documentación técnica y `ejecutar_proyecto.bat` | Completada |
 
 ## 5. Componentes principales
@@ -79,35 +79,21 @@ informe/informe/index.html
 
 Las 12 visualizaciones, su sección, tipo, fuente, prioridad y mensaje principal están descritas en el [catálogo de visualizaciones (etapa 3)](./etapa3.md). Aquí se referencia esa tabla para evitar duplicación.
 
-## 7. Síntesis: cómo se deriva la DOFA dinámica
+## 7. Sección Metodología (reemplazo de la DOFA en v2.8)
 
-La matriz DOFA del informe NO es texto editorial fijo: se calcula en `informe/informe/assets/js/app.js` (función `buildDofaDetails`) a partir del JSON maestro cada vez que el informe se carga. Reglas vigentes:
+Hasta la versión 2.7 la sección 07 era una matriz DOFA dinámica calculada con la función `buildDofaDetails` de `app.js`. En la **versión 2.8** se reemplaza por una **sección Metodología** dirigida al lector no técnico (rector, decanos, directores de programa, público externo). Cinco bloques con icono + título + contenido:
 
-**Fortalezas**
-1. La competencia genérica con mayor `puntaje_unimag - puntaje_nacional`. Si la brecha es positiva, se redacta como "desempeño destacado"; si es negativa, como "cercanía al promedio nacional".
-2. La facultad con `puntaje_global` más alto (líder interno).
-3. Conteo de programas donde `global_2025 > global_nbc_nacional_2025` (programas que superan su NBC).
+1. **Fuentes de los datos** — explica que toda la información es oficial del ICFES, distingue las dos publicaciones ("resultados agregados" y "datos de cruce Saber 11 ↔ Saber Pro") con tags de color e incluye el enlace oficial: <https://www.icfes.gov.co/evaluaciones-icfes/acerca-del-examen-saber-pro/resultados-del-examen-saber-pro/>.
+2. **¿Qué es el cruce Saber 11 → Saber Pro?** — explica en lenguaje llano el emparejamiento individual y el cálculo del valor agregado, sin jerga técnica.
+3. **Cómo se construye el informe** — los tres pasos del procesamiento (Carga y limpieza · Cálculo de indicadores · Publicación interactiva) sin nombres de scripts ni librerías.
+4. **Reglas de interpretación** — cobertura temporal asimétrica (valor agregado 2020-2024, resto 2020-2025), programas con menos de 5 evaluados con la advertencia visual, comparativos siempre referenciados, cifras del ICFES sin retoque.
+5. **Glosario rápido** — términos clave (Saber Pro, Saber 11, NBC, SUE, Valor agregado, Cuadrantes, Competencias genéricas, Competencias específicas) en lenguaje cercano.
 
-**Debilidades**
-1. La competencia con la peor brecha (mayor déficit vs. nacional).
-2. La segunda peor competencia, solo si su brecha sigue siendo negativa.
-3. La facultad con `puntaje_global` más bajo.
-
-**Oportunidades**
-1. La posición SUE actual de UNIMAGDALENA como activo de posicionamiento regional.
-2. Programas con brecha entre -3 y 0 vs. su NBC nacional (a punto de superar la referencia).
-3. Mención fija del análisis de valor agregado como insumo para autoevaluación.
-
-**Amenazas**
-1. Programas con `n_bajo: true` (cohortes pequeñas, riesgo de volatilidad).
-2. Si el promedio nacional subió más de 1 punto entre los dos últimos años, se reporta el aumento de exigencia del estándar.
-3. Mención fija del riesgo curricular en pruebas específicas de ingeniería.
-
-Los textos resultantes se insertan en `#dofaFortalezas`, `#dofaDebilidades`, `#dofaOportunidades` y `#dofaAmenazas` del `index.html`. Para revisión editorial antes de publicación oficial, editar las plantillas de cadena dentro de `buildDofaDetails`.
+Implementado en `informe/informe/index.html` (sección `#metodologia`) + estilos `.metodologia-*` en `tokens.css`. La función `buildDofaDetails`, la utilidad `sorted`, los textos `leadSint` y los estilos `.dofa-*` se eliminan del proyecto.
 
 ## 8. Pendientes recomendados
 
-- Revisar editorialmente los textos de la DOFA dinámica antes de usarla como documento institucional definitivo.
+- Revisar editorialmente los textos de la nueva sección 07 Metodología antes de cada publicación oficial.
 - Validar visualmente el informe en navegador antes de cada entrega.
 - Si llega un parquet actualizado con 2025, regenerar cuadrantes y actualizar las notas de rango temporal.
 - Actualizar `data/config/normalizacion_ies.csv` cuando el Icfes cambie nombres de IES o aparezcan nuevas instituciones en el SUE.
