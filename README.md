@@ -1,4 +1,14 @@
-# Informe institucional Saber Pro - UNIMAGDALENA
+# Informe Institucional Saber Pro — Universidad del Magdalena
+
+[![Python](https://img.shields.io/badge/Python-2563EB?style=flat-square&logo=python&logoColor=white)](https://www.python.org/)
+[![JavaScript](https://img.shields.io/badge/JavaScript-7C3AED?style=flat-square&logo=javascript&logoColor=white)](https://developer.mozilla.org/docs/Web/JavaScript)
+[![Pandas](https://img.shields.io/badge/pandas-06B6D4?style=flat-square&logo=pandas&logoColor=white)](https://pandas.pydata.org/)
+[![Estado](https://img.shields.io/badge/Estado-En%20producción-10B981?style=flat-square)]()
+[![Uso](https://img.shields.io/badge/Uso-Institucional-9CA3AF?style=flat-square)]()
+
+**Pipeline de datos en Python + informe institucional interactivo en HTML/JS** sobre los resultados **Saber Pro** de la Universidad del Magdalena: puntajes institucionales, competencias genéricas, cuadrantes Saber 11 → Saber Pro, valor agregado, SUE y comparativos por facultad y programa.
+
+---
 
 Proyecto para procesar resultados Saber Pro y construir un informe institucional interactivo de la Universidad del Magdalena. El flujo separa el procesamiento pesado en Python de la visualización en HTML:
 
@@ -7,6 +17,19 @@ datos crudos -> scripts Python -> data/processed/datos_informe.json -> informe H
 ```
 
 El informe final está en [informe/informe/index.html](./informe/informe/index.html) y debe abrirse desde un servidor local para que el navegador pueda cargar el JSON.
+
+## 📸 Vista previa
+
+<table>
+  <tr>
+    <td width="60%"><img src="resultados/cuadrantes_saber11_saberpro_2024.png" alt="Cuadrantes Saber 11 → Saber Pro 2024" /></td>
+    <td width="40%"><img src="resultados/trayectoria_unimagdalena_2020_2024.png" alt="Trayectoria de valor agregado de la Universidad del Magdalena 2020-2024" /></td>
+  </tr>
+</table>
+
+<sub>Salidas analíticas del pipeline: cuadrantes de valor agregado (Saber 11 → Saber Pro) y trayectoria institucional. El informe interactivo completo (12 visualizaciones) se sirve desde <code>informe/informe/index.html</code>.</sub>
+
+> _Para máximo impacto, agrega también una captura del informe HTML interactivo en ejecución._
 
 ## Estado actual
 
@@ -111,3 +134,16 @@ El proyecto usa dos fuentes con universos distintos. La nomenclatura **Fuente A 
 - **Fuente B** — Bases agregadas oficiales Saber Pro: se usan para puntajes institucionales, competencias, SUE, departamentos, facultades, programas, Top 10 y niveles de desempeño. La medida de n es `CANTIDADEVALUADOS`.
 
 No se deben mezclar los n de ambas fuentes en una misma lectura.
+
+---
+
+## 📄 Uso y datos
+
+Proyecto **institucional de la Universidad del Magdalena** — uso interno. Los datos de Saber Pro y Saber 11 provienen del **ICFES** (resultados agregados oficiales) y están sujetos a sus términos. No redistribuir las bases ni el informe sin autorización institucional. *(Repositorio privado.)*
+
+## 👤 Autor
+
+Desarrollado por **Daniel Molina Barrios** — Economista & Data Scientist · Universidad del Magdalena.
+
+[![GitHub](https://img.shields.io/badge/GitHub-2563EB?style=flat-square&logo=github&logoColor=white)](https://github.com/dmetrics1)
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-7C3AED?style=flat-square&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/daniel-molina-b76a4323b/)
