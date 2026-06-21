@@ -137,9 +137,9 @@ No se deben mezclar los n de ambas fuentes en una misma lectura.
 
 ---
 
-## 📄 Uso y datos
+## 📄 Datos
 
-Proyecto **institucional de la Universidad del Magdalena** — uso interno. Los datos de Saber Pro y Saber 11 provienen del **ICFES** (resultados agregados oficiales) y están sujetos a sus términos. No redistribuir las bases ni el informe sin autorización institucional. *(Repositorio privado.)*
+Proyecto **institucional de la Universidad del Magdalena**. Los datos de Saber Pro y Saber 11 provienen del **ICFES** — resultados agregados oficiales de **acceso público**.
 
 ## 👤 Autor
 
