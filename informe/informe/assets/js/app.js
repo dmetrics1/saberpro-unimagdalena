@@ -3173,18 +3173,31 @@ function initSectionReveal() {
   sections.slice(1).forEach(s => obs.observe(s));
 }
 
-/* ---------- Scroll-spy ---------- */
+/* ---------- Scroll-spy ----------
+   Observa secciones del informe y el bloque #panorama. Tambien observa #portada
+   (el hero) para que el item 'Panorama' del nav siga activo cuando el usuario
+   esta en la portada (arriba del informe). */
 function initScrollSpy() {
   const links = [...document.querySelectorAll('.nav__item')];
   const map = new Map(links.map(l => [l.getAttribute('href').slice(1), l]));
+  // El item 'Panorama' apunta a #portada (hero) pero conceptualmente cubre tambien
+  // la seccion #panorama. Lo activamos para ambos ids.
+  const panoramaLink = map.get('portada');
   const obs = new IntersectionObserver((entries) => {
     entries.forEach(e => {
       if (e.isIntersecting) {
         links.forEach(l => l.classList.remove('is-active'));
-        map.get(e.target.id)?.classList.add('is-active');
+        if (e.target.id === 'portada' || e.target.id === 'panorama') {
+          panoramaLink?.classList.add('is-active');
+        } else {
+          map.get(e.target.id)?.classList.add('is-active');
+        }
       }
     });
   }, { rootMargin: '-40% 0px -55% 0px' });
+  // Observamos hero + todas las .section
+  const portada = document.getElementById('portada');
+  if (portada) obs.observe(portada);
   document.querySelectorAll('.section').forEach(s => obs.observe(s));
 }
 
