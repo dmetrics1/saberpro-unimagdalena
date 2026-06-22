@@ -3155,52 +3155,46 @@ function initSectionReveal() {
     return;
   }
 
-  // 1) Revelar sin animacion las secciones que ya esten dentro o muy cerca del
-  //    viewport al cargar la pagina (ej: panorama). Esto evita 'sections en
-  //    blanco' cuando el usuario aterriza directo en un hash o recarga.
-  const vpH = window.innerHeight || document.documentElement.clientHeight;
-  sections.forEach(s => {
-    const r = s.getBoundingClientRect();
-    if (r.top < vpH * 0.85) s.classList.add('is-revealed');
-  });
+  // 1) Las secciones que NO estan en el viewport al cargar la pagina se quedan
+  //    armadas (opacity 0). El observer las animara cuando el usuario scroll
+  //    hasta ellas. La primera seccion siempre se anima un instante despues
+  //    del load (efecto 'entrada' de pagina).
 
-  // 2) Para el resto: IntersectionObserver con trigger EAGER.
+  // 2) IntersectionObserver TOGGLE: anima la seccion CADA vez que entra al
+  //    viewport — sea scroleando hacia abajo o hacia arriba. La animacion no
+  //    es 'one-shot', se re-dispara cada vez para que el dashboard se sienta
+  //    vivo durante toda la sesion de scroll.
   //    threshold 0 = dispara con cualquier pixel visible.
-  //    rootMargin -10% bottom = dispara cuando la seccion empieza a aparecer
-  //    desde la parte inferior del viewport (sin esperar a que entre demasiado).
-  const obs = new IntersectionObserver((entries, observer) => {
+  //    rootMargin 0px = la seccion entra/sale cuando cualquier parte de ella
+  //    toca el viewport — sin offsets que retrasen el trigger.
+  const obs = new IntersectionObserver((entries) => {
     entries.forEach(e => {
       if (e.isIntersecting) {
+        // Entrando al viewport — animar in
         e.target.classList.add('is-revealed');
-        observer.unobserve(e.target);
+      } else {
+        // Completamente fuera del viewport — re-armar para proxima entrada
+        e.target.classList.remove('is-revealed');
       }
     });
   }, {
     threshold: 0,
-    rootMargin: '0px 0px -10% 0px'
+    rootMargin: '0px 0px 0px 0px'
   });
 
-  sections.forEach(s => {
-    if (!s.classList.contains('is-revealed')) obs.observe(s);
-  });
+  sections.forEach(s => obs.observe(s));
 
-  // 3) Cuando el usuario hace click en un item del nav (incluyendo Panorama,
-  //    Metodologia, etc) revelamos inmediatamente la seccion destino para que
-  //    no quede en blanco si el observer no alcanza a dispararse a tiempo.
+  // 3) Cuando el usuario hace click en un item del nav que apunta a una seccion
+  //    lejana, pre-revelamos el destino para evitar el flash 'en blanco' mientras
+  //    el smooth-scroll esta en transito. El observer se encarga del resto.
   document.querySelectorAll('.nav__item, .hero__button').forEach(link => {
-    link.addEventListener('click', (ev) => {
+    link.addEventListener('click', () => {
       const href = link.getAttribute('href') || '';
       if (!href.startsWith('#')) return;
       const target = document.getElementById(href.slice(1));
-      if (!target) return;
-      // Si el target es .section, revelarlo
-      if (target.classList.contains('section')) {
+      if (target && target.classList.contains('section')) {
         target.classList.add('is-revealed');
       }
-      // Tambien revelar las secciones intermedias (que el usuario va a
-      // 'pasar por encima' al scroll-to). Asi cuando vuelva a scroll arriba
-      // las ve ya animadas y no en blanco.
-      sections.forEach(s => s.classList.add('is-revealed'));
     });
   });
 }

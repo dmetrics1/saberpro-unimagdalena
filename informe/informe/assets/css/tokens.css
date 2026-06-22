@@ -89,13 +89,14 @@ html { scroll-behavior: smooth; scroll-padding-top: var(--sp-5); }
       iOS/Material). Una sola curva en todo el sistema.
    ============================================================ */
 
-/* Nivel 1: la seccion completa fade-up */
+/* Nivel 1: la seccion completa fade-up — recorrido mas visible para que
+   la animacion sea perceptible en desktop (no solo en mobile). */
 .section {
   opacity: 0;
-  transform: translate3d(0, 28px, 0);
+  transform: translate3d(0, 48px, 0);
   transition:
-    opacity .65s cubic-bezier(.22,.61,.36,1),
-    transform .65s cubic-bezier(.22,.61,.36,1);
+    opacity .75s cubic-bezier(.22,.61,.36,1),
+    transform .75s cubic-bezier(.22,.61,.36,1);
 }
 .section.is-revealed {
   opacity: 1;
@@ -115,10 +116,10 @@ html { scroll-behavior: smooth; scroll-padding-top: var(--sp-5); }
 .section .metodologia-flow__step,
 .section .metodologia-rule {
   opacity: 0;
-  transform: translate3d(0, 16px, 0);
+  transform: translate3d(0, 24px, 0);
   transition:
-    opacity .55s cubic-bezier(.22,.61,.36,1),
-    transform .55s cubic-bezier(.22,.61,.36,1);
+    opacity .6s cubic-bezier(.22,.61,.36,1),
+    transform .6s cubic-bezier(.22,.61,.36,1);
 }
 .section.is-revealed .card,
 .section.is-revealed .kpi-card,
@@ -162,13 +163,9 @@ html { scroll-behavior: smooth; scroll-padding-top: var(--sp-5); }
 .section.is-revealed .metodologia-flow__step:nth-child(4) { transition-delay: 280ms; }
 .section.is-revealed .metodologia-flow__step:nth-child(5) { transition-delay: 350ms; }
 
-/* La primera seccion (panorama hero) se revela inmediatamente al cargar */
-.section:first-of-type { opacity: 1; transform: translate3d(0, 0, 0); }
-.section:first-of-type .card,
-.section:first-of-type .panorama-card {
-  /* Hero panorama: cards se animan de una al cargar (sin esperar scroll) */
-  animation: heroFadeUp .7s cubic-bezier(.22,.61,.36,1) .15s both;
-}
+/* NOTA: la primera seccion (panorama) usa el mismo sistema de toggle observer
+   que las demas — se anima al cargar (cuando el observer detecta que esta en
+   viewport) y se re-anima cuando el usuario scrol vuelve a ella. */
 @keyframes heroFadeUp {
   from { opacity: 0; transform: translate3d(0, 18px, 0); }
   to   { opacity: 1; transform: translate3d(0, 0, 0); }
