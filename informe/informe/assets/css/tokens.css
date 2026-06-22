@@ -2069,10 +2069,36 @@ body.sidebar-collapsed .sidebar__foot-short {
   }
 
   /* Heights compactos en gráficos */
-  #facultades #chartHeatmap { height: 360px; min-height: 320px; }
+  #facultades #chartHeatmap { height: auto; min-height: 320px; max-height: 480px; }
   #competencias #chartTop10,
   #competencias #chartNiveles { height: 360px; min-height: 320px; }
   #facultades #chartFacultades { height: 340px; min-height: 320px; }
+
+  /* Charts con scroll horizontal en mobile cuando el contenido excede el ancho del card.
+     Para los gráficos cuyos labels son largos (facultades) o que tienen muchas columnas
+     (heatmap), permitimos pan horizontal con momentum touch en lugar de aplastar el
+     contenido y volverlo ilegible. */
+  #facultades #chartFacultades,
+  #facultades #chartHeatmap {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scroll-snap-type: x proximity;
+    /* Hint visual sutil: gradient a la derecha indicando que hay más contenido */
+    mask-image: linear-gradient(to right, #000 calc(100% - 16px), transparent);
+    -webkit-mask-image: linear-gradient(to right, #000 calc(100% - 16px), transparent);
+    padding-right: 8px;
+  }
+  /* El SVG/tabla interna mantiene su ancho natural mínimo para legibilidad */
+  #facultades #chartFacultades > svg { min-width: 580px; height: 100%; }
+  #facultades #chartHeatmap > .heatmap { min-width: 540px; }
+  /* Ocultar scrollbar nativa pero permitir pan táctil */
+  #facultades #chartFacultades::-webkit-scrollbar,
+  #facultades #chartHeatmap::-webkit-scrollbar { height: 4px; }
+  #facultades #chartFacultades::-webkit-scrollbar-thumb,
+  #facultades #chartHeatmap::-webkit-scrollbar-thumb {
+    background: rgba(15,79,168,.32);
+    border-radius: 2px;
+  }
 
   /* Cards combinados: el chart-container interno respeta la altura mobile */
   .panorama-side .chart-container,
