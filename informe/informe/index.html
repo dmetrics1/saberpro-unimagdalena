@@ -189,8 +189,13 @@
         <div class="card">
           <div class="card__header-flex">
             <h3 class="card__title">Cuadrantes de valor agregado <span id="cuadranteYearLbl">2024</span></h3>
-            <div class="select-wrapper">
-              <select id="selAnioCuadrante" class="control-select"></select>
+            <div class="card__controls card__controls--inline">
+              <div class="select-wrapper">
+                <select id="selAnioCuadrante" class="control-select" aria-label="Año del análisis"></select>
+              </div>
+              <div class="select-wrapper">
+                <select id="selNbcCuadrante" class="control-select control-select--compact" aria-label="Filtrar por NBC"></select>
+              </div>
             </div>
           </div>
           <div class="chart-container" id="chartCuadrantes"></div>

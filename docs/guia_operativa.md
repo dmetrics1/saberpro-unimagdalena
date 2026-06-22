@@ -149,7 +149,7 @@ Comprobar que `datos_informe.json` contiene:
 - 6 puntos en `institucional.historico` para 2020-2025; cada entrada con su `competencias[]` de 5 elementos (la usa el radar filtrable por año).
 - 37 universidades en `sue_ranking` (puede variar si el Icfes incorpora o retira IES; ver nota de brecha SUE en el [plan maestro §9](./plan_maestro.md)).
 - 6 facultades.
-- 35 programas (a partir de v2.13: dedup por mayor n, división de Literatura en presencial/distancia, exclusión de 5 programas para alinear con la presentación ejecutiva).
+- 39 programas (a partir de v2.14: dedup por mayor n, división de Literatura en presencial/distancia, exclusión del SNIES viejo de Educación Básica con Énfasis en Informática que fue reemplazado por el SNIES nuevo Licenciatura en Informática). Conteo y composición coinciden 100% con el slide 94 de la presentación ejecutiva 2025.
 - Cuadrantes para 2018-2024.
 - `universidades_dept_historico` con 6 años (2020-2025) y 3 universidades por año (Unimagdalena + Sergio Arboleda Santa Marta + Cooperativa Santa Marta).
 - `sue_ranking_historico` con 6 años (2020-2025) y ~37 universidades del SUE por año; cada entrada con `abrev` (etiqueta corta del eje X).

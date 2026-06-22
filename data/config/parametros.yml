@@ -120,15 +120,18 @@ universidades_dept_magdalena:
 
 # PROGRAMAS EXCLUIDOS DEL INFORME
 # Programas que existen en la base del Icfes pero que NO se incluyen en el informe oficial
-# (decision editorial: alinear el informe con la presentacion ejecutiva 2025 que excluye
-# licenciaturas con n bajo o codigos SNIES residuales). Los nombres deben coincidir con
-# el campo PROGRAMA_ACADEMICO del Icfes tras la normalizacion (mayusculas y sin tildes).
+# (decision editorial: alinear el informe con la presentacion ejecutiva 2025).
+# Los nombres deben coincidir con el campo PROGRAMA_ACADEMICO del Icfes tras la
+# normalizacion (mayusculas y sin tildes).
+#
+# Caso "Licenciatura en Informatica":
+#   - El SNIES viejo "LICENCIATURA EN EDUCACION BASICA CON ENFASIS EN INFORMATICA"
+#     (PROM 2025: 136, n=9) ya no admite nuevos estudiantes.
+#   - El SNIES nuevo "LICENCIATURA EN INFORMATICA" (PROM 2025: 172, n=1) es el reemplazo
+#     y es el que la presentacion ejecutiva trata como vigente.
+#   - Por eso aqui excluimos el codigo viejo y conservamos el nuevo.
 programas_excluidos:
-  - "LICENCIATURA EN ARTES"
-  - "LICENCIATURA EN CIENCIAS NATURALES Y EDUCACION AMBIENTAL"
-  - "LICENCIATURA EN QUIMICA"
-  - "LICENCIATURA EN ESPANOL Y LITERATURA"
-  - "LICENCIATURA EN INFORMATICA"
+  - "LICENCIATURA EN EDUCACION BASICA CON ENFASIS EN INFORMATICA"
 
 # RENOMBRADO DE PROGRAMAS POR ID INTERNO DEL ICFES (NO es SNIES del MEN)
 # La columna ID_PROGRAMA_ACAD del Excel del Icfes contiene un identificador interno

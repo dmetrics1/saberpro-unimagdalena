@@ -982,6 +982,13 @@ body.sidebar-collapsed .sidebar__foot-short {
   gap: 8px;
   flex-wrap: wrap;
 }
+.card__controls--inline {
+  flex-wrap: nowrap;       /* mantener selectores en una sola fila */
+}
+.card__controls--inline .control-select--compact {
+  max-width: 240px;        /* permite que el NBC dropdown muestre nombres mas largos */
+  min-width: 180px;
+}
 
 /* Tarjetas explicativas de los 4 cuadrantes */
 .cuadrante-cards {

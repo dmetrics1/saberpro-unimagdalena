@@ -1153,8 +1153,11 @@ function renderDeptRanking(d) {
 /* ---------- G6: Cuadrantes de Valor Agregado ---------- */
 let activeYearCuadrante = '2024';
 
+let activeNbcCuadrante = 'TODOS';  // 'TODOS' o nombre clean del NBC
+
 function renderCuadrantes(d) {
   const select = document.getElementById('selAnioCuadrante');
+  const selectNbc = document.getElementById('selNbcCuadrante');
   const container = document.getElementById('chartCuadrantes');
   if (!container) return;
 
@@ -1173,11 +1176,54 @@ function renderCuadrantes(d) {
 
     select.addEventListener('change', (e) => {
       activeYearCuadrante = e.target.value;
+      populateNbcCuadrantePicker(d);   // refrescar NBCs disponibles para ese año
       drawCuadrantePlot(d);
     });
   }
 
+  // Poblar selector de NBC para el año vigente
+  populateNbcCuadrantePicker(d);
+
   drawCuadrantePlot(d);
+}
+
+function populateNbcCuadrantePicker(d) {
+  const sel = document.getElementById('selNbcCuadrante');
+  if (!sel) return;
+  const yrData = d.cuadrantes_por_anio?.[activeYearCuadrante];
+  const nbcs = (yrData?.nbcs_unimag || []).map(n => n.nbc).sort();
+
+  // Mantener la selección si todavía está disponible en el año nuevo
+  const prevValue = sel.value || activeNbcCuadrante;
+
+  sel.innerHTML = '';
+  const optAll = document.createElement('option');
+  optAll.value = 'TODOS';
+  optAll.textContent = 'Todos los NBC';
+  sel.appendChild(optAll);
+  nbcs.forEach(nbc => {
+    const opt = document.createElement('option');
+    opt.value = nbc;
+    // Mostrar nombre en title-case para mejor lectura
+    opt.textContent = titleCase(nbc);
+    sel.appendChild(opt);
+  });
+
+  if (prevValue && [...sel.options].some(o => o.value === prevValue)) {
+    sel.value = prevValue;
+    activeNbcCuadrante = prevValue;
+  } else {
+    sel.value = 'TODOS';
+    activeNbcCuadrante = 'TODOS';
+  }
+
+  // Evento (idempotente: clonar para evitar listeners duplicados)
+  const fresh = sel.cloneNode(true);
+  sel.parentNode.replaceChild(fresh, sel);
+  fresh.addEventListener('change', () => {
+    activeNbcCuadrante = fresh.value;
+    drawCuadrantePlot(d);
+  });
 }
 
 function drawCuadrantePlot(d) {
@@ -1331,17 +1377,33 @@ function drawCuadrantePlot(d) {
     svg.appendChild(c);
   });
 
-  // NBCs de Unimagdalena (verde)
+  // NBCs de Unimagdalena (verde) — aplicar filtro por NBC si está activo
+  const filtroNbc = activeNbcCuadrante && activeNbcCuadrante !== 'TODOS' ? activeNbcCuadrante : null;
   (yrData.nbcs_unimag || []).forEach(nbc => {
+    const seleccionado = !filtroNbc || nbc.nbc === filtroNbc;
+    // Si hay filtro y este NBC no es el seleccionado: lo dejamos atenuado pequeño
     const c = createSVGEl('circle', {
-      cx: getX(nbc.sb11), cy: getY(nbc.sbpro), r: 7,
-      fill: VA_COLORS.aporte, stroke: '#fff', 'stroke-width': '1.6',
+      cx: getX(nbc.sb11), cy: getY(nbc.sbpro),
+      r: seleccionado ? 7 : 3.5,
+      fill: VA_COLORS.aporte,
+      'fill-opacity': seleccionado ? '1' : '0.18',
+      stroke: '#fff', 'stroke-width': seleccionado ? '1.6' : '0.6',
       class: 'chart-dot'
     });
     c.addEventListener('mouseenter', (e) => showTooltip(e, `<strong>NBC: ${nbc.nbc}</strong>Saber 11: ${nbc.sb11}<br>Saber Pro: ${nbc.sbpro}<br>n: ${NUM.format(nbc.n)}<br>Cuadrante: ${nbc.cuadrante}`));
     c.addEventListener('mousemove', moveTooltip);
     c.addEventListener('mouseleave', hideTooltip);
     svg.appendChild(c);
+
+    // Si hay filtro activo y este es el NBC seleccionado, mostrar etiqueta con su nombre
+    if (filtroNbc && seleccionado) {
+      const lbl = createSVGEl('text', {
+        x: getX(nbc.sb11), y: getY(nbc.sbpro) - 14, 'text-anchor': 'middle',
+        style: `font-family: var(--font-display); font-weight: 800; font-size: 12px; fill: ${VA_COLORS.aporte};`
+      });
+      lbl.textContent = titleCase(nbc.nbc);
+      svg.appendChild(lbl);
+    }
   });
 
   // Unimagdalena (azul institucional, destacado)
@@ -1356,12 +1418,28 @@ function drawCuadrantePlot(d) {
       class: 'chart-dot',
       style: 'filter: drop-shadow(0 2px 5px rgba(0,0,0,0.22));'
     });
-    const tag = createSVGEl('text', {
-      x: umX, y: umY - 18, 'text-anchor': 'middle',
-      style: `font-family: var(--font-display); font-weight: 800; font-size: 13px; fill: ${VA_COLORS.desempeno};`
-    });
-    tag.textContent = 'Unimagdalena';
-    svg.appendChild(tag);
+
+    // Decidir si mostrar la etiqueta "Unimagdalena":
+    // Cuando hay un NBC seleccionado y su punto está muy cerca del de Unimagdalena
+    // ocultamos esta etiqueta para no estorbar al nombre del NBC (que es la prioridad
+    // del filtro). Umbral: 35px (en coordenadas del viewBox del SVG).
+    let mostrarEtiquetaUM = true;
+    if (filtroNbc) {
+      const nbcSel = (yrData.nbcs_unimag || []).find(n => n.nbc === filtroNbc);
+      if (nbcSel) {
+        const dx = getX(nbcSel.sb11) - umX;
+        const dy = getY(nbcSel.sbpro) - umY;
+        if (Math.hypot(dx, dy) < 35) mostrarEtiquetaUM = false;
+      }
+    }
+    if (mostrarEtiquetaUM) {
+      const tag = createSVGEl('text', {
+        x: umX, y: umY - 18, 'text-anchor': 'middle',
+        style: `font-family: var(--font-display); font-weight: 800; font-size: 13px; fill: ${VA_COLORS.desempeno};`
+      });
+      tag.textContent = 'Unimagdalena';
+      svg.appendChild(tag);
+    }
     star.addEventListener('mouseenter', (e) => showTooltip(e, `<strong>Unimagdalena</strong>Saber 11 (Entrada): ${umGlobal.sb11} pts<br>Saber Pro (Salida): ${umGlobal.sbpro} pts<br>Muestra cruzada: ${NUM.format(umGlobal.n)}<br>Cuadrante: ${umGlobal.cuadrante}`));
     star.addEventListener('mousemove', moveTooltip);
     star.addEventListener('mouseleave', hideTooltip);

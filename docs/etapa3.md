@@ -128,7 +128,7 @@ programa). Aquí se sustituyen por **un único componente filtrable** (G9).
 
 ## SECCIÓN 4 — Valor agregado (cuadrantes)
 
-### G6 · Cuadrantes de valor agregado (filtrable por año) — **Esencial**
+### G6 · Cuadrantes de valor agregado (filtrable por año y NBC) — **Esencial**
 - **Tipo:** dispersión con 4 cuadrantes y selector de año (**2020-2024**).
 - **Datos:** `cuadrantes_por_anio[año]` (limites x_mean/y_mean, instituciones[], nbcs_unimag[]). **Solo se leen los años 2020-2024; 2018-2019 se omiten en el front-end.**
 - **Mensaje:** "Recibimos perfiles de entrada y los graduamos por encima de la media: ese es nuestro aporte."
@@ -184,7 +184,7 @@ programa). Aquí se sustituyen por **un único componente filtrable** (G9).
 
 ### G9 · Explorador de programas (componente filtrable) — **Esencial**
 - **Tipo:** componente compuesto con **3 filtros arriba** (facultad → programa → año único compartido) que actualizan **dos cards combinados grandes** + dos cards regulares.
-- **Datos:** `programas[]` (35 programas a partir de v2.13: dedup por mayor n, división de Literatura presencial/distancia, exclusión de 5 programas para alinear con la presentación ejecutiva) con los campos:
+- **Datos:** `programas[]` (39 programas a partir de v2.14: dedup por mayor n, división de Literatura presencial/distancia, exclusión del SNIES viejo de Educación Básica con Énfasis en Informática que fue reemplazado por el SNIES nuevo Licenciatura en Informática) con los campos:
   - `competencias_2025[]`, `especificas_2025[]`, `historico[]` (rangos vigentes).
   - **`radar_historico` (v2.7):** `{<año>: {global_programa, global_nbc_nacional, n_programa, n_nbc_nacional, competencias: [5 ejes]}}` — alimenta el radar, las dos líneas del histórico global y las barras agrupadas por año.
   - **`especificas_historico` (v2.7):** `{<año>: [{prueba, puntaje_programa, puntaje_nbc_nacional, n_nbc_nacional}, …]}` — alimenta las barras específicas (solo años en que el programa rindió).
