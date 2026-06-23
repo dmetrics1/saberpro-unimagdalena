@@ -1405,29 +1405,30 @@ function drawCuadrantePlot(d) {
   });
 
   // NBC nacional (referencia): mismo NBC pero promediado a nivel pais. Se dibuja
-  // como anillo hueco verde para diferenciarlo del solido de Unimagdalena. Solo
+  // SOLIDO en naranja (VA_COLORS.alerta) para que tenga maxima visibilidad y
+  // contraste contra el verde de Unimag NBC y el azul de Unimagdalena. Solo
   // aparece cuando hay un filtro NBC activo (para hacer la comparacion 1 a 1).
   if (filtroNbc) {
     const nbcNac = (yrData.nbcs_nacional || []).find(n => n.nbc === filtroNbc);
     if (nbcNac && nbcNac.sb11 != null && nbcNac.sbpro != null) {
-      const ringX = getX(nbcNac.sb11);
-      const ringY = getY(nbcNac.sbpro);
-      const ring = createSVGEl('circle', {
-        cx: ringX, cy: ringY, r: 8,
-        fill: '#fff', 'fill-opacity': '0.9',
-        stroke: VA_COLORS.aporte, 'stroke-width': '2.5',
-        'stroke-dasharray': '3,2',
-        class: 'chart-dot'
+      const nacX = getX(nbcNac.sb11);
+      const nacY = getY(nbcNac.sbpro);
+      const nacDot = createSVGEl('circle', {
+        cx: nacX, cy: nacY, r: 8,
+        fill: VA_COLORS.alerta,
+        stroke: '#fff', 'stroke-width': '2',
+        class: 'chart-dot',
+        style: 'filter: drop-shadow(0 1.5px 3px rgba(0,0,0,0.18));'
       });
-      ring.addEventListener('mouseenter', (e) => showTooltip(e, `<strong>NBC Nacional: ${nbcNac.nbc}</strong>(Promedio nacional de IES que ofrecen este NBC)<br>Saber 11: ${nbcNac.sb11}<br>Saber Pro: ${nbcNac.sbpro}<br>n: ${NUM.format(nbcNac.n)}<br>Cuadrante: ${nbcNac.cuadrante}`));
-      ring.addEventListener('mousemove', moveTooltip);
-      ring.addEventListener('mouseleave', hideTooltip);
-      svg.appendChild(ring);
+      nacDot.addEventListener('mouseenter', (e) => showTooltip(e, `<strong>NBC Nacional: ${nbcNac.nbc}</strong>(Promedio nacional de IES que ofrecen este NBC)<br>Saber 11: ${nbcNac.sb11}<br>Saber Pro: ${nbcNac.sbpro}<br>n: ${NUM.format(nbcNac.n)}<br>Cuadrante: ${nbcNac.cuadrante}`));
+      nacDot.addEventListener('mousemove', moveTooltip);
+      nacDot.addEventListener('mouseleave', hideTooltip);
+      svg.appendChild(nacDot);
 
-      // Etiqueta "Nacional" para identificar este anillo
+      // Etiqueta "Nacional" para identificar el punto
       const nacLbl = createSVGEl('text', {
-        x: ringX, y: ringY + 22, 'text-anchor': 'middle',
-        style: `font-family: var(--font-display); font-weight: 700; font-size: 11px; fill: ${VA_COLORS.aporte}; letter-spacing: .05em;`
+        x: nacX, y: nacY + 22, 'text-anchor': 'middle',
+        style: `font-family: var(--font-display); font-weight: 700; font-size: 11px; fill: ${VA_COLORS.alerta}; letter-spacing: .05em;`
       });
       nacLbl.textContent = 'Nacional';
       svg.appendChild(nacLbl);
@@ -1475,13 +1476,13 @@ function drawCuadrantePlot(d) {
   }
 
   // Leyenda al pie del card. Cuando hay un filtro NBC activo agregamos el item
-  // 'NBC Nacional' para que el lector entienda que el anillo verde discontinuo
+  // 'NBC Nacional' (naranja solido) para que el lector entienda que ese punto
   // es el promedio del mismo NBC a nivel pais (referencia comparativa).
   const legendItems = filtroNbc
     ? [
         { color: VA_COLORS.desempeno, text: 'Unimagdalena' },
         { color: VA_COLORS.aporte, text: 'NBC Unimagdalena' },
-        { color: VA_COLORS.aporte, text: 'NBC Nacional', hollow: true }
+        { color: VA_COLORS.alerta, text: 'NBC Nacional' }
       ]
     : [
         { color: VA_COLORS.desempeno, text: 'Unimagdalena' },
