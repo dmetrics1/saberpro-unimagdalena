@@ -104,7 +104,7 @@ def main() -> None:
             sbpro_nbc = row["sbpro_global_mean"]
             n_nbc = row["crossed_n"]
             cuadrante_nbc = sp.classify_quadrant(sb11_nbc, sbpro_nbc, x_mean, y_mean)
-            
+
             nbcs_unimag.append({
                 "nbc": nbc_name,
                 "sb11": round(sb11_nbc, 2) if sb11_nbc is not None else None,
@@ -112,14 +112,38 @@ def main() -> None:
                 "n": int(n_nbc),
                 "cuadrante": cuadrante_nbc
             })
-            
+
+        # NBCs nacionales: promedio ponderado por crossed_n de cada NBC a nivel
+        # nacional (todas las IES del pais que lo ofrecen). Solo se calcula para
+        # los NBCs que Unimagdalena tiene, para poder hacer la comparacion 1 a 1.
+        unimag_nbc_names = {n["nbc"] for n in nbcs_unimag}
+        nacional_nbc_df = year_df.filter(pl.col("nbc_norm").is_in(list(unimag_nbc_names)))
+        nbcs_nacional = []
+        if not nacional_nbc_df.is_empty():
+            nacional_agg = nacional_nbc_df.group_by("nbc_norm").agg(
+                pl.col("crossed_n").sum().alias("n"),
+                (pl.col("sb11_weighted").sum() / pl.col("crossed_n").sum()).alias("sb11"),
+                (pl.col("sbpro_weighted").sum() / pl.col("crossed_n").sum()).alias("sbpro")
+            )
+            for row in nacional_agg.iter_rows(named=True):
+                sb11_n = row["sb11"]
+                sbpro_n = row["sbpro"]
+                nbcs_nacional.append({
+                    "nbc": row["nbc_norm"],
+                    "sb11": round(sb11_n, 2) if sb11_n is not None else None,
+                    "sbpro": round(sbpro_n, 2) if sbpro_n is not None else None,
+                    "n": int(row["n"]),
+                    "cuadrante": sp.classify_quadrant(sb11_n, sbpro_n, x_mean, y_mean)
+                })
+
         cuadrantes_por_anio[str(year)] = {
             "limites": {
                 "x_mean": round(x_mean, 2) if x_mean is not None else None,
                 "y_mean": round(y_mean, 2) if y_mean is not None else None
             },
             "instituciones": instituciones,
-            "nbcs_unimag": nbcs_unimag
+            "nbcs_unimag": nbcs_unimag,
+            "nbcs_nacional": nbcs_nacional
         }
         
         # Guardar coordenadas de la trayectoria para UNIMAGDALENA

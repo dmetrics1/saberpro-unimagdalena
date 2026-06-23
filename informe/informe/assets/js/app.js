@@ -492,10 +492,18 @@ function createLegend(items, startX, startY, opts = {}) {
   const g = createSVGEl('g', { class: 'legend' });
   items.forEach((item, idx) => {
     const x = startX + idx * gap;
-    const rect = createSVGEl('rect', {
+    // Si item.hollow es true, el marcador se dibuja como contorno discontinuo
+    // (mismo estilo que el anillo NBC Nacional en el grafico).
+    const rectAttrs = {
       x: x, y: startY - rectH, width: rectW, height: rectH, rx: 2,
-      fill: item.color
-    });
+      fill: item.hollow ? '#fff' : item.color
+    };
+    if (item.hollow) {
+      rectAttrs.stroke = item.color;
+      rectAttrs['stroke-width'] = '1.8';
+      rectAttrs['stroke-dasharray'] = '2,1.5';
+    }
+    const rect = createSVGEl('rect', rectAttrs);
     const text = createSVGEl('text', {
       x: x + textGap, y: startY - 1,
       style: `font-family: var(--font-display); font-size: ${fontSize}px; font-weight: ${fontWeight}; fill: var(--brand-primary-dark);`
@@ -1367,8 +1375,8 @@ function drawCuadrantePlot(d) {
     svg.appendChild(c);
   });
 
-  // NBCs de Unimagdalena (verde). Con filtro activo solo se dibuja el NBC
-  // seleccionado; los demas no aparecen (vista limpia).
+  // NBCs de Unimagdalena (verde solido). Con filtro activo solo se dibuja el
+  // NBC seleccionado; los demas no aparecen (vista limpia).
   (yrData.nbcs_unimag || []).forEach(nbc => {
     const seleccionado = !filtroNbc || nbc.nbc === filtroNbc;
     if (filtroNbc && !seleccionado) return;
@@ -1380,7 +1388,7 @@ function drawCuadrantePlot(d) {
       stroke: '#fff', 'stroke-width': '1.6',
       class: 'chart-dot'
     });
-    c.addEventListener('mouseenter', (e) => showTooltip(e, `<strong>NBC: ${nbc.nbc}</strong>Saber 11: ${nbc.sb11}<br>Saber Pro: ${nbc.sbpro}<br>n: ${NUM.format(nbc.n)}<br>Cuadrante: ${nbc.cuadrante}`));
+    c.addEventListener('mouseenter', (e) => showTooltip(e, `<strong>NBC Unimagdalena: ${nbc.nbc}</strong>Saber 11: ${nbc.sb11}<br>Saber Pro: ${nbc.sbpro}<br>n: ${NUM.format(nbc.n)}<br>Cuadrante: ${nbc.cuadrante}`));
     c.addEventListener('mousemove', moveTooltip);
     c.addEventListener('mouseleave', hideTooltip);
     svg.appendChild(c);
@@ -1395,6 +1403,36 @@ function drawCuadrantePlot(d) {
       svg.appendChild(lbl);
     }
   });
+
+  // NBC nacional (referencia): mismo NBC pero promediado a nivel pais. Se dibuja
+  // como anillo hueco verde para diferenciarlo del solido de Unimagdalena. Solo
+  // aparece cuando hay un filtro NBC activo (para hacer la comparacion 1 a 1).
+  if (filtroNbc) {
+    const nbcNac = (yrData.nbcs_nacional || []).find(n => n.nbc === filtroNbc);
+    if (nbcNac && nbcNac.sb11 != null && nbcNac.sbpro != null) {
+      const ringX = getX(nbcNac.sb11);
+      const ringY = getY(nbcNac.sbpro);
+      const ring = createSVGEl('circle', {
+        cx: ringX, cy: ringY, r: 8,
+        fill: '#fff', 'fill-opacity': '0.9',
+        stroke: VA_COLORS.aporte, 'stroke-width': '2.5',
+        'stroke-dasharray': '3,2',
+        class: 'chart-dot'
+      });
+      ring.addEventListener('mouseenter', (e) => showTooltip(e, `<strong>NBC Nacional: ${nbcNac.nbc}</strong>(Promedio nacional de IES que ofrecen este NBC)<br>Saber 11: ${nbcNac.sb11}<br>Saber Pro: ${nbcNac.sbpro}<br>n: ${NUM.format(nbcNac.n)}<br>Cuadrante: ${nbcNac.cuadrante}`));
+      ring.addEventListener('mousemove', moveTooltip);
+      ring.addEventListener('mouseleave', hideTooltip);
+      svg.appendChild(ring);
+
+      // Etiqueta "Nacional" para identificar este anillo
+      const nacLbl = createSVGEl('text', {
+        x: ringX, y: ringY + 22, 'text-anchor': 'middle',
+        style: `font-family: var(--font-display); font-weight: 700; font-size: 11px; fill: ${VA_COLORS.aporte}; letter-spacing: .05em;`
+      });
+      nacLbl.textContent = 'Nacional';
+      svg.appendChild(nacLbl);
+    }
+  }
 
   // Unimagdalena (azul institucional, destacado)
   const umGlobal = (yrData.instituciones || []).find(ies => ies.nombre === 'UNIVERSIDAD DEL MAGDALENA');
@@ -1436,13 +1474,21 @@ function drawCuadrantePlot(d) {
     svg.appendChild(star);
   }
 
-  // Leyenda al pie del card — 3 categorias (sin 'Univ. del Magdalena': las
-  // del depto ahora se ven en gris como Otras IES por decision del equipo).
-  svg.appendChild(createLegend([
-    { color: VA_COLORS.desempeno, text: 'Unimagdalena' },
-    { color: VA_COLORS.aporte, text: 'NBC Unimagdalena' },
-    { color: VA_COLORS.base, text: 'Otras IES' }
-  ], (w / 2) - 240, h - 14, {
+  // Leyenda al pie del card. Cuando hay un filtro NBC activo agregamos el item
+  // 'NBC Nacional' para que el lector entienda que el anillo verde discontinuo
+  // es el promedio del mismo NBC a nivel pais (referencia comparativa).
+  const legendItems = filtroNbc
+    ? [
+        { color: VA_COLORS.desempeno, text: 'Unimagdalena' },
+        { color: VA_COLORS.aporte, text: 'NBC Unimagdalena' },
+        { color: VA_COLORS.aporte, text: 'NBC Nacional', hollow: true }
+      ]
+    : [
+        { color: VA_COLORS.desempeno, text: 'Unimagdalena' },
+        { color: VA_COLORS.aporte, text: 'NBC Unimagdalena' },
+        { color: VA_COLORS.base, text: 'Otras IES' }
+      ];
+  svg.appendChild(createLegend(legendItems, (w / 2) - 240, h - 14, {
     fontSize: 11.5, rectW: 16, rectH: 9, gap: 188, textGap: 22, fontWeight: 700
   }));
 
