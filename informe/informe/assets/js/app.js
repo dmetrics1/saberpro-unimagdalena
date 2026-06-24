@@ -1864,11 +1864,14 @@ function renderFacultades(d, yearOverride) {
   const innerW = w - margin.left - margin.right;
   const innerH = h - margin.top - margin.bottom;
 
-  // Escala: rango compacto alrededor de los datos
+  // Escala dinamica: el eje X empieza con un margen amplio debajo del valor
+  // minimo para que la facultad con menor puntaje no aparezca con una barra
+  // diminuta. Floor en 100 (limite inferior de la escala Saber Pro).
   const vals = sortedFacs.map(f => valueOf(f));
   const dataMin = Math.min(...vals);
   const dataMax = Math.max(...vals);
-  let minVal = Math.floor((dataMin - 4) / 5) * 5;
+  let minVal = Math.floor((dataMin - 35) / 10) * 10;
+  if (minVal < 100) minVal = 100;
   let maxVal = Math.ceil((dataMax + 6) / 5) * 5;
   if (maxVal - minVal < 20) maxVal = minVal + 20;
 
@@ -1880,8 +1883,8 @@ function renderFacultades(d, yearOverride) {
 
   const xOf = v => margin.left + ((v - minVal) / (maxVal - minVal)) * innerW;
 
-  // Rejilla vertical con tics múltiplos de 5
-  const tickStep = 5;
+  // Rejilla vertical: tics de 5 cuando el rango es pequeño, 10 cuando es amplio
+  const tickStep = (maxVal - minVal) > 40 ? 10 : 5;
   for (let v = minVal; v <= maxVal; v += tickStep) {
     const x = xOf(v);
     svg.appendChild(createSVGEl('line', {
