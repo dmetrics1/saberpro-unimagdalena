@@ -2027,6 +2027,15 @@ function updateProgramExplorerData(d) {
   // Indicador de estado del programa según las convenciones
   updateProgramStatus(p);
 
+  // Etiqueta del programa activo en cada uno de los 4 sub-graficos para que sean
+  // auto-explicativos en screenshots (los filtros estan arriba del card).
+  const progLabelText = titleCase(p.programa);
+  ['progRadarProgLbl', 'progSpecProgLbl', 'progNivelesProgLbl', 'progHistProgLbl']
+    .forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.textContent = progLabelText;
+    });
+
   // Selector único de año (unión de años con data en radar o específicas)
   initProgYearPicker(d, p);
 
