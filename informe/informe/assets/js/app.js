@@ -2400,7 +2400,7 @@ function renderExplorerRadar(p, yearOverride) {
   // etiquetas 'Comunicacion Escrita' y demas.
   const legendItems = [
     { color: COLOR_PROG, text: progNameTitled },
-    { color: COLOR_NBC, text: 'Promedio nacional del NBC' }
+    { color: COLOR_NBC, text: 'NBC nacional' }
   ];
   if (isLongProgName) {
     svg.appendChild(createLegend(legendItems, cx - 180, h + 20, {
@@ -2606,7 +2606,7 @@ function renderExplorerSpecifics(p, yearOverride) {
   // en la zona extra del viewBox (debajo del eje X) para evitar overlap.
   const legendItems = [
     { color: COLOR_PROG, text: progNameTitled },
-    { color: COLOR_NBC, text: 'Promedio nacional del NBC' }
+    { color: COLOR_NBC, text: 'NBC nacional' }
   ];
   if (isLongProgName) {
     svg.appendChild(createLegend(legendItems, (w / 2) - 180, h + 20, {
@@ -2753,7 +2753,7 @@ function renderExplorerHistory(p) {
   // la zona extra del viewBox (debajo del grafico) para evitar overlap.
   const legendItems = [
     { color: COLOR_PROG, text: progNameTitled },
-    { color: COLOR_NBC, text: 'Promedio nacional del NBC' }
+    { color: COLOR_NBC, text: 'NBC nacional' }
   ];
   if (isLongProgName) {
     svg.appendChild(createLegend(legendItems, (w / 2) - 140, h + 14, {
