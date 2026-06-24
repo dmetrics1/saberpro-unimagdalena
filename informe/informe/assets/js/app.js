@@ -2244,23 +2244,24 @@ function renderExplorerRadar(p, yearOverride) {
     }));
   }
 
-  // Nombres de competencias (afuera de los valores)
+  // Nombres de competencias (afuera de los valores). Font-size aumentado de 11
+  // a 14px para que se lean bien en screenshots y al imprimir.
   for (let a = 0; a < n; a++) {
     const angle = a * (2 * Math.PI / n) - Math.PI / 2;
-    const labelDist = rMax + 42;
+    const labelDist = rMax + 48;
     const lx = cx + labelDist * Math.cos(angle);
     const ly = cy + labelDist * Math.sin(angle);
     const anchor = Math.abs(Math.cos(angle)) < 0.15 ? 'middle' : (Math.cos(angle) > 0 ? 'start' : 'end');
 
     const lines = axes[a].label.split('\n');
-    const lineHeight = 13;
-    const startY = ly - ((lines.length - 1) * lineHeight) / 2 + 4;
+    const lineHeight = 16;
+    const startY = ly - ((lines.length - 1) * lineHeight) / 2 + 5;
     lines.forEach((line, idx) => {
       const t = createSVGEl('text', {
         x: lx,
         y: startY + idx * lineHeight,
         'text-anchor': anchor,
-        style: 'font-family: var(--font-display); font-weight: 700; font-size: 11px; fill: var(--brand-primary-dark);'
+        style: 'font-family: var(--font-display); font-weight: 700; font-size: 14px; fill: var(--brand-primary-dark);'
       });
       t.textContent = line;
       svg.appendChild(t);
@@ -2436,10 +2437,11 @@ function renderExplorerSpecifics(p, yearOverride) {
   let maxVal = Math.ceil((dMax + 8) / 10) * 10;
   if (maxVal - minVal < 30) maxVal = minVal + 30;   // rango mínimo para que las barras no colapsen
 
-  // viewBox cuadrado para encajar en la columna del card combinado (mismo aspecto que el radar)
+  // viewBox cuadrado para encajar en la columna del card combinado (mismo aspecto que el radar).
+  // margin.left mas generoso para que los nombres largos quepan en 2-3 lineas sin truncar.
   const w = 600;
   const h = 600;
-  const margin = { top: 30, right: 56, bottom: 86, left: 200 };
+  const margin = { top: 30, right: 56, bottom: 86, left: 230 };
   const innerW = w - margin.left - margin.right;
   const innerH = h - margin.top - margin.bottom;
 
@@ -2475,11 +2477,21 @@ function renderExplorerSpecifics(p, yearOverride) {
     stroke: 'var(--border)', 'stroke-width': '1'
   }));
 
-  // Función para acortar nombre de prueba (sin "...")
-  const shortenSpec = (name) => {
-    if (!name) return '';
-    const n = titleCase(name);
-    return n.length > 26 ? n.slice(0, 24).trim() + '…' : n;
+  // Wrap del nombre de la prueba en lineas de hasta MAX_CHARS caracteres sin
+  // partir palabras. Asi nombres largos como 'Investigacion En Ciencias Sociales'
+  // se ven completos en 2-3 lineas en lugar de truncarse con '...'.
+  const wrapSpec = (name, maxChars = 22) => {
+    if (!name) return [];
+    const words = titleCase(name).split(/\s+/);
+    const lines = [];
+    let current = '';
+    for (const w of words) {
+      if (!current) { current = w; continue; }
+      if ((current + ' ' + w).length <= maxChars) current += ' ' + w;
+      else { lines.push(current); current = w; }
+    }
+    if (current) lines.push(current);
+    return lines;
   };
 
   // Dibujar grupos
@@ -2491,18 +2503,23 @@ function renderExplorerSpecifics(p, yearOverride) {
     const wProg = getX(spec.puntaje_programa) - xZero;
     const wNbc  = getX(spec.puntaje_nbc_nacional) - xZero;
 
-    // Etiqueta de la prueba (izquierda)
-    const label = createSVGEl('text', {
-      x: margin.left - 14, y: groupCenterY + 5,
-      'text-anchor': 'end',
-      style: 'font-family: var(--font-display); font-size: 12px; font-weight: 700; fill: var(--brand-primary-dark);'
+    // Etiqueta de la prueba (izquierda) — wrap a multiples lineas si el nombre
+    // es largo. Font aumentado a 14px para mejor legibilidad.
+    const lines = wrapSpec(spec.prueba, 22);
+    const lineHeight = 17;
+    const startY = groupCenterY - ((lines.length - 1) * lineHeight) / 2 + 5;
+    lines.forEach((ln, li) => {
+      const t = createSVGEl('text', {
+        x: margin.left - 14, y: startY + li * lineHeight,
+        'text-anchor': 'end',
+        style: 'font-family: var(--font-display); font-size: 14px; font-weight: 700; fill: var(--brand-primary-dark);'
+      });
+      t.textContent = ln;
+      t.addEventListener('mouseenter', (e) => showTooltip(e, `<strong>${titleCase(spec.prueba)}</strong>Programa: ${spec.puntaje_programa} pts<br>NBC nacional: ${spec.puntaje_nbc_nacional} pts`));
+      t.addEventListener('mousemove', moveTooltip);
+      t.addEventListener('mouseleave', hideTooltip);
+      svg.appendChild(t);
     });
-    label.textContent = shortenSpec(spec.prueba);
-    // Tooltip en el label cuando el nombre fue truncado
-    label.addEventListener('mouseenter', (e) => showTooltip(e, `<strong>${titleCase(spec.prueba)}</strong>Programa: ${spec.puntaje_programa} pts<br>NBC nacional: ${spec.puntaje_nbc_nacional} pts`));
-    label.addEventListener('mousemove', moveTooltip);
-    label.addEventListener('mouseleave', hideTooltip);
-    svg.appendChild(label);
 
     // Barra Programa (azul) — encima
     const rectProg = createSVGEl('rect', {
