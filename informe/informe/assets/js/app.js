@@ -488,14 +488,19 @@ function createLegend(items, startX, startY, opts = {}) {
   const gap = opts.gap || 110;
   const textGap = opts.textGap || 20;
   const fontWeight = opts.fontWeight || 600;
+  const direction = opts.direction || 'horizontal';   // 'horizontal' | 'vertical'
+  const lineHeight = opts.lineHeight || (fontSize + 6);
 
   const g = createSVGEl('g', { class: 'legend' });
   items.forEach((item, idx) => {
-    const x = startX + idx * gap;
+    // En modo vertical apilamos en y; en horizontal distribuimos en x con gap.
+    const x = direction === 'vertical' ? startX : startX + idx * gap;
+    const y = direction === 'vertical' ? startY + idx * lineHeight : startY;
+
     // Si item.hollow es true, el marcador se dibuja como contorno discontinuo
     // (mismo estilo que el anillo NBC Nacional en el grafico).
     const rectAttrs = {
-      x: x, y: startY - rectH, width: rectW, height: rectH, rx: 2,
+      x: x, y: y - rectH, width: rectW, height: rectH, rx: 2,
       fill: item.hollow ? '#fff' : item.color
     };
     if (item.hollow) {
@@ -505,7 +510,7 @@ function createLegend(items, startX, startY, opts = {}) {
     }
     const rect = createSVGEl('rect', rectAttrs);
     const text = createSVGEl('text', {
-      x: x + textGap, y: startY - 1,
+      x: x + textGap, y: y - 1,
       style: `font-family: var(--font-display); font-size: ${fontSize}px; font-weight: ${fontWeight}; fill: var(--brand-primary-dark);`
     });
     text.textContent = item.text;
@@ -2217,7 +2222,14 @@ function renderExplorerRadar(p, yearOverride) {
   const rMax = 195;
   const n = axes.length;
 
-  const svg = createSVGEl('svg', { viewBox: `0 0 ${w} ${h}`, class: 'svg-chart' });
+  // Si el nombre del programa es largo, extendemos el viewBox abajo para
+  // acomodar la leyenda vertical sin que pise las etiquetas del radar.
+  const progNameTitled = titleCase(p.programa);
+  const isLongProgName = progNameTitled.length > 22;
+  const extraBottom = isLongProgName ? 60 : 0;
+  const vbH = h + extraBottom;
+
+  const svg = createSVGEl('svg', { viewBox: `0 0 ${w} ${vbH}`, class: 'svg-chart' });
 
   // Colores: azul para programa, verde para NBC (igual que Panorama)
   const COLOR_PROG = PANORAMA_UM;
@@ -2383,13 +2395,23 @@ function renderExplorerRadar(p, yearOverride) {
     svg.appendChild(nbcLbl);
   }
 
-  // Leyenda inferior unificada (centrada bajo el radar w=600 h=600).
-  // El item del programa muestra el NOMBRE del programa activo para que el
-  // grafico sea auto-explicativo cuando alguien tome un screenshot.
-  svg.appendChild(createLegend([
-    { color: COLOR_PROG, text: titleCase(p.programa) },
+  // Leyenda inferior. Si el nombre del programa es largo apilamos vertical en
+  // la zona extra del viewBox (mas abajo del radar) para evitar overlap con las
+  // etiquetas 'Comunicacion Escrita' y demas.
+  const legendItems = [
+    { color: COLOR_PROG, text: progNameTitled },
     { color: COLOR_NBC, text: 'Promedio nacional del NBC' }
-  ], cx - 200, h - 22, { fontSize: 14, rectW: 22, rectH: 12, gap: 280, textGap: 32, fontWeight: 700 }));
+  ];
+  if (isLongProgName) {
+    svg.appendChild(createLegend(legendItems, cx - 180, h + 20, {
+      fontSize: 14, rectW: 22, rectH: 12, textGap: 32, fontWeight: 700,
+      direction: 'vertical', lineHeight: 22
+    }));
+  } else {
+    svg.appendChild(createLegend(legendItems, cx - 200, h - 22, {
+      fontSize: 14, rectW: 22, rectH: 12, gap: 280, textGap: 32, fontWeight: 700
+    }));
+  }
 
   container.innerHTML = '';
   container.appendChild(svg);
@@ -2462,7 +2484,13 @@ function renderExplorerSpecifics(p, yearOverride) {
   const innerW = w - margin.left - margin.right;
   const innerH = h - margin.top - margin.bottom;
 
-  const svg = createSVGEl('svg', { viewBox: `0 0 ${w} ${h}`, class: 'svg-chart' });
+  // Si el nombre del programa es largo, extendemos el viewBox abajo para
+  // acomodar la leyenda vertical.
+  const progNameTitled = titleCase(p.programa);
+  const isLongProgName = progNameTitled.length > 22;
+  const vbH = h + (isLongProgName ? 60 : 0);
+
+  const svg = createSVGEl('svg', { viewBox: `0 0 ${w} ${vbH}`, class: 'svg-chart' });
 
   const getX = v => margin.left + ((v - minVal) / (maxVal - minVal)) * innerW;
   const totalGroups = specs.length;
@@ -2574,13 +2602,22 @@ function renderExplorerSpecifics(p, yearOverride) {
     svg.appendChild(lblNbc);
   });
 
-  // Leyenda inferior unificada (centrada para w=600 h=600, mismo estilo que el radar).
-  // El item del programa muestra el NOMBRE del programa activo para que el grafico
-  // sea auto-explicativo cuando alguien tome un screenshot.
-  svg.appendChild(createLegend([
-    { color: COLOR_PROG, text: titleCase(p.programa) },
+  // Leyenda inferior. Si el nombre del programa es largo apilamos vertical
+  // en la zona extra del viewBox (debajo del eje X) para evitar overlap.
+  const legendItems = [
+    { color: COLOR_PROG, text: progNameTitled },
     { color: COLOR_NBC, text: 'Promedio nacional del NBC' }
-  ], (w / 2) - 200, h - 22, { fontSize: 14, rectW: 22, rectH: 12, gap: 280, textGap: 32, fontWeight: 700 }));
+  ];
+  if (isLongProgName) {
+    svg.appendChild(createLegend(legendItems, (w / 2) - 180, h + 20, {
+      fontSize: 14, rectW: 22, rectH: 12, textGap: 32, fontWeight: 700,
+      direction: 'vertical', lineHeight: 22
+    }));
+  } else {
+    svg.appendChild(createLegend(legendItems, (w / 2) - 200, h - 22, {
+      fontSize: 14, rectW: 22, rectH: 12, gap: 280, textGap: 32, fontWeight: 700
+    }));
+  }
 
   container.innerHTML = '';
   container.appendChild(svg);
@@ -2615,7 +2652,13 @@ function renderExplorerHistory(p) {
   const innerW = w - margin.left - margin.right;
   const innerH = h - margin.top - margin.bottom;
 
-  const svg = createSVGEl('svg', { viewBox: `0 0 ${w} ${h}`, class: 'svg-chart' });
+  // Si el nombre del programa es largo, extendemos el viewBox abajo para
+  // acomodar la leyenda vertical.
+  const progNameTitled = titleCase(p.programa);
+  const isLongProgName = progNameTitled.length > 22;
+  const vbH = h + (isLongProgName ? 36 : 0);
+
+  const svg = createSVGEl('svg', { viewBox: `0 0 ${w} ${vbH}`, class: 'svg-chart' });
 
   // Escala Y: usa el rango real con padding
   const allVals = series.flatMap(s => [s.prog, s.nbc]).filter(v => v != null && isFinite(v));
@@ -2706,13 +2749,22 @@ function renderExplorerHistory(p) {
   // Línea programa (azul, etiqueta arriba)
   drawLine('prog', COLOR_PROG, -10, false);
 
-  // Leyenda inferior (centrada para w=580, h=440).
-  // El item del programa muestra el NOMBRE del programa activo para que el grafico
-  // sea auto-explicativo cuando alguien tome un screenshot.
-  svg.appendChild(createLegend([
-    { color: COLOR_PROG, text: titleCase(p.programa) },
+  // Leyenda inferior. Si el nombre del programa es largo apilamos vertical en
+  // la zona extra del viewBox (debajo del grafico) para evitar overlap.
+  const legendItems = [
+    { color: COLOR_PROG, text: progNameTitled },
     { color: COLOR_NBC, text: 'Promedio nacional del NBC' }
-  ], (w / 2) - 160, h - 16, { fontSize: 12, rectW: 18, rectH: 10, gap: 210, textGap: 26, fontWeight: 700 }));
+  ];
+  if (isLongProgName) {
+    svg.appendChild(createLegend(legendItems, (w / 2) - 140, h + 14, {
+      fontSize: 12, rectW: 18, rectH: 10, textGap: 26, fontWeight: 700,
+      direction: 'vertical', lineHeight: 18
+    }));
+  } else {
+    svg.appendChild(createLegend(legendItems, (w / 2) - 160, h - 16, {
+      fontSize: 12, rectW: 18, rectH: 10, gap: 210, textGap: 26, fontWeight: 700
+    }));
+  }
 
   container.innerHTML = '';
   container.appendChild(svg);
