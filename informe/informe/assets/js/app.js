@@ -3070,14 +3070,13 @@ function drawTop10Plot(d) {
     return lines;
   };
 
-  // Escala DINAMICA: arranca cerca del puntaje mas bajo del Top 10 para que
-  // las barras se vean largas y proporcionales (estilo Facultades). Floor en
-  // 100 (limite inferior real de Saber Pro) por seguridad.
+  // Escala que arranca en 100 (limite inferior real de Saber Pro). Asi las
+  // barras se ven lo mas largas posible — incluso la mas corta (puntaje
+  // ~162) ocupa ~75% del area disponible. maxVal sigue siendo dinamico
+  // segun el puntaje mas alto.
   const vals = dataList.map(it => it.puntaje);
-  const dataMin = Math.min(...vals);
   const dataMax = Math.max(...vals);
-  let minVal = Math.floor((dataMin - 25) / 10) * 10;
-  if (minVal < 100) minVal = 100;
+  const minVal = 100;
   let maxVal = Math.ceil((dataMax + 5) / 5) * 5;
   if (maxVal - minVal < 30) maxVal = minVal + 30;
 
