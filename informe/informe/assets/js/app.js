@@ -3044,11 +3044,11 @@ function drawTop10Plot(d) {
 
   const w = 500;
   const h = 480;
-  // margin.left amplio para que los nombres de programa usen mas espacio
-  // horizontal y se vean a 1-2 lineas en lugar de 3 cuando el contenedor
-  // tiene espacio sobrante en desktop. height incrementado para barras mas
-  // gruesas (aspecto similar al grafico Facultades).
-  const margin = { top: 15, right: 50, bottom: 22, left: 250 };
+  // margin.left amplio para los nombres del programa (2 lineas como maximo).
+  // margin.right pequeño (28) para que las barras se extiendan lo mas a la
+  // derecha posible dejando solo el espacio justo para el numero del puntaje.
+  // margin.top pequeño y bottom apretado tambien.
+  const margin = { top: 10, right: 30, bottom: 22, left: 240 };
 
   const svg = createSVGEl('svg', { viewBox: `0 0 ${w} ${h}`, class: 'svg-chart' });
 
