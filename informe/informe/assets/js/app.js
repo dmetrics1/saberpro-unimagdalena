@@ -3043,7 +3043,7 @@ function drawTop10Plot(d) {
   }
 
   const w = 500;
-  const h = 420;
+  const h = 480;
   // margin.left amplio para que los nombres de programa usen mas espacio
   // horizontal y se vean a 1-2 lineas en lugar de 3 cuando el contenedor
   // tiene espacio sobrante en desktop. height incrementado para barras mas
@@ -3070,9 +3070,16 @@ function drawTop10Plot(d) {
     return lines;
   };
 
-  // Escalar en base al tipo de puntaje (Global: max ~200, Específicas/Prueba: max ~200)
-  const minVal = activeTopCompetence === 'Global' ? 120 : 100;
-  const maxVal = activeTopCompetence === 'Global' ? 190 : 200;
+  // Escala DINAMICA: arranca cerca del puntaje mas bajo del Top 10 para que
+  // las barras se vean largas y proporcionales (estilo Facultades). Floor en
+  // 100 (limite inferior real de Saber Pro) por seguridad.
+  const vals = dataList.map(it => it.puntaje);
+  const dataMin = Math.min(...vals);
+  const dataMax = Math.max(...vals);
+  let minVal = Math.floor((dataMin - 25) / 10) * 10;
+  if (minVal < 100) minVal = 100;
+  let maxVal = Math.ceil((dataMax + 5) / 5) * 5;
+  if (maxVal - minVal < 30) maxVal = minVal + 30;
 
   const getWidth = (val) => ((val - minVal) / (maxVal - minVal)) * (w - margin.left - margin.right);
 
@@ -3097,9 +3104,9 @@ function drawTop10Plot(d) {
     const barW = getWidth(item.puntaje);
     const color = FAC_PALETTE[idx % FAC_PALETTE.length];
 
-    // Barras mas gruesas: ocupan 75% del slot vertical (antes ~82% pero con
-    // margenes pequeños). Sigue habiendo separacion entre barras.
-    const thickBarH = barHeight * 0.72;
+    // Barras gruesas que aprovechan el slot: 82% del espacio disponible,
+    // dejando solo un pequeño gap entre ellas (similar al grafico Facultades).
+    const thickBarH = barHeight * 0.82;
     const barY = y + (barHeight - thickBarH) / 2;
 
     const rect = createSVGEl('rect', {
