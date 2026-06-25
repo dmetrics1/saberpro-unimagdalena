@@ -3052,17 +3052,22 @@ function initTopYearPicker(d) {
 }
 
 // Calcula el top 10 dinámicamente para el año + competencia seleccionados
+// Umbral minimo de evaluados para entrar en el ranking. Programas con menos
+// de N_RANKING_MIN evaluados generan ruido estadistico (un solo evaluado
+// puede dominar el ranking artificialmente).
+const N_RANKING_MIN = 3;
+
 function computeTop10ForYearComp(d, year, comp) {
   const items = [];
   (d.programas || []).forEach(p => {
     if (comp === 'Global') {
       const histYear = (p.historico || []).find(h => h.anio === year);
-      if (histYear && histYear.puntaje != null) {
+      if (histYear && histYear.puntaje != null && (histYear.n || 0) >= N_RANKING_MIN) {
         items.push({ programa: p.programa, puntaje: histYear.puntaje, n: histYear.n });
       }
     } else {
       const radarY = (p.radar_historico || {})[String(year)];
-      if (radarY && Array.isArray(radarY.competencias)) {
+      if (radarY && Array.isArray(radarY.competencias) && (radarY.n_programa || 0) >= N_RANKING_MIN) {
         const found = radarY.competencias.find(c => c.competencia === comp);
         if (found && found.puntaje_programa != null) {
           items.push({ programa: p.programa, puntaje: found.puntaje_programa, n: radarY.n_programa });
