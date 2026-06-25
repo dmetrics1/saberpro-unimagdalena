@@ -3082,15 +3082,12 @@ function drawTop10Plot(d) {
 
   const getWidth = (val) => ((val - minVal) / (maxVal - minVal)) * (w - margin.left - margin.right);
 
-  // Ejes guías verticales
-  const ticks = 4;
-  for (let i = 0; i <= ticks; i++) {
-    const val = minVal + (i / ticks) * (maxVal - minVal);
+  // Ejes guías verticales con tics cada 10 puntos.
+  for (let val = minVal; val <= maxVal; val += 10) {
     const x = margin.left + getWidth(val);
-
     const line = createSVGEl('line', { x1: x, y1: margin.top, x2: x, y2: h - margin.bottom, class: 'grid-line' });
     const text = createSVGEl('text', { x: x, y: h - margin.bottom + 12, 'text-anchor': 'middle', class: 'axis-label' });
-    text.textContent = Math.round(val);
+    text.textContent = val;
     svg.appendChild(line);
     svg.appendChild(text);
   }
