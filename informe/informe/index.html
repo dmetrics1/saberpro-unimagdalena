@@ -3,11 +3,17 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!-- Cache control: forza al navegador a revalidar el HTML cada vez para que
+     los cambios de breakpoints/layout se vean sin necesidad de hard refresh
+     manual. Asi el push de github pages se refleja en el telefono al instante. -->
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
 <title>Informe Saber Pro · Universidad del Magdalena</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/css/tokens.css?v=243">
+<link rel="stylesheet" href="assets/css/tokens.css?v=244">
 </head>
 <body>
 
@@ -29,7 +35,7 @@
   <aside class="sidebar" id="sidebar" aria-label="Menu de secciones">
     <div class="sidebar__brand">
       <div class="sidebar__logo" id="brandLogo">
-        <img src="assets/img/escudo-unimagdalena.png?v=243"
+        <img src="assets/img/escudo-unimagdalena.png?v=244"
              alt="Escudo Universidad del Magdalena"
              onerror="this.parentNode.textContent='UM'">
       </div>
@@ -527,6 +533,6 @@
   </main>
 </div>
 
-<script src="assets/js/app.js?v=243"></script>
+<script src="assets/js/app.js?v=244"></script>
 </body>
 </html>
