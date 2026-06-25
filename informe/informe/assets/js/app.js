@@ -2708,13 +2708,12 @@ function renderExplorerHistory(p) {
   const COLOR_PROG = PANORAMA_UM;   // azul institucional
   const COLOR_NBC = PANORAMA_NAT;   // verde
 
-  // Helper para trazar una línea con puntos + labels arriba
-  const drawLine = (key, color, labelOffset, isDashed) => {
+  // Helper para trazar SOLO la linea + puntos (sin labels).
+  const drawLineOnly = (key, color, isDashed) => {
     const pts = series.map((s, i) => ({ x: getX(i), y: s[key] != null ? getY(s[key]) : null, val: s[key], anio: s.anio, n: key === 'prog' ? s.nProg : s.nNbc }));
     const validPts = pts.filter(pt => pt.y != null);
     if (validPts.length < 2) return;
 
-    // Path
     let d = '';
     validPts.forEach((pt, i) => { d += `${i === 0 ? 'M' : 'L'} ${pt.x} ${pt.y} `; });
     const pathEl = createSVGEl('path', {
@@ -2725,7 +2724,6 @@ function renderExplorerHistory(p) {
     });
     svg.appendChild(pathEl);
 
-    // Puntos + labels
     validPts.forEach(pt => {
       const c = createSVGEl('circle', {
         cx: pt.x, cy: pt.y, r: 4.5, fill: color, stroke: '#fff', 'stroke-width': '1.5'
@@ -2736,21 +2734,47 @@ function renderExplorerHistory(p) {
       c.addEventListener('mousemove', moveTooltip);
       c.addEventListener('mouseleave', hideTooltip);
       svg.appendChild(c);
-
-      // Etiqueta del valor (arriba o abajo según labelOffset)
-      const lbl = createSVGEl('text', {
-        x: pt.x, y: pt.y + labelOffset, 'text-anchor': 'middle',
-        style: `font-family: var(--font-display); font-size: 12px; fill: ${color}; font-weight: 800;`
-      });
-      lbl.textContent = pt.val;
-      svg.appendChild(lbl);
     });
   };
 
-  // Línea NBC (verde, abajo) primero para que el azul del programa quede encima
-  drawLine('nbc', COLOR_NBC, 16, false);
-  // Línea programa (azul, etiqueta arriba)
-  drawLine('prog', COLOR_PROG, -10, false);
+  // Trazar primero ambas lineas (NBC abajo, prog encima)
+  drawLineOnly('nbc', COLOR_NBC, false);
+  drawLineOnly('prog', COLOR_PROG, false);
+
+  // Etiquetas POSICIONADAS DINAMICAMENTE año por año: la mayor va arriba y la
+  // menor va abajo de su punto (mismo comportamiento que el grafico
+  // institucional 'Evolucion historica'). Evita colisiones cuando ambas
+  // series tienen valores cercanos.
+  series.forEach((s, i) => {
+    const x = getX(i);
+    const valProg = s.prog;
+    const valNbc = s.nbc;
+    if (valProg == null && valNbc == null) return;
+
+    // progAbove = programa esta arriba (mayor o igual) que NBC nacional
+    const progAbove = (valProg != null && valNbc != null)
+      ? valProg >= valNbc
+      : (valProg != null);
+
+    if (valProg != null) {
+      const lblProg = createSVGEl('text', {
+        x: x, y: getY(valProg) + (progAbove ? -11 : 19),
+        'text-anchor': 'middle',
+        style: `font-family: var(--font-display); font-size: 12px; fill: ${COLOR_PROG}; font-weight: 800;`
+      });
+      lblProg.textContent = valProg;
+      svg.appendChild(lblProg);
+    }
+    if (valNbc != null) {
+      const lblNbc = createSVGEl('text', {
+        x: x, y: getY(valNbc) + (progAbove ? 19 : -11),
+        'text-anchor': 'middle',
+        style: `font-family: var(--font-display); font-size: 12px; fill: ${COLOR_NBC}; font-weight: 800;`
+      });
+      lblNbc.textContent = valNbc;
+      svg.appendChild(lblNbc);
+    }
+  });
 
   // Leyenda inferior. Si el nombre del programa es largo apilamos vertical en
   // la zona extra del viewBox (debajo del grafico) para evitar overlap.
