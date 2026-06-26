@@ -578,26 +578,40 @@ body.is-presentation-mode .presentation-frame { opacity: 1; }
   border-radius: 999px;
 }
 
-/* KPIs abajo: usar el ESTILO ORIGINAL del informe (con iconos + badges + stripe) */
+/* KPIs abajo: estilo del informe original (iconos + badges + stripe)
+   COMPACTOS y SUPERPUESTOS al hero (margin-top negativo) */
 .slide--cover .kpi-grid {
-  margin: 0;
+  margin: clamp(-70px, -7vh, -50px) 0 0 !important;  /* overlap con hero */
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: clamp(12px, 1.4vw, 20px);
+  gap: clamp(10px, 1.2vw, 16px);
+  position: relative;
+  z-index: 3;
 }
-/* NO override de .kpi — usa los estilos del informe (iconos, badges, ::before stripe) */
 .slide--cover .kpi {
-  padding: clamp(18px, 2.4vh, 26px) clamp(20px, 2vw, 28px);
+  padding: clamp(14px, 1.8vh, 20px) clamp(16px, 1.6vw, 22px) !important;
+  border-radius: 16px !important;
+  background: #ffffff;
+  box-shadow: 0 14px 40px rgba(0, 30, 80, 0.18) !important;  /* shadow mas pronunciada */
 }
 .slide--cover .kpi__value {
-  font-size: clamp(2rem, 3.2vw, 2.8rem) !important;
-  margin: clamp(6px, 0.8vh, 10px) 0 clamp(4px, 0.4vh, 6px) !important;
+  font-size: clamp(1.6rem, 2.5vw, 2.2rem) !important;
+  margin: clamp(4px, 0.6vh, 8px) 0 clamp(2px, 0.3vh, 4px) !important;
 }
 .slide--cover .kpi__label {
-  font-size: clamp(0.85rem, 1vw, 1rem) !important;
+  font-size: clamp(0.78rem, 0.92vw, 0.92rem) !important;
+  line-height: 1.3 !important;
 }
 .slide--cover .kpi__sub {
-  font-size: clamp(0.72rem, 0.82vw, 0.82rem) !important;
+  font-size: clamp(0.66rem, 0.76vw, 0.76rem) !important;
+}
+.slide--cover .kpi__icon {
+  width: clamp(32px, 3.4vw, 40px) !important;
+  height: clamp(32px, 3.4vw, 40px) !important;
+}
+.slide--cover .kpi__badge {
+  font-size: clamp(0.6rem, 0.7vw, 0.7rem) !important;
+  padding: clamp(3px, 0.4vh, 5px) clamp(8px, 0.9vw, 12px) !important;
 }
 
 
