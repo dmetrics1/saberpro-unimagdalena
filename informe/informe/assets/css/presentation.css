@@ -843,47 +843,82 @@ body.is-presentation-mode .presentation-frame { opacity: 1; }
   opacity: 1;
   visibility: visible;
 }
-/* FILTROS COMPARTIDOS — barra fixed sobre los slides 5 y 6.
-   Estilo: chip compacto blanco con sombra, 3 controls inline en una sola fila. */
+/* FILTROS COMPARTIDOS — VISUALMENTE UNIDOS al slide__head como un solo
+   container blanco (titulo arriba, filtros abajo separados por linea sutil).
+   Inspirado en el dashboard ref (Demografia con FILTROS dentro de la card). */
+
+/* slide__head para programas: bordes redondeados SOLO arriba + sin shadow
+   inferior (la sombra unica se aplica al filtros card pegado debajo) */
+.slide[data-slide="programas-a"] .slide__head,
+.slide[data-slide="programas-b"] .slide__head {
+  border-radius: 16px 16px 0 0 !important;
+  margin-bottom: 0 !important;
+  box-shadow: 0 -1px 0 transparent !important;
+  border-bottom: 1px solid rgba(15, 79, 168, 0.08) !important;
+}
+
+/* Filters card pegado al slide__head con bordes redondeados SOLO abajo */
 .presentation-programas-tools {
   position: fixed !important;
-  top: clamp(95px, 11vh, 125px);
-  left: 50%;
-  transform: translate(-50%, -8px);
+  /* Top: justo donde termina el slide__head (slide.padding-top + head height) */
+  top: clamp(140px, 16.5vh, 160px);
+  /* Mismas margenes horizontales que el .slide para alinear con el slide__head */
+  left: clamp(48px, 6vw, 120px);
+  right: clamp(48px, 6vw, 120px);
   z-index: 108;
   display: none !important;
   flex-direction: row !important;
-  align-items: end !important;
-  gap: clamp(12px, 1.6vw, 22px) !important;
-  padding: 10px clamp(18px, 2vw, 28px) !important;
+  align-items: center !important;
+  gap: clamp(14px, 1.6vw, 24px) !important;
+  padding: 10px clamp(20px, 2.2vw, 30px) 12px !important;
   background: #ffffff !important;
-  border-radius: 14px !important;
-  box-shadow: 0 8px 24px rgba(0, 30, 80, 0.10) !important;
-  border: 1px solid rgba(15, 79, 168, 0.06) !important;
-  max-width: calc(100% - clamp(56px, 8vw, 110px)) !important;
+  border-radius: 0 0 16px 16px !important;
+  border-left: 1px solid rgba(15, 79, 168, 0.04) !important;
+  border-right: 1px solid rgba(15, 79, 168, 0.04) !important;
+  border-bottom: 1px solid rgba(15, 79, 168, 0.04) !important;
+  box-shadow: 0 8px 22px rgba(0, 30, 80, 0.05) !important;
   opacity: 0;
   pointer-events: none;
-  transition: opacity .3s ease, transform .3s ease, left .3s ease;
+  transition: opacity .25s ease, left .3s ease, right .3s ease;
 }
 .presentation-programas-tools.is-visible {
   display: flex !important;
   opacity: 1;
   pointer-events: auto;
-  transform: translate(-50%, 0);
 }
 /* Cuando el drawer esta abierto, los filtros se mueven con el contenido */
 body.is-presentation-mode.nav-open .presentation-programas-tools {
-  left: calc(50% + 165px) !important;
+  left: calc(330px + clamp(20px, 2vw, 40px)) !important;
 }
+body.is-presentation-mode.nav-open .slide[data-slide^="programas"] .slide__head {
+  /* slide__head ya tiene padding-left via .slide */
+}
+
+/* Etiqueta "FILTROS" antes de los dropdowns (como en el dashboard ref) */
+.presentation-programas-tools::before {
+  content: 'FILTROS';
+  display: flex;
+  align-items: center;
+  font-family: var(--font-display);
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  color: rgba(15, 79, 168, 0.55);
+  padding-right: clamp(10px, 1.2vw, 16px);
+  border-right: 1px solid rgba(15, 79, 168, 0.10);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
 .presentation-programas-tools .control-group {
   display: flex !important;
   flex-direction: column !important;
-  gap: 3px !important;
+  gap: 2px !important;
   margin: 0 !important;
   min-width: 0;
 }
 .presentation-programas-tools .control-group label {
-  font-size: 0.68rem !important;
+  font-size: 0.66rem !important;
   font-weight: 700 !important;
   color: #0F4FA8 !important;
   letter-spacing: 0.04em !important;
@@ -909,7 +944,7 @@ body.is-presentation-mode.nav-open .presentation-programas-tools {
 /* Charts area se empuja hacia abajo para no chocar con los filtros fixed */
 body.is-presentation-mode .slide[data-slide="programas-a"] .slide__content,
 body.is-presentation-mode .slide[data-slide="programas-b"] .slide__content {
-  padding-top: clamp(48px, 6vh, 64px) !important;
+  padding-top: clamp(58px, 7vh, 76px) !important;
 }
 /* Titulos cards mas pequenos para dar espacio a charts */
 .slide[data-slide^="programas"] .card__title {
