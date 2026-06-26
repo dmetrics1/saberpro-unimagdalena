@@ -1,0 +1,495 @@
+/* ============================================================================
+   PRESENTATION MODE — capa visual sobre el informe.
+
+   No modifica el HTML del informe en tiempo de carga: el script presentation.js
+   mueve los .section y el hero a un .slides-track cuando se activa, y los
+   devuelve a su posicion original al salir. Toda la magia visual vive aqui.
+
+   Filosofia: cero !important salvo donde es necesario para sobrescribir reglas
+   de mobile/tablet del informe original.
+   ============================================================================ */
+
+
+/* ----------------------------------------------------------------------------
+   1. BOTON FLOTANTE PARA ACTIVAR EL MODO
+   Visible solo en modo informe. Se posiciona en la esquina superior derecha
+   del hero. En tablet/mobile se mueve para no chocar con el menu drawer.
+   ---------------------------------------------------------------------------- */
+.presentation-trigger {
+  position: absolute;
+  top: 22px;
+  right: 22px;
+  z-index: 40;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 18px;
+  background: rgba(255, 255, 255, 0.94);
+  color: #0F4FA8;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  border-radius: 999px;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 0.85rem;
+  letter-spacing: 0.01em;
+  cursor: pointer;
+  box-shadow: 0 6px 22px rgba(0, 30, 80, 0.18);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  transition: transform .25s cubic-bezier(.22,.61,.36,1),
+              box-shadow .25s cubic-bezier(.22,.61,.36,1),
+              background .25s ease;
+}
+.presentation-trigger:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 30px rgba(0, 30, 80, 0.28);
+  background: #fff;
+}
+.presentation-trigger:focus-visible {
+  outline: 3px solid #A5CA00;
+  outline-offset: 3px;
+}
+.presentation-trigger svg {
+  width: 17px;
+  height: 17px;
+  flex-shrink: 0;
+}
+
+/* En mobile el boton queda mas compacto */
+@media (max-width: 720px) {
+  .presentation-trigger {
+    top: 18px;
+    right: 14px;
+    padding: 9px 14px;
+    font-size: 0.78rem;
+  }
+  .presentation-trigger svg { width: 15px; height: 15px; }
+}
+
+/* En modo presentacion el trigger se oculta */
+body.is-presentation-mode .presentation-trigger { display: none; }
+
+
+/* ----------------------------------------------------------------------------
+   2. ESTADO GLOBAL CUANDO LA PRESENTACION ESTA ACTIVA
+   Bloqueamos scroll del body, ocultamos sidebar y elementos secundarios.
+   El .slides-track se posiciona fixed y cubre toda la viewport.
+   ---------------------------------------------------------------------------- */
+body.is-presentation-mode {
+  overflow: hidden;
+  background: #f6f8fb;
+}
+body.is-presentation-mode .sidebar,
+body.is-presentation-mode .sidebar-backdrop,
+body.is-presentation-mode .menu-toggle,
+body.is-presentation-mode .content {
+  visibility: hidden;
+}
+/* Excepcion: el .content debe seguir teniendo height para que la pagina no
+   colapse al salir (sus hijos fueron movidos temporalmente al slides-track). */
+body.is-presentation-mode .content {
+  pointer-events: none;
+}
+
+
+/* ----------------------------------------------------------------------------
+   3. CONTENEDOR DE SLIDES + PISTA HORIZONTAL
+   Cada slide ocupa 100vw x 100vh. La pista se mueve con translateX
+   (transform animado, GPU friendly).
+   ---------------------------------------------------------------------------- */
+.presentation-frame {
+  position: fixed;
+  inset: 0;
+  background: linear-gradient(180deg, #f6f8fb 0%, #eef2f7 100%);
+  z-index: 100;
+  overflow: hidden;
+  opacity: 0;
+  transition: opacity .4s ease;
+}
+body.is-presentation-mode .presentation-frame {
+  opacity: 1;
+}
+
+.slides-track {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  display: flex;
+  will-change: transform;
+  transition: transform .55s cubic-bezier(.22,.61,.36,1);
+}
+
+.slide {
+  flex: 0 0 100vw;
+  width: 100vw;
+  height: 100vh;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: clamp(48px, 6vh, 88px) clamp(28px, 5vw, 96px) clamp(96px, 12vh, 120px);
+  position: relative;
+  box-sizing: border-box;
+  -webkit-overflow-scrolling: touch;
+}
+.slide::-webkit-scrollbar { width: 6px; }
+.slide::-webkit-scrollbar-thumb { background: rgba(15, 79, 168, 0.18); border-radius: 999px; }
+
+
+/* ----------------------------------------------------------------------------
+   4. HEADER DE CADA SLIDE — titulo + subtitulo + numero
+   ---------------------------------------------------------------------------- */
+.slide__head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 24px;
+  margin-bottom: clamp(20px, 3vh, 40px);
+  padding-bottom: 18px;
+  border-bottom: 1px solid rgba(15, 79, 168, 0.08);
+  opacity: 0;
+  transform: translateY(16px);
+  transition: opacity .55s cubic-bezier(.22,.61,.36,1),
+              transform .55s cubic-bezier(.22,.61,.36,1);
+}
+.slide__head-text {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+.slide__title {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(1.5rem, 3vw, 2.4rem);
+  color: var(--brand-primary-dark, #0F4FA8);
+  margin: 0;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+}
+.slide__subtitle {
+  font-family: var(--font-body);
+  font-size: clamp(0.95rem, 1.2vw, 1.15rem);
+  color: var(--text-soft, #5b6b7f);
+  font-weight: 500;
+  margin: 0;
+}
+.slide__number {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(0.78rem, 1vw, 0.92rem);
+  color: var(--brand-accent, #A5CA00);
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  flex-shrink: 0;
+}
+
+/* Animacion stagger: el header aparece al activarse la slide */
+.slide.is-active .slide__head {
+  opacity: 1;
+  transform: translateY(0);
+  transition-delay: .15s;
+}
+
+
+/* ----------------------------------------------------------------------------
+   5. CONTENIDO DENTRO DE LA SLIDE — usa el HTML existente del informe
+   Cada hijo directo (los .card, .charts-grid, etc del informe) aparece con
+   un pequeño retraso para sensacion de "armado" de la slide.
+   ---------------------------------------------------------------------------- */
+.slide__content > * {
+  opacity: 0;
+  transform: translateY(28px);
+  transition: opacity .65s cubic-bezier(.22,.61,.36,1),
+              transform .65s cubic-bezier(.22,.61,.36,1);
+}
+.slide.is-active .slide__content > * {
+  opacity: 1;
+  transform: translateY(0);
+}
+.slide.is-active .slide__content > *:nth-child(1) { transition-delay: .25s; }
+.slide.is-active .slide__content > *:nth-child(2) { transition-delay: .35s; }
+.slide.is-active .slide__content > *:nth-child(3) { transition-delay: .45s; }
+.slide.is-active .slide__content > *:nth-child(4) { transition-delay: .55s; }
+.slide.is-active .slide__content > *:nth-child(5) { transition-delay: .65s; }
+.slide.is-active .slide__content > *:nth-child(6) { transition-delay: .75s; }
+
+/* En modo presentacion ocultamos los eyebrows ("01 · Panorama institucional")
+   porque el slide__title ya muestra el nombre de la seccion en grande. */
+.slide__content .section__eyebrow { display: none; }
+
+/* El hero en modo presentacion: padding reducido, min-height reducido para que
+   quepan KPIs y panorama en una sola pantalla */
+.slide__content .hero {
+  min-height: auto;
+  padding: clamp(20px, 3vh, 36px) clamp(20px, 3vw, 40px);
+  border-radius: 24px;
+  margin-bottom: 18px;
+}
+.slide__content .hero h1 { font-size: clamp(1.4rem, 3vw, 2.4rem); }
+.slide__content .hero h1 strong { font-size: clamp(1.8rem, 4vw, 3rem); }
+.slide__content .hero__sub { font-size: clamp(0.92rem, 1.1vw, 1.05rem); margin-bottom: 14px; }
+.slide__content .hero__actions { display: none; }
+.slide__content .kpi-grid { margin-bottom: 18px; }
+.slide__content .section { padding: 0; border-top: none; }
+.slide__content .card { box-shadow: 0 6px 28px rgba(0, 30, 80, 0.06); }
+
+
+/* ----------------------------------------------------------------------------
+   6. BARRA DE PROGRESO SUPERIOR
+   Linea horizontal delgada en la parte superior que crece slide a slide.
+   ---------------------------------------------------------------------------- */
+.presentation-progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: rgba(15, 79, 168, 0.08);
+  z-index: 110;
+}
+.presentation-progress__fill {
+  height: 100%;
+  background: linear-gradient(90deg, #0F4FA8 0%, #2BA85E 100%);
+  transition: width .55s cubic-bezier(.22,.61,.36,1);
+}
+
+
+/* ----------------------------------------------------------------------------
+   7. BOTONES DE NAVEGACION (flechas laterales)
+   ---------------------------------------------------------------------------- */
+.presentation-nav {
+  position: fixed;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.96);
+  border: 1px solid rgba(15, 79, 168, 0.12);
+  color: #0F4FA8;
+  cursor: pointer;
+  z-index: 110;
+  display: grid;
+  place-items: center;
+  box-shadow: 0 6px 20px rgba(0, 30, 80, 0.10);
+  transition: transform .22s cubic-bezier(.22,.61,.36,1),
+              box-shadow .22s ease,
+              opacity .22s ease;
+}
+.presentation-nav:hover {
+  background: #fff;
+  transform: translateY(-50%) scale(1.06);
+  box-shadow: 0 8px 26px rgba(0, 30, 80, 0.15);
+}
+.presentation-nav:focus-visible {
+  outline: 3px solid #A5CA00;
+  outline-offset: 3px;
+}
+.presentation-nav--prev { left: 28px; }
+.presentation-nav--next { right: 28px; }
+.presentation-nav[disabled] {
+  opacity: 0.32;
+  cursor: not-allowed;
+}
+.presentation-nav svg { width: 22px; height: 22px; }
+
+@media (max-width: 720px) {
+  .presentation-nav { width: 42px; height: 42px; }
+  .presentation-nav--prev { left: 12px; }
+  .presentation-nav--next { right: 12px; }
+  .presentation-nav svg { width: 18px; height: 18px; }
+}
+
+
+/* ----------------------------------------------------------------------------
+   8. TOOLBAR INFERIOR — contador + botones (anterior / siguiente / salir / full)
+   ---------------------------------------------------------------------------- */
+.presentation-toolbar {
+  position: fixed;
+  bottom: 22px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 110;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 8px 10px;
+  background: rgba(255, 255, 255, 0.96);
+  border: 1px solid rgba(15, 79, 168, 0.08);
+  border-radius: 999px;
+  box-shadow: 0 10px 36px rgba(0, 30, 80, 0.14);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+.presentation-toolbar__btn {
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+  padding: 8px 14px;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  color: #0F4FA8;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 0.82rem;
+  transition: background .2s ease, color .2s ease;
+}
+.presentation-toolbar__btn:hover {
+  background: rgba(15, 79, 168, 0.06);
+}
+.presentation-toolbar__btn--icon {
+  padding: 8px;
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  justify-content: center;
+}
+.presentation-toolbar__btn--exit { color: #B85042; }
+.presentation-toolbar__btn--exit:hover { background: rgba(184, 80, 66, 0.07); }
+.presentation-toolbar__btn svg { width: 16px; height: 16px; }
+.presentation-toolbar__btn--icon svg { width: 18px; height: 18px; }
+.presentation-toolbar__counter {
+  padding: 0 12px;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 0.85rem;
+  color: var(--text-soft, #5b6b7f);
+  letter-spacing: 0.04em;
+  min-width: 56px;
+  text-align: center;
+}
+.presentation-toolbar__divider {
+  width: 1px;
+  height: 22px;
+  background: rgba(15, 79, 168, 0.10);
+  margin: 0 4px;
+}
+
+@media (max-width: 720px) {
+  .presentation-toolbar { bottom: 14px; padding: 6px 8px; }
+  .presentation-toolbar__btn { padding: 6px 10px; font-size: 0.74rem; }
+  .presentation-toolbar__btn--icon { width: 32px; height: 32px; padding: 6px; }
+  .presentation-toolbar__counter { padding: 0 8px; min-width: 42px; font-size: 0.78rem; }
+  /* En mobile escondemos los textos para liberar espacio */
+  .presentation-toolbar__btn span { display: none; }
+}
+
+
+/* ----------------------------------------------------------------------------
+   9. OVERLAY DE AYUDA (primera vez que se abre el modo)
+   ---------------------------------------------------------------------------- */
+.presentation-help {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  background: rgba(7, 22, 42, 0.55);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .35s ease;
+}
+.presentation-help.is-open {
+  opacity: 1;
+  pointer-events: auto;
+}
+.presentation-help__panel {
+  background: #fff;
+  border-radius: 24px;
+  padding: clamp(28px, 4vw, 44px);
+  max-width: 480px;
+  width: 100%;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.30);
+  transform: translateY(12px) scale(0.98);
+  transition: transform .35s cubic-bezier(.22,.61,.36,1);
+}
+.presentation-help.is-open .presentation-help__panel { transform: translateY(0) scale(1); }
+.presentation-help__title {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.4rem;
+  color: var(--brand-primary-dark, #0F4FA8);
+  margin: 0 0 14px;
+}
+.presentation-help__sub {
+  color: var(--text-soft, #5b6b7f);
+  margin: 0 0 22px;
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+.presentation-help__keys {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px 18px;
+  margin: 0 0 28px;
+}
+.presentation-help__key {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.presentation-help__key kbd {
+  background: #f4f6fa;
+  border: 1px solid rgba(15, 79, 168, 0.10);
+  border-radius: 8px;
+  padding: 4px 9px;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 0.78rem;
+  color: #0F4FA8;
+  white-space: nowrap;
+}
+.presentation-help__key span {
+  font-size: 0.88rem;
+  color: var(--text, #1a2740);
+}
+.presentation-help__cta {
+  background: #0F4FA8;
+  color: #fff;
+  border: 0;
+  padding: 12px 22px;
+  border-radius: 999px;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 0.92rem;
+  cursor: pointer;
+  width: 100%;
+  transition: background .2s ease;
+}
+.presentation-help__cta:hover { background: #0a3a7d; }
+
+
+/* ----------------------------------------------------------------------------
+   10. CHARTS ADENTRO DE LA PRESENTACION — usar mas alto y mantener proporcion
+   Los chart-container existentes mantienen su altura predeterminada del informe,
+   pero damos un pequeño boost en pantallas grandes para aprovechar el viewport.
+   ---------------------------------------------------------------------------- */
+@media (min-width: 1100px) {
+  .slide__content .chart-container {
+    min-height: 320px;
+  }
+  .slide__content .panorama-card .chart-container,
+  .slide__content .prog-genspec-card .chart-container,
+  .slide__content .prog-history-card .chart-container {
+    height: clamp(320px, 38vh, 480px);
+  }
+}
+
+
+/* ----------------------------------------------------------------------------
+   11. RESPETO A prefers-reduced-motion
+   ---------------------------------------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  .slides-track,
+  .slide__head,
+  .slide__content > *,
+  .presentation-progress__fill,
+  .presentation-frame {
+    transition-duration: .01ms !important;
+  }
+}

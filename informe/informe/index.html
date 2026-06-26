@@ -13,7 +13,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/css/tokens.css?v=251">
+<link rel="stylesheet" href="assets/css/tokens.css?v=252">
+<link rel="stylesheet" href="assets/css/presentation.css?v=252">
 </head>
 <body>
 
@@ -92,6 +93,13 @@
 
     <!-- HERO / PORTADA -->
     <header class="hero" id="portada">
+      <!-- Boton flotante para activar el Modo Presentacion (capa visual sobre el informe) -->
+      <button type="button" class="presentation-trigger" id="presentationTrigger" aria-label="Activar modo presentación">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <polygon points="5 3 19 12 5 21 5 3"/>
+        </svg>
+        <span>Modo Presentación</span>
+      </button>
       <div class="hero__inner">
         <span class="hero__year-badge">2025</span>
         <h1>
@@ -533,6 +541,7 @@
   </main>
 </div>
 
-<script src="assets/js/app.js?v=251"></script>
+<script src="assets/js/app.js?v=252"></script>
+<script src="assets/js/presentation.js?v=252"></script>
 </body>
 </html>
