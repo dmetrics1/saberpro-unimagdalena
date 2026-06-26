@@ -1178,6 +1178,29 @@ body.is-presentation-mode .slide[data-slide="programas-b"] .slide__content {
   margin: 0 !important;
 }
 
+/* Restaurar filtros del Cuadrantes (año + NBC) — el usuario los necesita visibles */
+.slide[data-slide="valor-agregado"] .card__controls,
+.slide[data-slide="valor-agregado"] .card__controls .select-wrapper,
+.slide[data-slide="valor-agregado"] .card__controls .control-select {
+  display: flex !important;
+}
+.slide[data-slide="valor-agregado"] .card__controls { gap: 8px !important; }
+.slide[data-slide="valor-agregado"] .card__controls .select-wrapper,
+.slide[data-slide="valor-agregado"] .card__controls .control-select { display: block !important; }
+.slide[data-slide="valor-agregado"] .card__controls .control-select {
+  font-size: 0.78rem !important;
+  padding: 5px 22px 5px 9px !important;
+  max-width: 180px;
+}
+.slide[data-slide="valor-agregado"] .card__header-flex {
+  display: flex !important;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: clamp(8px, 1vh, 12px);
+}
+
 /* Charts grandes side-by-side ocupando la mayor parte del slide */
 .slide[data-slide="valor-agregado"] .charts-grid {
   display: grid;
@@ -1203,54 +1226,103 @@ body.is-presentation-mode .slide[data-slide="programas-b"] .slide__content {
 
 
 /* ----------------------------------------------------------------------------
-   14. SLIDE 08 — METODOLOGIA: scroll vertical permitido en TODA la slide
-   El contenido es largo (5 bloques explicativos) — permitimos scroll completo
-   en la slide en lugar de comprimirlo a 1 viewport.
+   14. SLIDE 09 — METODOLOGIA: resumen compacto sin scroll
+   Grid 4 cards arriba (Fuentes / Cruce / Construir / Reglas) + Glosario abajo
+   full width. Solo content esencial visible; texto verboso oculto.
    ---------------------------------------------------------------------------- */
-.slide[data-slide="metodologia"] {
-  overflow-y: auto !important;
-  overflow-x: hidden !important;
-  display: block !important;        /* anula el flex column de .slide */
-  -webkit-overflow-scrolling: touch;
-}
-.slide[data-slide="metodologia"]::-webkit-scrollbar { width: 8px; }
-.slide[data-slide="metodologia"]::-webkit-scrollbar-track { background: transparent; }
-.slide[data-slide="metodologia"]::-webkit-scrollbar-thumb {
-  background: rgba(15, 79, 168, 0.20);
-  border-radius: 999px;
-  border: 2px solid transparent;
-  background-clip: padding-box;
-}
-.slide[data-slide="metodologia"]::-webkit-scrollbar-thumb:hover {
-  background: rgba(15, 79, 168, 0.35);
-  background-clip: padding-box;
-  border: 2px solid transparent;
-}
-
-/* Header sticky para que el titulo permanezca visible al hacer scroll */
-.slide[data-slide="metodologia"] .slide__head {
-  position: sticky;
-  top: 0;
-  z-index: 5;
-  background: rgba(247, 249, 252, 0.96);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-}
-
-/* Contenido en bloques apilados (no grid de 2 columnas — mejor legibilidad) */
-.slide[data-slide="metodologia"] .metodologia-wrap {
+.slide[data-slide="metodologia"] .slide__content {
   display: flex;
   flex-direction: column;
-  gap: clamp(12px, 1.6vh, 18px);
-  height: auto;
-  overflow: visible;
+  min-height: 0;
+  overflow: hidden;
 }
+.slide[data-slide="metodologia"] .section {
+  display: flex !important;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+/* Grid 4 cards arriba + glosario full-width abajo */
+.slide[data-slide="metodologia"] .metodologia-wrap {
+  display: grid !important;
+  grid-template-columns: repeat(4, 1fr);
+  grid-template-rows: auto 1fr;
+  gap: clamp(10px, 1.2vw, 16px) !important;
+  height: 100%;
+  overflow: hidden;
+}
+
+/* Cards 1-4: compactas, solo head + primer parrafo */
 .slide[data-slide="metodologia"] .metodologia-block {
-  padding: clamp(14px, 2vh, 22px) clamp(16px, 2vw, 26px);
-  font-size: clamp(0.85rem, 0.98vw, 0.96rem);
-  overflow: visible;
-  max-height: none;
-  flex: 0 0 auto;
+  padding: clamp(12px, 1.6vh, 18px) clamp(12px, 1.4vw, 18px) !important;
+  font-size: clamp(0.74rem, 0.85vw, 0.85rem);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.slide[data-slide="metodologia"] .metodologia-block__head {
+  margin-bottom: 4px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.slide[data-slide="metodologia"] .metodologia-block__icon {
+  font-size: clamp(1.1rem, 1.3vw, 1.3rem);
+}
+.slide[data-slide="metodologia"] .metodologia-block .card__title {
+  font-size: clamp(0.88rem, 1vw, 1rem) !important;
+  margin: 0 !important;
+  line-height: 1.2;
+}
+.slide[data-slide="metodologia"] .metodologia-block p {
+  font-size: clamp(0.72rem, 0.82vw, 0.82rem) !important;
+  line-height: 1.4 !important;
+  margin: 0 !important;
+}
+
+/* Hide verbose content (sources, flow steps, rules detail, notes) */
+.slide[data-slide="metodologia"] .metodologia-sources,
+.slide[data-slide="metodologia"] .metodologia-flow,
+.slide[data-slide="metodologia"] .metodologia-rules,
+.slide[data-slide="metodologia"] .metodologia-note,
+.slide[data-slide="metodologia"] .metodologia-source__link {
+  display: none !important;
+}
+/* Only show first 2 paragraphs of each block (intro/lead) */
+.slide[data-slide="metodologia"] .metodologia-block > p:nth-of-type(n+3) {
+  display: none !important;
+}
+
+/* Glosario: full-width abajo en grid de 4 columnas con definiciones compactas */
+.slide[data-slide="metodologia"] .metodologia-block:nth-child(5) {
+  grid-column: 1 / -1;
+  grid-row: 2;
+  flex: 1 1 auto;
+  min-height: 0;
+}
+.slide[data-slide="metodologia"] .metodologia-glossary {
+  display: grid !important;
+  grid-template-columns: repeat(4, 1fr);
+  gap: clamp(8px, 1vw, 14px) clamp(12px, 1.4vw, 20px) !important;
+  margin: 4px 0 0 !important;
+  overflow: hidden;
+}
+.slide[data-slide="metodologia"] .metodologia-glossary > div {
+  margin: 0 !important;
+}
+.slide[data-slide="metodologia"] .metodologia-glossary dt {
+  font-size: clamp(0.74rem, 0.85vw, 0.85rem) !important;
+  font-weight: 700 !important;
+  color: #0F4FA8 !important;
+  margin-bottom: 2px !important;
+}
+.slide[data-slide="metodologia"] .metodologia-glossary dd {
+  font-size: clamp(0.66rem, 0.76vw, 0.76rem) !important;
+  line-height: 1.35 !important;
+  margin: 0 !important;
+  color: #5b6b7f;
 }
 
 
