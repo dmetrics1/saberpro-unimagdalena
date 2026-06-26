@@ -988,10 +988,11 @@ body.is-presentation-mode.nav-open .slide[data-slide^="programas"] .slide__head 
 }
 .presentation-programas-tools .control-group--year .control-select { min-width: 80px; }
 
-/* Charts area se empuja hacia abajo para no chocar con los filtros fixed */
+/* Charts area se empuja hacia abajo para no chocar con los filtros fixed.
+   El gap considera: filters height (~74px) + breathing gap (~16px) = 90px */
 body.is-presentation-mode .slide[data-slide="programas-a"] .slide__content,
 body.is-presentation-mode .slide[data-slide="programas-b"] .slide__content {
-  padding-top: clamp(58px, 7vh, 76px) !important;
+  padding-top: clamp(82px, 10vh, 100px) !important;
 }
 /* Titulos cards mas pequenos para dar espacio a charts */
 .slide[data-slide^="programas"] .card__title {
