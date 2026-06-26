@@ -1157,7 +1157,9 @@ body.is-presentation-mode .slide[data-slide="programas-b"] .slide__content {
 /* ----------------------------------------------------------------------------
    16. NAV BUTTONS (flechas laterales)
    ---------------------------------------------------------------------------- */
-.presentation-nav {
+/* Flechas laterales ocultas — la toolbar inferior tiene Anterior/Siguiente */
+.presentation-nav { display: none !important; }
+.presentation-nav-legacy-base {
   position: fixed;
   top: 50%;
   transform: translateY(-50%);
