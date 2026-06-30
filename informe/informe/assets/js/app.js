@@ -1884,8 +1884,9 @@ function renderFacultades(d, yearOverride) {
   const w = 1000;
   // En modo presentación, ajustar h según el aspect ratio del container
   // para que el chart llene el card sin distorsión ni espacio vacío.
+  const isPresentation = document.body.classList.contains('is-presentation-mode');
   let h = 400;
-  if (document.body.classList.contains('is-presentation-mode')) {
+  if (isPresentation) {
     const containerRect = container.getBoundingClientRect();
     if (containerRect.width > 0 && containerRect.height > 0) {
       // h = w * containerH / containerW  → svg aspect = container aspect
@@ -1894,7 +1895,12 @@ function renderFacultades(d, yearOverride) {
       h = Math.max(400, Math.min(1200, h));
     }
   }
-  const margin = { top: 14, right: 60, bottom: 32, left: 240 };
+  // Font sizes mas grandes en presentacion (proporcional al tamano del chart)
+  const FS_TICK = isPresentation ? 18 : 11.5;
+  const FS_LABEL = isPresentation ? 22 : 15;
+  const FS_SCORE = isPresentation ? 22 : 15;
+  const LINE_H_LABEL = isPresentation ? 24 : 17;
+  const margin = { top: 14, right: 60, bottom: isPresentation ? 50 : 32, left: isPresentation ? 280 : 240 };
   const innerW = w - margin.left - margin.right;
   const innerH = h - margin.top - margin.bottom;
 
@@ -1928,7 +1934,7 @@ function renderFacultades(d, yearOverride) {
     }));
     const tlbl = createSVGEl('text', {
       x, y: margin.top + innerH + 18, 'text-anchor': 'middle',
-      style: 'font-family: var(--font-display); font-size: 11.5px; font-weight: 500; fill: var(--text-soft);'
+      style: `font-family: var(--font-display); font-size: ${FS_TICK}px; font-weight: 500; fill: var(--text-soft);`
     });
     tlbl.textContent = v;
     svg.appendChild(tlbl);
@@ -1979,14 +1985,14 @@ function renderFacultades(d, yearOverride) {
       return out;
     };
     const facLines = wrapFac(facName, 22);
-    const facLineH = 17;
+    const facLineH = LINE_H_LABEL;
     const facCenterY = y + barH / 2 + 6;
     const facStartY = facCenterY - ((facLines.length - 1) * facLineH) / 2;
     facLines.forEach((ln, li) => {
       const t = createSVGEl('text', {
         x: margin.left - 12, y: facStartY + li * facLineH,
         'text-anchor': 'end',
-        style: `font-family: var(--font-display); font-weight: 700; font-size: 15px; fill: ${color};`
+        style: `font-family: var(--font-display); font-weight: 700; font-size: ${FS_LABEL}px; fill: ${color};`
       });
       t.textContent = ln;
       svg.appendChild(t);
@@ -1995,7 +2001,7 @@ function renderFacultades(d, yearOverride) {
     // Puntaje (al final de la barra)
     const scoreText = createSVGEl('text', {
       x: margin.left + barW + 8, y: y + barH / 2 + 6,
-      style: `font-family: var(--font-display); font-weight: 800; font-size: 15px; fill: ${color};`
+      style: `font-family: var(--font-display); font-weight: 800; font-size: ${FS_SCORE}px; fill: ${color};`
     });
     scoreText.textContent = v.toFixed(1);
     svg.appendChild(scoreText);
