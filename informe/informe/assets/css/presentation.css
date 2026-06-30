@@ -662,37 +662,49 @@ body.is-presentation-mode .chart-container .legend-item text {
   gap: 0;
 }
 
-/* Anular max-width 1180 + auto margins del .panorama-card original (informe).
-   En presentacion ocupa el ancho completo del content area. */
+/* Anular wrapper externo .panorama-card: TRANSPARENTE, sin shadow.
+   Las 2 panorama-side se convierten en cards individuales (estilo Slide 03). */
 .slide[data-slide="panorama"] .panorama-card {
   max-width: none !important;
   margin: 0 !important;
-  padding: clamp(16px, 2vh, 24px) clamp(18px, 2vw, 28px) !important;
+  padding: 0 !important;
   width: 100% !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  border: none !important;
   display: flex;
   flex-direction: column;
   min-height: 0;
+  height: 100%;
 }
-/* Grid interno ocupa todo el card */
+/* Grid interno ocupa todo el card y separa las 2 sides con gap real */
 .slide[data-slide="panorama"] .panorama-grid {
   flex: 1 1 auto;
   min-height: 0;
   height: 100%;
+  gap: clamp(14px, 1.6vw, 24px) !important;
 }
-/* Anular altura fija de 420px en las panorama-side .chart-container — que llene */
-.slide[data-slide="panorama"] .panorama-side .chart-container {
-  flex: 1 1 auto !important;
-  min-height: 0 !important;
-  height: auto !important;
-}
+/* CADA panorama-side se convierte en su propia CARD individual */
 .slide[data-slide="panorama"] .panorama-side {
   display: flex;
   flex-direction: column;
   min-height: 0;
+  background: #ffffff;
+  border-radius: 18px;
+  box-shadow: 0 8px 24px rgba(0, 30, 80, 0.05);
+  border: 1px solid rgba(15, 79, 168, 0.04);
+  padding: clamp(16px, 2vh, 24px) clamp(18px, 2vw, 28px);
 }
-/* Divisor entre charts mas sutil + menos padding */
+/* Quitar el divisor border-left del informe (ya no aplica con cards separadas) */
 .slide[data-slide="panorama"] .panorama-side + .panorama-side {
-  padding-left: clamp(14px, 1.6vw, 22px) !important;
+  border-left: none !important;
+  padding-left: clamp(18px, 2vw, 28px) !important;
+}
+/* Anular altura fija de 420px en .chart-container — que llene el alto */
+.slide[data-slide="panorama"] .panorama-side .chart-container {
+  flex: 1 1 auto !important;
+  min-height: 0 !important;
+  height: auto !important;
 }
 
 /* KPIs estilo dashboard SaberPro: cards blancas separadas, label arriba pequeno,
