@@ -227,6 +227,10 @@
       // Mostrar/ocultar filtros compartidos de programas segun el slide activo
       this._updateProgramasTools(this.slides[clamped]?.group.id);
 
+      // Forzar SVGs a llenar el container (preserveAspectRatio="none") en
+      // bar charts donde el viewBox tiene aspect fijo y queda mucho whitespace
+      this._stretchActiveSlideCharts(clamped);
+
       // Actualizar UI
       if (this.progress) this.progress.style.width = `${((clamped + 1) / TOTAL) * 100}%`;
       if (this.counter) this.counter.textContent = `${clamped + 1} / ${TOTAL}`;
@@ -236,6 +240,35 @@
 
     next() { this.goto(this.currentSlide + 1); }
     prev() { this.goto(this.currentSlide - 1); }
+
+    /* Fuerza a los SVGs marcados a llenar su container vertical (sin
+       letterboxing). Solo aplica a chart-containers cuyo SVG tiene viewBox
+       fijo demasiado horizontal y queda whitespace abajo. */
+    _stretchActiveSlideCharts(idx) {
+      const slide = this.slides[idx]?.wrapper;
+      if (!slide) return;
+      // Lista de chart IDs que necesitan stretch (viewBox horizontal fijo)
+      const stretchIds = ['chartFacultades'];
+      stretchIds.forEach(id => {
+        const container = slide.querySelector('#' + id);
+        if (!container) return;
+        // Stretch existente
+        const applyStretch = () => {
+          container.querySelectorAll('svg').forEach(svg => {
+            svg.setAttribute('preserveAspectRatio', 'none');
+          });
+        };
+        applyStretch();
+        // Re-aplicar cada vez que el container cambie (re-render con nuevo SVG)
+        if (!container._stretchObserver) {
+          const observer = new MutationObserver(applyStretch);
+          observer.observe(container, { childList: true, subtree: true });
+          container._stretchObserver = observer;
+          this._stretchObservers = this._stretchObservers || [];
+          this._stretchObservers.push(observer);
+        }
+      });
+    }
 
 
     /* ---------- Privados: DOM ---------- */
@@ -453,6 +486,17 @@
         if (parent) parent.insertBefore(node, nextSibling);
         this._programasFiltersOriginal = null;
       }
+      // Limpiar observers de stretch para charts
+      if (this._stretchObservers) {
+        this._stretchObservers.forEach(o => o.disconnect());
+        this._stretchObservers = null;
+      }
+      // Quitar el preserveAspectRatio="none" de los SVGs (devolverlos a normal)
+      ['chartFacultades'].forEach(id => {
+        const c = document.getElementById(id);
+        if (c) c.querySelectorAll('svg').forEach(svg => svg.removeAttribute('preserveAspectRatio'));
+        if (c) delete c._stretchObserver;
+      });
       // Limpiar el select dinamico de facultades + observer
       if (this._facultadesTabObserver) {
         this._facultadesTabObserver.disconnect();

@@ -982,6 +982,12 @@ body.is-presentation-mode .chart-container .legend-item text {
 .slide[data-slide="facultades"] .chart-container > svg {
   width: 100% !important;
   height: 100% !important;
+  /* SVG con viewBox 1000x400 — el viewBox se estira vertical para llenar */
+  preserveAspectRatio: none !important;
+}
+/* Para el bar chart especificamente, forzar estiramiento sin preservar aspecto */
+.slide[data-slide="facultades"] #chartFacultades > svg {
+  preserveAspectRatio: none !important;
 }
 .slide[data-slide="facultades"] .tabs--facultad .tab {
   padding: 5px 10px !important;
