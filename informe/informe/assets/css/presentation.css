@@ -471,6 +471,40 @@ body.is-presentation-mode .presentation-frame { opacity: 1; }
   display: block;
 }
 
+/* SECTION wrapper en presentacion: SIEMPRE width 100% para que las cards
+   internas se alineen con el slide__head (sin gap horizontal raro) */
+body.is-presentation-mode .slide__content > .section {
+  width: 100% !important;
+  max-width: none !important;
+}
+
+/* SVG TEXT LABELS GLOBALES — visibilidad para presentacion (todos los charts) */
+body.is-presentation-mode .chart-container text,
+body.is-presentation-mode .slide__content svg text {
+  font-size: 13px !important;
+  font-weight: 500;
+}
+body.is-presentation-mode .chart-container .axis-label,
+body.is-presentation-mode .chart-container .axis text,
+body.is-presentation-mode .chart-container .tick text,
+body.is-presentation-mode .chart-container .axis-title {
+  font-size: 13px !important;
+}
+/* Etiquetas de valor numerico (mas pesadas para destacar) */
+body.is-presentation-mode .chart-container .bar-label,
+body.is-presentation-mode .chart-container .data-label,
+body.is-presentation-mode .chart-container .value-label {
+  font-size: 14px !important;
+  font-weight: 700 !important;
+}
+/* Leyenda */
+body.is-presentation-mode .chart-container .legend text,
+body.is-presentation-mode .chart-container .legend-label,
+body.is-presentation-mode .chart-container .legend-item text {
+  font-size: 13px !important;
+  font-weight: 600 !important;
+}
+
 
 /* ----------------------------------------------------------------------------
    6. OCULTAR CONTROLES SECUNDARIOS QUE DISTRAEN EN EXPOSICION
@@ -748,27 +782,7 @@ body.is-presentation-mode .presentation-frame { opacity: 1; }
   height: 100% !important;
 }
 
-/* SVG TEXT LABELS más grandes para visibilidad en presentación (Slide 03) */
-.slide[data-slide="posicionamiento"] .chart-container text {
-  font-size: 13px !important;
-  font-weight: 500;
-}
-.slide[data-slide="posicionamiento"] .chart-container .axis-label,
-.slide[data-slide="posicionamiento"] .chart-container .tick text {
-  font-size: 13px !important;
-}
-/* Etiquetas de valor (numeros sobre barras) más grandes */
-.slide[data-slide="posicionamiento"] .chart-container .bar-label,
-.slide[data-slide="posicionamiento"] .chart-container .data-label {
-  font-size: 14px !important;
-  font-weight: 700 !important;
-}
-/* Leyenda (Unimagdalena, U. Sergio Arboleda, etc.) más grande */
-.slide[data-slide="posicionamiento"] .chart-container .legend text,
-.slide[data-slide="posicionamiento"] .chart-container .legend-label {
-  font-size: 13px !important;
-  font-weight: 600 !important;
-}
+/* (Reglas SVG de Slide 03 movidas a la seccion 16 GLOBAL) */
 
 
 /* ----------------------------------------------------------------------------
