@@ -839,9 +839,32 @@ body.is-presentation-mode .chart-container .legend-item text {
 /* GRID: heatmap protagonista (necesita ancho para mostrar 6 competencias) */
 .slide[data-slide="facultades"] .charts-grid {
   display: grid;
-  grid-template-columns: 0.75fr 1.65fr;    /* heatmap mucho mas ancho */
+  grid-template-columns: 1fr 1.55fr;       /* bar chart mas ancho que antes */
   gap: clamp(16px, 1.6vw, 24px);
   height: 100%;
+}
+
+/* Restaurar filtros de año en ambos cards (estaban hidden por la regla global) */
+.slide[data-slide="facultades"] .card__controls,
+.slide[data-slide="facultades"] .card__controls .select-wrapper,
+.slide[data-slide="facultades"] .card__controls .control-select,
+.slide[data-slide="facultades"] .card__header-flex .select-wrapper,
+.slide[data-slide="facultades"] .card__header-flex .control-select {
+  display: flex !important;
+}
+.slide[data-slide="facultades"] .card__controls .select-wrapper,
+.slide[data-slide="facultades"] .card__controls .control-select,
+.slide[data-slide="facultades"] .card__header-flex .select-wrapper,
+.slide[data-slide="facultades"] .card__header-flex .control-select { display: block !important; }
+.slide[data-slide="facultades"] .control-select {
+  font-size: 0.78rem !important;
+  padding: 5px 22px 5px 9px !important;
+  max-width: 110px;
+  border: 1px solid rgba(15, 79, 168, 0.15);
+  border-radius: 8px;
+  background-color: #f7f9fc;
+  font-weight: 600;
+  color: #0F4FA8;
 }
 .slide[data-slide="facultades"] .card {
   padding: clamp(14px, 1.8vh, 22px) clamp(16px, 1.8vw, 26px);
@@ -865,11 +888,25 @@ body.is-presentation-mode .chart-container .legend-item text {
 
 /* TABS de competencia compactas en una sola fila horizontal */
 .slide[data-slide="facultades"] .tabs--facultad {
-  margin: 0 0 clamp(10px, 1.2vh, 16px) !important;
+  margin: 0 0 clamp(8px, 1vh, 12px) !important;
   display: flex !important;
   flex-wrap: wrap;
   gap: 4px !important;
   flex-shrink: 0;
+  max-height: 70px;
+  overflow: hidden;
+}
+/* Bar chart container DEBE llenar el alto restante */
+.slide[data-slide="facultades"] .chart-container#chartFacultades,
+.slide[data-slide="facultades"] .chart-container {
+  flex: 1 1 auto !important;
+  min-height: 0 !important;
+  height: auto !important;
+  width: 100% !important;
+}
+.slide[data-slide="facultades"] .chart-container > svg {
+  width: 100% !important;
+  height: 100% !important;
 }
 .slide[data-slide="facultades"] .tabs--facultad .tab {
   padding: 5px 10px !important;
