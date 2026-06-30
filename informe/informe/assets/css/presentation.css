@@ -662,6 +662,39 @@ body.is-presentation-mode .chart-container .legend-item text {
   gap: 0;
 }
 
+/* Anular max-width 1180 + auto margins del .panorama-card original (informe).
+   En presentacion ocupa el ancho completo del content area. */
+.slide[data-slide="panorama"] .panorama-card {
+  max-width: none !important;
+  margin: 0 !important;
+  padding: clamp(16px, 2vh, 24px) clamp(18px, 2vw, 28px) !important;
+  width: 100% !important;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+/* Grid interno ocupa todo el card */
+.slide[data-slide="panorama"] .panorama-grid {
+  flex: 1 1 auto;
+  min-height: 0;
+  height: 100%;
+}
+/* Anular altura fija de 420px en las panorama-side .chart-container — que llene */
+.slide[data-slide="panorama"] .panorama-side .chart-container {
+  flex: 1 1 auto !important;
+  min-height: 0 !important;
+  height: auto !important;
+}
+.slide[data-slide="panorama"] .panorama-side {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+/* Divisor entre charts mas sutil + menos padding */
+.slide[data-slide="panorama"] .panorama-side + .panorama-side {
+  padding-left: clamp(14px, 1.6vw, 22px) !important;
+}
+
 /* KPIs estilo dashboard SaberPro: cards blancas separadas, label arriba pequeno,
    numero GIGANTE en azul abajo. */
 .slide[data-slide="panorama"] .kpi-grid {
