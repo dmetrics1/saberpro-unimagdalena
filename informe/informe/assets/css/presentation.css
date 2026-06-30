@@ -622,6 +622,9 @@ body.is-presentation-mode .chart-container .legend-item text {
   gap: clamp(10px, 1.2vw, 16px);
   position: relative;
   z-index: 3;
+  width: 100% !important;
+  max-width: none !important;   /* anula el max-width 1180 del informe */
+  padding: 0 !important;        /* anula el padding 0 24px del informe */
 }
 .slide--cover .kpi {
   padding: clamp(14px, 1.8vh, 20px) clamp(16px, 1.6vw, 22px) !important;
