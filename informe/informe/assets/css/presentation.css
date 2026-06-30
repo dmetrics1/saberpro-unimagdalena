@@ -971,8 +971,7 @@ body.is-presentation-mode .chart-container .legend-item text {
 .slide[data-slide="facultades"] .tabs--facultad {
   display: none !important;
 }
-/* Bar chart container DEBE llenar el alto restante */
-.slide[data-slide="facultades"] .chart-container#chartFacultades,
+/* Chart containers: SVGs renderizan a su aspect ratio natural */
 .slide[data-slide="facultades"] .chart-container {
   flex: 1 1 auto !important;
   min-height: 0 !important;
@@ -981,13 +980,17 @@ body.is-presentation-mode .chart-container .legend-item text {
 }
 .slide[data-slide="facultades"] .chart-container > svg {
   width: 100% !important;
-  height: 100% !important;
-  /* SVG con viewBox 1000x400 — el viewBox se estira vertical para llenar */
-  preserveAspectRatio: none !important;
+  height: auto !important;
+  max-height: 100% !important;
 }
-/* Para el bar chart especificamente, forzar estiramiento sin preservar aspecto */
-.slide[data-slide="facultades"] #chartFacultades > svg {
-  preserveAspectRatio: none !important;
+
+/* Charts grid permite cards de altura distinta (bar chart corto, heatmap alto) */
+.slide[data-slide="facultades"] .charts-grid {
+  align-items: stretch;        /* heatmap llena alto disponible */
+}
+/* Bar chart card: contenido centrado verticalmente para distribuir mejor */
+.slide[data-slide="facultades"] .charts-grid > .card:first-child {
+  justify-content: center;
 }
 .slide[data-slide="facultades"] .tabs--facultad .tab {
   padding: 5px 10px !important;

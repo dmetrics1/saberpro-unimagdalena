@@ -241,34 +241,9 @@
     next() { this.goto(this.currentSlide + 1); }
     prev() { this.goto(this.currentSlide - 1); }
 
-    /* Fuerza a los SVGs marcados a llenar su container vertical (sin
-       letterboxing). Solo aplica a chart-containers cuyo SVG tiene viewBox
-       fijo demasiado horizontal y queda whitespace abajo. */
-    _stretchActiveSlideCharts(idx) {
-      const slide = this.slides[idx]?.wrapper;
-      if (!slide) return;
-      // Lista de chart IDs que necesitan stretch (viewBox horizontal fijo)
-      const stretchIds = ['chartFacultades'];
-      stretchIds.forEach(id => {
-        const container = slide.querySelector('#' + id);
-        if (!container) return;
-        // Stretch existente
-        const applyStretch = () => {
-          container.querySelectorAll('svg').forEach(svg => {
-            svg.setAttribute('preserveAspectRatio', 'none');
-          });
-        };
-        applyStretch();
-        // Re-aplicar cada vez que el container cambie (re-render con nuevo SVG)
-        if (!container._stretchObserver) {
-          const observer = new MutationObserver(applyStretch);
-          observer.observe(container, { childList: true, subtree: true });
-          container._stretchObserver = observer;
-          this._stretchObservers = this._stretchObservers || [];
-          this._stretchObservers.push(observer);
-        }
-      });
-    }
+    /* No-op: stretch SVG removido por distorsion visual.
+       El chart se renderiza con su aspect natural; el card se ajusta. */
+    _stretchActiveSlideCharts(idx) { /* intentional no-op */ }
 
 
     /* ---------- Privados: DOM ---------- */
