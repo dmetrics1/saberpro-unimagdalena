@@ -307,7 +307,7 @@ function renderRadar(d, yearOverride) {
   const h = 440;
   const cx = w / 2;
   const cy = h / 2 - 14;
-  const rMax = 125;
+  const rMax = 108; // Reducido ligeramente de 125 para dar más espacio exterior
   const n = axes.length;
 
   const svg = createSVGEl('svg', { viewBox: `0 0 ${w} ${h}`, class: 'svg-chart' });
@@ -351,7 +351,7 @@ function renderRadar(d, yearOverride) {
   // Etiquetas de los ejes (nombres de competencias) — empujadas afuera para no chocar con los valores
   for (let a = 0; a < n; a++) {
     const angle = a * (2 * Math.PI / n) - Math.PI / 2;
-    const labelDist = rMax + 42;
+    const labelDist = rMax + 43; // Empujado un poco más afuera
     const lx = cx + labelDist * Math.cos(angle);
     const ly = cy + labelDist * Math.sin(angle);
     const anchor = Math.abs(Math.cos(angle)) < 0.15 ? 'middle' : (Math.cos(angle) > 0 ? 'start' : 'end');
@@ -364,6 +364,7 @@ function renderRadar(d, yearOverride) {
         x: lx,
         y: startY + idx * lineHeight,
         'text-anchor': anchor,
+        class: 'chart-category',
         style: 'font-family: var(--font-display); font-weight: 700; font-size: 14px; fill: var(--brand-primary-dark);'
       });
       t.textContent = line;
@@ -442,29 +443,34 @@ function renderRadar(d, yearOverride) {
     dotUM.addEventListener('mouseleave', hideTooltip);
     svg.appendChild(dotUM);
 
-    // Posición base de las etiquetas: a una distancia fija del centro
-    const valueLabelDist = rMax + 16;
-    const baseX = cx + valueLabelDist * cosA;
-    const baseY = cy + valueLabelDist * sinA;
-    const tangentSep = 22;
+    // Posición de las etiquetas basadas en el radio real de cada serie + offset
+    const rUM = scoreToRadius(axes[a].um);
+    const rNat = scoreToRadius(axes[a].nat);
+    
+    // Separación radial de 15px fuera del punto, y perpendicular tangencial de 18px a cada lado
+    const labelRadialOffset = 15;
+    const labelTangentialOffset = 18;
 
-    // UM a un lado, Nacional al otro — separados ~44 px perpendicularmente
-    const umLx = baseX + tangentSep * perpX;
-    const umLy = baseY + tangentSep * perpY;
+    const umLx = cx + (rUM + labelRadialOffset) * cosA + labelTangentialOffset * perpX;
+    const umLy = cy + (rUM + labelRadialOffset) * sinA + labelTangentialOffset * perpY + 4;
     const umLabel = createSVGEl('text', {
-      x: umLx, y: umLy + 5,
+      x: umLx, y: umLy,
       'text-anchor': 'middle',
-      style: `font-family: var(--font-display); font-weight: 800; font-size: 14px; fill: ${PANORAMA_UM};`
+      class: 'chart-value',
+      'font-size': '12.5px',
+      style: `font-family: var(--font-display); font-weight: 800; fill: ${PANORAMA_UM};`
     });
     umLabel.textContent = axes[a].um;
     svg.appendChild(umLabel);
 
-    const natLx = baseX - tangentSep * perpX;
-    const natLy = baseY - tangentSep * perpY;
+    const natLx = cx + (rNat + labelRadialOffset) * cosA - labelTangentialOffset * perpX;
+    const natLy = cy + (rNat + labelRadialOffset) * sinA - labelTangentialOffset * perpY + 4;
     const natLabel = createSVGEl('text', {
-      x: natLx, y: natLy + 5,
+      x: natLx, y: natLy,
       'text-anchor': 'middle',
-      style: `font-family: var(--font-display); font-weight: 800; font-size: 14px; fill: ${PANORAMA_NAT};`
+      class: 'chart-value',
+      'font-size': '12.5px',
+      style: `font-family: var(--font-display); font-weight: 800; fill: ${PANORAMA_NAT};`
     });
     natLabel.textContent = axes[a].nat;
     svg.appendChild(natLabel);
@@ -474,7 +480,7 @@ function renderRadar(d, yearOverride) {
   svg.appendChild(createLegend([
     { color: PANORAMA_UM, text: 'Unimagdalena' },
     { color: PANORAMA_NAT, text: 'Nacional' }
-  ], cx - 160, h - 16, { fontSize: 13, rectW: 20, rectH: 10, gap: 230, textGap: 30, fontWeight: 700 }));
+  ], cx - 160, h - 16, { fontSize: 13, rectW: 20, rectH: 10, gap: 230, textGap: 30, fontWeight: 700, textClass: 'chart-legend' }));
 
   container.innerHTML = '';
   container.appendChild(svg);
@@ -490,6 +496,10 @@ function createLegend(items, startX, startY, opts = {}) {
   const fontWeight = opts.fontWeight || 600;
   const direction = opts.direction || 'horizontal';   // 'horizontal' | 'vertical'
   const lineHeight = opts.lineHeight || (fontSize + 6);
+  // Clase semántica opcional para el <text> (para jerarquía tipográfica en
+  // modo presentación — ej: 'chart-legend'). Backward-compatible: si no se
+  // pasa, no se añade class y el comportamiento en modo informe no cambia.
+  const textClass = opts.textClass || '';
 
   const g = createSVGEl('g', { class: 'legend' });
   items.forEach((item, idx) => {
@@ -509,10 +519,12 @@ function createLegend(items, startX, startY, opts = {}) {
       rectAttrs['stroke-dasharray'] = '2,1.5';
     }
     const rect = createSVGEl('rect', rectAttrs);
-    const text = createSVGEl('text', {
+    const textAttrs = {
       x: x + textGap, y: y - 1,
       style: `font-family: var(--font-display); font-size: ${fontSize}px; font-weight: ${fontWeight}; fill: var(--brand-primary-dark);`
-    });
+    };
+    if (textClass) textAttrs.class = textClass;
+    const text = createSVGEl('text', textAttrs);
     text.textContent = item.text;
     g.appendChild(rect);
     g.appendChild(text);
@@ -604,7 +616,7 @@ function renderEvolLine(d) {
 
   const innerW = w - margin.left - margin.right;
   const innerH = h - margin.top - margin.bottom;
-  const getX = (idx) => margin.left + (idx / (years.length - 1)) * innerW;
+  const getX = (idx) => margin.left + 32 + (idx / (years.length - 1)) * (innerW - 64);
   const getY = (val) => h - margin.bottom - ((val - minVal) / (maxVal - minVal)) * innerH;
 
   // Rejilla horizontal con tickValues múltiplos de 5
@@ -622,7 +634,9 @@ function renderEvolLine(d) {
     const lbl = createSVGEl('text', {
       x: margin.left - 10, y: y + 4,
       'text-anchor': 'end',
-      style: 'font-family: var(--font-display); font-size: 11.5px; font-weight: 500; fill: var(--text-soft);'
+      class: 'chart-tick',
+      'font-size': '12.5px',
+      style: 'font-family: var(--font-display); font-weight: 500; fill: var(--text-soft);'
     });
     lbl.textContent = v;
     svg.appendChild(lbl);
@@ -642,7 +656,9 @@ function renderEvolLine(d) {
     const lbl = createSVGEl('text', {
       x: x, y: h - margin.bottom + 22,
       'text-anchor': 'middle',
-      style: 'font-family: var(--font-display); font-size: 12.5px; font-weight: 600; fill: var(--brand-primary-dark);'
+      class: 'chart-tick',
+      'font-size': '12.5px',
+      style: 'font-family: var(--font-display); font-weight: 600; fill: var(--brand-primary-dark);'
     });
     lbl.textContent = yr;
     svg.appendChild(lbl);
@@ -696,7 +712,28 @@ function renderEvolLine(d) {
     const x = getX(idx);
     const yUM = getY(pt.puntaje_unimag);
     const yNat = getY(pt.puntaje_nacional);
-    const umAbove = pt.puntaje_unimag >= pt.puntaje_nacional;
+    
+    // Resolución de colisiones y overlaps verticales
+    const umHigher = pt.puntaje_unimag >= pt.puntaje_nacional;
+    let yUM_lbl, yNat_lbl;
+    const verticalDist = Math.abs(yUM - yNat);
+    if (verticalDist < 28) {
+      if (umHigher) {
+        yUM_lbl = yUM - 15;
+        yNat_lbl = yNat + 23;
+      } else {
+        yUM_lbl = yUM + 23;
+        yNat_lbl = yNat - 15;
+      }
+    } else {
+      if (umHigher) {
+        yUM_lbl = yUM - 12;
+        yNat_lbl = yNat + 20;
+      } else {
+        yUM_lbl = yUM + 20;
+        yNat_lbl = yNat - 12;
+      }
+    }
 
     const cNat = createSVGEl('circle', {
       cx: x, cy: yNat, r: 5,
@@ -720,18 +757,22 @@ function renderEvolLine(d) {
 
     // Etiqueta UM
     const lblUM = createSVGEl('text', {
-      x: x, y: yUM + (umAbove ? -11 : 19),
+      x: x, y: yUM_lbl,
       'text-anchor': 'middle',
-      style: `font-family: var(--font-display); font-weight: 800; font-size: 13.5px; fill: ${PANORAMA_UM};`
+      class: 'chart-value',
+      'font-size': '13.5px',
+      style: `font-family: var(--font-display); font-weight: 800; fill: ${PANORAMA_UM};`
     });
     lblUM.textContent = pt.puntaje_unimag;
     svg.appendChild(lblUM);
 
     // Etiqueta Nacional
     const lblNat = createSVGEl('text', {
-      x: x, y: yNat + (umAbove ? 19 : -11),
+      x: x, y: yNat_lbl,
       'text-anchor': 'middle',
-      style: `font-family: var(--font-display); font-weight: 800; font-size: 13.5px; fill: ${PANORAMA_NAT};`
+      class: 'chart-value',
+      'font-size': '13.5px',
+      style: `font-family: var(--font-display); font-weight: 800; fill: ${PANORAMA_NAT};`
     });
     lblNat.textContent = pt.puntaje_nacional;
     svg.appendChild(lblNat);
@@ -741,7 +782,7 @@ function renderEvolLine(d) {
   svg.appendChild(createLegend([
     { color: PANORAMA_UM, text: 'Unimagdalena' },
     { color: PANORAMA_NAT, text: 'Nacional' }
-  ], (w / 2) - 160, h - 14, { fontSize: 13, rectW: 20, rectH: 10, gap: 230, textGap: 30, fontWeight: 700 }));
+  ], (w / 2) - 160, h - 14, { fontSize: 13, rectW: 20, rectH: 10, gap: 230, textGap: 30, fontWeight: 700, textClass: 'chart-legend' }));
 
   container.innerHTML = '';
   container.appendChild(svg);
@@ -792,8 +833,8 @@ function renderSueRanking(d, yearOverride) {
   const totalBars = sorted.length;
 
   const w = 1000;
-  const h = 360;
-  const margin = { top: 20, right: 24, bottom: 110, left: 50 };
+  const h = 550;
+  const margin = { top: 30, right: 24, bottom: 150, left: 50 };
   const innerW = w - margin.left - margin.right;
   const innerH = h - margin.top - margin.bottom;
 
@@ -825,7 +866,9 @@ function renderSueRanking(d, yearOverride) {
     const yl = createSVGEl('text', {
       x: margin.left - 10, y: y + 4,
       'text-anchor': 'end',
-      style: 'font-family: var(--font-display); font-size: 11px; font-weight: 500; fill: var(--text-soft);'
+      class: 'chart-tick',
+      'font-size': '11px',
+      style: 'font-family: var(--font-display); font-weight: 500; fill: var(--text-soft);'
     });
     yl.textContent = v;
     svg.appendChild(yl);
@@ -863,33 +906,39 @@ function renderSueRanking(d, yearOverride) {
     rect.addEventListener('mouseleave', hideTooltip);
     svg.appendChild(rect);
 
-    // Etiqueta del puntaje encima de la barra
+    // Etiqueta del puntaje encima de la barra (todas visibles con tamaño compacto)
     const vlbl = createSVGEl('text', {
       x: x + barW / 2, y: y - 5,
       'text-anchor': 'middle',
-      style: `font-family: var(--font-display); font-weight: 700; font-size: ${univ.es_unimagdalena ? '12.5px' : '11px'}; fill: ${univ.es_unimagdalena ? color : 'var(--brand-primary-dark)'};`
+      class: 'chart-value' + (univ.es_unimagdalena ? ' chart-value--um' : ''),
+      'font-size': univ.es_unimagdalena ? '13px' : '10.5px',
+      style: `font-family: var(--font-display); font-weight: ${univ.es_unimagdalena ? '800' : '700'}; fill: ${univ.es_unimagdalena ? color : 'var(--brand-primary-dark)'};`
     });
     vlbl.textContent = Math.round(univ.puntaje);
     svg.appendChild(vlbl);
 
-    // Etiqueta debajo (abreviatura), rotada 45° para que quepan todas
+    // Mostrar todas las etiquetas del eje X alineadas a la misma Y (paralelas)
+    const yOffset = 12;
     const xlbl = createSVGEl('text', {
       x: xToPx(i),
-      y: margin.top + innerH + 14,
+      y: margin.top + innerH + yOffset,
       'text-anchor': 'end',
-      transform: `rotate(-45, ${xToPx(i)}, ${margin.top + innerH + 14})`,
-      style: `font-family: var(--font-display); font-size: 10.5px; font-weight: ${univ.es_unimagdalena ? '700' : '500'}; fill: ${univ.es_unimagdalena ? color : 'var(--brand-primary-dark)'};`
+      class: 'chart-tick' + (univ.es_unimagdalena ? ' chart-tick--um' : ''),
+      'font-size': univ.es_unimagdalena ? '12px' : '10px',
+      transform: `rotate(-45, ${xToPx(i)}, ${margin.top + innerH + yOffset})`,
+      style: `font-family: var(--font-display); font-weight: ${univ.es_unimagdalena ? '800' : '500'}; fill: ${univ.es_unimagdalena ? color : 'var(--brand-primary-dark)'};`
     });
     xlbl.textContent = univ.abrev || univ.nombre;
     svg.appendChild(xlbl);
   });
 
   // Leyenda inferior con 2 categorías (sin Region Caribe).
+  // Mover la leyenda a la zona libre superior derecha del gráfico para evitar invadir las etiquetas del eje X
   svg.appendChild(createLegend([
     { color: SUE_COLOR_UM, text: 'Unimagdalena' },
     { color: SUE_COLOR_OTHERS, text: 'Otras del SUE' }
-  ], (w / 2) - 140, h - 10, {
-    fontSize: 11.5, rectW: 18, rectH: 9, gap: 180, textGap: 24, fontWeight: 700
+  ], w - 248, 20, {
+    fontSize: 11, rectW: 14, rectH: 8, gap: 110, textGap: 18, fontWeight: 700, textClass: 'chart-legend'
   }));
 
   container.innerHTML = '';
@@ -972,9 +1021,9 @@ function renderUnivDept(d, yearOverride) {
   if (minVal < 0) minVal = 0;
   if (maxVal - minVal < 25) maxVal = minVal + 25;
 
-  const w = 900;
-  const h = 360;
-  const margin = { top: 20, right: 24, bottom: 90, left: 50 };
+  const w = 720;
+  const h = 450;
+  const margin = { top: 30, right: 24, bottom: 90, left: 50 };
   const innerW = w - margin.left - margin.right;
   const innerH = h - margin.top - margin.bottom;
 
@@ -996,6 +1045,7 @@ function renderUnivDept(d, yearOverride) {
     const lbl = createSVGEl('text', {
       x: margin.left - 10, y: y + 4,
       'text-anchor': 'end',
+      class: 'chart-tick',
       style: 'font-family: var(--font-display); font-size: 11px; font-weight: 500; fill: var(--text-soft);'
     });
     lbl.textContent = v;
@@ -1040,11 +1090,13 @@ function renderUnivDept(d, yearOverride) {
       bar.addEventListener('mouseleave', hideTooltip);
       svg.appendChild(bar);
 
-      // Etiqueta del valor encima de la barra
+      // Etiqueta del valor encima de la barra (con atributo XML font-size)
       const valLbl = createSVGEl('text', {
         x: x + barW / 2, y: y - 4,
         'text-anchor': 'middle',
-        style: `font-family: var(--font-display); font-weight: 700; font-size: 11.5px; fill: ${color};`
+        class: 'chart-value',
+        'font-size': '11.5px',
+        style: `font-family: var(--font-display); font-weight: 700; fill: ${color};`
       });
       valLbl.textContent = val;
       svg.appendChild(valLbl);
@@ -1059,10 +1111,13 @@ function renderUnivDept(d, yearOverride) {
       const mid = Math.ceil(labelLines.length / 2);
       lines = [labelLines.slice(0, mid).join(' '), labelLines.slice(mid).join(' ')];
     }
+    const isPres = document.body.classList.contains('is-presentation-mode');
+    const sepY = isPres ? 18 : 14;
     lines.forEach((line, idx) => {
       const t = createSVGEl('text', {
-        x: groupCenterX, y: margin.top + innerH + 20 + idx * 14,
+        x: groupCenterX, y: margin.top + innerH + 20 + idx * sepY,
         'text-anchor': 'middle',
+        class: 'chart-tick',
         style: 'font-family: var(--font-display); font-size: 11.5px; font-weight: 600; fill: var(--brand-primary-dark);'
       });
       t.textContent = line;
@@ -1074,6 +1129,7 @@ function renderUnivDept(d, yearOverride) {
   const shortenName = (n) => n
     .replace(/ - Santa Marta\b/i, '')
     .replace(/^Universidad /i, 'U. ')
+    .replace(/ de Colombia\b/i, '')
     .trim();
   const legendItems = univs.map((u, i) => ({
     color: UNIV_DEPT_COLORS[i % UNIV_DEPT_COLORS.length],
@@ -1082,7 +1138,7 @@ function renderUnivDept(d, yearOverride) {
   const gap = 230;
   const legendStartX = (w - (legendItems.length - 1) * gap) / 2 - 50;
   svg.appendChild(createLegend(legendItems, legendStartX, h - 8, {
-    fontSize: 12, rectW: 18, rectH: 10, gap, textGap: 24, fontWeight: 700
+    fontSize: 12, rectW: 18, rectH: 10, gap, textGap: 24, fontWeight: 700, textClass: 'chart-legend'
   }));
 
   container.innerHTML = '';
@@ -1297,6 +1353,7 @@ function drawCuadrantePlot(d) {
     }));
     const lbl = createSVGEl('text', {
       x: margin.left - 10, y: y + 4, 'text-anchor': 'end',
+      class: 'chart-tick',
       style: 'font-family: var(--font-display); font-size: 11px; font-weight: 500; fill: var(--text-soft);'
     });
     lbl.textContent = v;
@@ -1311,6 +1368,7 @@ function drawCuadrantePlot(d) {
     }));
     const lbl = createSVGEl('text', {
       x, y: margin.top + innerH + 20, 'text-anchor': 'middle',
+      class: 'chart-tick',
       style: 'font-family: var(--font-display); font-size: 11px; font-weight: 500; fill: var(--text-soft);'
     });
     lbl.textContent = v;
@@ -1331,6 +1389,7 @@ function drawCuadrantePlot(d) {
   const quadLabel = (txt, x, y, color, anchor) => {
     const t = createSVGEl('text', {
       x, y, 'text-anchor': anchor,
+      class: 'chart-axis-title',
       style: `font-family: var(--font-display); font-weight: 700; font-size: 13px; fill: ${color};`
     });
     t.textContent = txt;
@@ -1344,12 +1403,14 @@ function drawCuadrantePlot(d) {
   // Título del eje X (entre los números y la leyenda)
   const axTitleX = createSVGEl('text', {
     x: margin.left + innerW / 2, y: h - 50, 'text-anchor': 'middle',
+    class: 'chart-axis-title',
     style: 'font-family: var(--font-display); font-weight: 700; font-size: 12.5px; fill: var(--brand-primary-dark);'
   });
   axTitleX.textContent = 'Saber 11 (Perfil de Entrada)';
   svg.appendChild(axTitleX);
   const axTitleY = createSVGEl('text', {
     x: 22, y: margin.top + innerH / 2, 'text-anchor': 'middle',
+    class: 'chart-axis-title',
     transform: `rotate(-90, 22, ${margin.top + innerH / 2})`,
     style: 'font-family: var(--font-display); font-weight: 700; font-size: 12.5px; fill: var(--brand-primary-dark);'
   });
@@ -1403,6 +1464,36 @@ function drawCuadrantePlot(d) {
 
   // NBCs de Unimagdalena (verde solido). Con filtro activo solo se dibuja el
   // NBC seleccionado; los demas no aparecen (vista limpia).
+  // Lógica pre-calculada de separación de etiquetas para evitar overlaps
+  let offsetUM_Y = -18;
+  let offsetNBC_Y = -14;
+  let mostrarEtiquetaUM = true;
+  const umGlobal = (yrData.instituciones || []).find(ies => ies.nombre === 'UNIVERSIDAD DEL MAGDALENA');
+  const umX = umGlobal ? getX(umGlobal.sb11) : 0;
+  const umY = umGlobal ? getY(umGlobal.sbpro) : 0;
+
+  if (filtroNbc && umGlobal) {
+    const nbcSel = (yrData.nbcs_unimag || []).find(n => n.nbc === filtroNbc);
+    if (nbcSel) {
+      const nbcX_coord = getX(nbcSel.sb11);
+      const nbcY_coord = getY(nbcSel.sbpro);
+      const dx = nbcX_coord - umX;
+      const dy = nbcY_coord - umY;
+      const dist = Math.hypot(dx, dy);
+      if (dist < 32) {
+        mostrarEtiquetaUM = false;
+      } else if (Math.abs(dx) < 60 && Math.abs(dy) < 24) {
+        if (nbcY_coord < umY) {
+          offsetNBC_Y = -16;
+          offsetUM_Y = 22;
+        } else {
+          offsetUM_Y = -20;
+          offsetNBC_Y = 22;
+        }
+      }
+    }
+  }
+
   (yrData.nbcs_unimag || []).forEach(nbc => {
     const seleccionado = !filtroNbc || nbc.nbc === filtroNbc;
     if (filtroNbc && !seleccionado) return;
@@ -1422,7 +1513,8 @@ function drawCuadrantePlot(d) {
     // Si hay filtro activo y este es el NBC seleccionado, mostrar etiqueta con su nombre
     if (filtroNbc && seleccionado) {
       const lbl = createSVGEl('text', {
-        x: getX(nbc.sb11), y: getY(nbc.sbpro) - 14, 'text-anchor': 'middle',
+        x: getX(nbc.sb11), y: getY(nbc.sbpro) + offsetNBC_Y, 'text-anchor': 'middle',
+        class: 'chart-value',
         style: `font-family: var(--font-display); font-weight: 800; font-size: 12px; fill: ${VA_COLORS.aporte};`
       });
       lbl.textContent = titleCase(nbc.nbc);
@@ -1430,10 +1522,7 @@ function drawCuadrantePlot(d) {
     }
   });
 
-  // NBC nacional (referencia): mismo NBC pero promediado a nivel pais. Se dibuja
-  // SOLIDO en naranja (VA_COLORS.alerta) para que tenga maxima visibilidad y
-  // contraste contra el verde de Unimag NBC y el azul de Unimagdalena. Solo
-  // aparece cuando hay un filtro NBC activo (para hacer la comparacion 1 a 1).
+  // NBC nacional (referencia): mismo NBC pero promediado a nivel pais.
   if (filtroNbc) {
     const nbcNac = (yrData.nbcs_nacional || []).find(n => n.nbc === filtroNbc);
     if (nbcNac && nbcNac.sb11 != null && nbcNac.sbpro != null) {
@@ -1454,6 +1543,7 @@ function drawCuadrantePlot(d) {
       // Etiqueta "Nacional" para identificar el punto
       const nacLbl = createSVGEl('text', {
         x: nacX, y: nacY + 22, 'text-anchor': 'middle',
+        class: 'chart-value',
         style: `font-family: var(--font-display); font-weight: 700; font-size: 11px; fill: ${VA_COLORS.alerta}; letter-spacing: .05em;`
       });
       nacLbl.textContent = 'Nacional';
@@ -1462,11 +1552,7 @@ function drawCuadrantePlot(d) {
   }
 
   // Unimagdalena (azul institucional, destacado)
-  const umGlobal = (yrData.instituciones || []).find(ies => ies.nombre === 'UNIVERSIDAD DEL MAGDALENA');
   if (umGlobal) {
-    const umX = getX(umGlobal.sb11);
-    const umY = getY(umGlobal.sbpro);
-
     const star = createSVGEl('circle', {
       cx: umX, cy: umY, r: 11,
       fill: VA_COLORS.desempeno, stroke: '#fff', 'stroke-width': '2.5',
@@ -1474,22 +1560,10 @@ function drawCuadrantePlot(d) {
       style: 'filter: drop-shadow(0 2px 5px rgba(0,0,0,0.22));'
     });
 
-    // Decidir si mostrar la etiqueta "Unimagdalena":
-    // Cuando hay un NBC seleccionado y su punto está muy cerca del de Unimagdalena
-    // ocultamos esta etiqueta para no estorbar al nombre del NBC (que es la prioridad
-    // del filtro). Umbral: 35px (en coordenadas del viewBox del SVG).
-    let mostrarEtiquetaUM = true;
-    if (filtroNbc) {
-      const nbcSel = (yrData.nbcs_unimag || []).find(n => n.nbc === filtroNbc);
-      if (nbcSel) {
-        const dx = getX(nbcSel.sb11) - umX;
-        const dy = getY(nbcSel.sbpro) - umY;
-        if (Math.hypot(dx, dy) < 35) mostrarEtiquetaUM = false;
-      }
-    }
     if (mostrarEtiquetaUM) {
       const tag = createSVGEl('text', {
-        x: umX, y: umY - 18, 'text-anchor': 'middle',
+        x: umX, y: umY + offsetUM_Y, 'text-anchor': 'middle',
+        class: 'chart-value',
         style: `font-family: var(--font-display); font-weight: 800; font-size: 13px; fill: ${VA_COLORS.desempeno};`
       });
       tag.textContent = 'Unimagdalena';
@@ -1520,7 +1594,7 @@ function drawCuadrantePlot(d) {
   const lgStartX = filtroNbc ? (w / 2) - 360 : (w / 2) - 240;
   const lgGap = filtroNbc ? 175 : 188;
   svg.appendChild(createLegend(legendItems, lgStartX, h - 14, {
-    fontSize: 11.5, rectW: 16, rectH: 9, gap: lgGap, textGap: 22, fontWeight: 700
+    fontSize: 11.5, rectW: 16, rectH: 9, gap: lgGap, textGap: 22, fontWeight: 700, textClass: 'chart-legend'
   }));
 
   container.innerHTML = '';
@@ -1614,6 +1688,7 @@ function renderTrayectoria(d) {
   svg.appendChild((() => {
     const t = createSVGEl('text', {
       x: xMid, y: margin.top - 12, 'text-anchor': 'middle',
+      class: 'chart-tick',
       style: `font-family: var(--font-display); font-weight: 700; font-size: 11px; fill: ${VA_COLORS.desempeno};`
     });
     t.textContent = xMean.toFixed(1);
@@ -1622,6 +1697,7 @@ function renderTrayectoria(d) {
   svg.appendChild((() => {
     const t = createSVGEl('text', {
       x: w - margin.right + 8, y: yMid + 4, 'text-anchor': 'start',
+      class: 'chart-tick',
       style: `font-family: var(--font-display); font-weight: 700; font-size: 11px; fill: ${VA_COLORS.desempeno};`
     });
     t.textContent = yMean.toFixed(1);
@@ -1632,6 +1708,7 @@ function renderTrayectoria(d) {
   const quadLabel = (txt, x, y, color, anchor) => {
     const t = createSVGEl('text', {
       x, y, 'text-anchor': anchor,
+      class: 'chart-axis-title',
       style: `font-family: var(--font-display); font-weight: 700; font-size: 13px; fill: ${color};`
     });
     t.textContent = txt;
@@ -1647,6 +1724,7 @@ function renderTrayectoria(d) {
     const x = getX(v);
     const tl = createSVGEl('text', {
       x, y: margin.top + innerH + 20, 'text-anchor': 'middle',
+      class: 'chart-tick',
       style: 'font-family: var(--font-display); font-size: 11px; font-weight: 500; fill: var(--text-soft);'
     });
     tl.textContent = v;
@@ -1656,6 +1734,7 @@ function renderTrayectoria(d) {
     const y = getY(v);
     const tl = createSVGEl('text', {
       x: margin.left - 10, y: y + 4, 'text-anchor': 'end',
+      class: 'chart-tick',
       style: 'font-family: var(--font-display); font-size: 11px; font-weight: 500; fill: var(--text-soft);'
     });
     tl.textContent = (v % 1 === 0) ? v.toFixed(0) : v.toFixed(1);
@@ -1665,12 +1744,14 @@ function renderTrayectoria(d) {
   // Títulos de ejes
   const axTitleX = createSVGEl('text', {
     x: margin.left + innerW / 2, y: h - 16, 'text-anchor': 'middle',
+    class: 'chart-axis-title',
     style: 'font-family: var(--font-display); font-weight: 700; font-size: 12.5px; fill: var(--brand-primary-dark);'
   });
   axTitleX.textContent = 'Promedio Saber 11 (Entrada)';
   svg.appendChild(axTitleX);
   const axTitleY = createSVGEl('text', {
     x: 20, y: margin.top + innerH / 2, 'text-anchor': 'middle',
+    class: 'chart-axis-title',
     transform: `rotate(-90, 20, ${margin.top + innerH / 2})`,
     style: 'font-family: var(--font-display); font-weight: 700; font-size: 12.5px; fill: var(--brand-primary-dark);'
   });
@@ -1756,6 +1837,7 @@ function renderTrayectoria(d) {
     // Solo el año (las coordenadas se muestran al hover)
     const yrLbl = createSVGEl('text', {
       x: yx, y: yy, 'text-anchor': 'middle',
+      class: 'chart-value',
       style: `font-family: var(--font-display); font-weight: 800; font-size: 14px; fill: ${VA_COLORS.aporte};`
     });
     yrLbl.textContent = pt.anio;
@@ -1934,6 +2016,7 @@ function renderFacultades(d, yearOverride) {
     }));
     const tlbl = createSVGEl('text', {
       x, y: margin.top + innerH + 18, 'text-anchor': 'middle',
+      class: 'chart-tick',
       style: `font-family: var(--font-display); font-size: ${FS_TICK}px; font-weight: 500; fill: var(--text-soft);`
     });
     tlbl.textContent = v;
@@ -1992,6 +2075,7 @@ function renderFacultades(d, yearOverride) {
       const t = createSVGEl('text', {
         x: margin.left - 12, y: facStartY + li * facLineH,
         'text-anchor': 'end',
+        class: 'chart-category',
         style: `font-family: var(--font-display); font-weight: 700; font-size: ${FS_LABEL}px; fill: ${color};`
       });
       t.textContent = ln;
@@ -2001,6 +2085,7 @@ function renderFacultades(d, yearOverride) {
     // Puntaje (al final de la barra)
     const scoreText = createSVGEl('text', {
       x: margin.left + barW + 8, y: y + barH / 2 + 6,
+      class: 'chart-value',
       style: `font-family: var(--font-display); font-weight: 800; font-size: ${FS_SCORE}px; fill: ${color};`
     });
     scoreText.textContent = v.toFixed(1);
@@ -2320,19 +2405,21 @@ function renderExplorerRadar(p, yearOverride) {
   // a 14px para que se lean bien en screenshots y al imprimir.
   for (let a = 0; a < n; a++) {
     const angle = a * (2 * Math.PI / n) - Math.PI / 2;
-    const labelDist = rMax + 48;
+    const labelDist = rMax + 75;
     const lx = cx + labelDist * Math.cos(angle);
     const ly = cy + labelDist * Math.sin(angle);
     const anchor = Math.abs(Math.cos(angle)) < 0.15 ? 'middle' : (Math.cos(angle) > 0 ? 'start' : 'end');
 
     const lines = axes[a].label.split('\n');
-    const lineHeight = 16;
-    const startY = ly - ((lines.length - 1) * lineHeight) / 2 + 5;
+    const isPres = document.body.classList.contains('is-presentation-mode');
+    const lineHeight = isPres ? 28 : 16;
+    const startY = ly - ((lines.length - 1) * lineHeight) / 2 + (isPres ? 8 : 5);
     lines.forEach((line, idx) => {
       const t = createSVGEl('text', {
         x: lx,
         y: startY + idx * lineHeight,
         'text-anchor': anchor,
+        class: 'chart-category',
         style: 'font-family: var(--font-display); font-weight: 700; font-size: 14px; fill: var(--brand-primary-dark);'
       });
       t.textContent = line;
@@ -2413,26 +2500,32 @@ function renderExplorerRadar(p, yearOverride) {
     dotNbc.addEventListener('mouseleave', hideTooltip);
     svg.appendChild(dotNbc);
 
-    // Etiquetas a distancia fija del centro, separadas perpendicularmente
-    const valueLabelDist = rMax + 16;
-    const baseX = cx + valueLabelDist * cosA;
-    const baseY = cy + valueLabelDist * sinA;
-    const tangentSep = 22;
+    // Posicionar etiquetas numéricas basadas en el radio real de cada serie + offset (escalados a la viewBox de 600)
+    const rProg = scoreToRadius(axes[a].prog);
+    const rNbc = scoreToRadius(axes[a].nbc);
+    const labelRadialOffset = 28;
+    const labelTangentialOffset = 35;
 
+    const progLx = cx + (rProg + labelRadialOffset) * cosA + labelTangentialOffset * perpX;
+    const progLy = cy + (rProg + labelRadialOffset) * sinA + labelTangentialOffset * perpY + 4;
     const progLbl = createSVGEl('text', {
-      x: baseX + tangentSep * perpX,
-      y: baseY + tangentSep * perpY + 4,
+      x: progLx,
+      y: progLy,
       'text-anchor': 'middle',
-      style: `font-family: var(--font-display); font-weight: 800; font-size: 13px; fill: ${COLOR_PROG};`
+      class: 'chart-value',
+      style: `font-family: var(--font-display); font-weight: 800; fill: ${COLOR_PROG};`
     });
     progLbl.textContent = axes[a].prog;
     svg.appendChild(progLbl);
 
+    const nbcLx = cx + (rNbc + labelRadialOffset) * cosA - labelTangentialOffset * perpX;
+    const nbcLy = cy + (rNbc + labelRadialOffset) * sinA - labelTangentialOffset * perpY + 4;
     const nbcLbl = createSVGEl('text', {
-      x: baseX - tangentSep * perpX,
-      y: baseY - tangentSep * perpY + 4,
+      x: nbcLx,
+      y: nbcLy,
       'text-anchor': 'middle',
-      style: `font-family: var(--font-display); font-weight: 800; font-size: 13px; fill: ${COLOR_NBC};`
+      class: 'chart-value',
+      style: `font-family: var(--font-display); font-weight: 800; fill: ${COLOR_NBC};`
     });
     nbcLbl.textContent = axes[a].nbc;
     svg.appendChild(nbcLbl);
@@ -2448,11 +2541,11 @@ function renderExplorerRadar(p, yearOverride) {
   if (isLongProgName) {
     svg.appendChild(createLegend(legendItems, cx - 180, h + 20, {
       fontSize: 14, rectW: 22, rectH: 12, textGap: 32, fontWeight: 700,
-      direction: 'vertical', lineHeight: 22
+      direction: 'vertical', lineHeight: 22, textClass: 'chart-legend'
     }));
   } else {
     svg.appendChild(createLegend(legendItems, cx - 200, h - 22, {
-      fontSize: 14, rectW: 22, rectH: 12, gap: 280, textGap: 32, fontWeight: 700
+      fontSize: 14, rectW: 22, rectH: 12, gap: 280, textGap: 32, fontWeight: 700, textClass: 'chart-legend'
     }));
   }
 
@@ -2552,6 +2645,7 @@ function renderExplorerSpecifics(p, yearOverride) {
     }));
     const lbl = createSVGEl('text', {
       x, y: margin.top + innerH + 18, 'text-anchor': 'middle',
+      class: 'chart-tick',
       style: 'font-family: var(--font-display); font-size: 11px; font-weight: 500; fill: var(--text-soft);'
     });
     lbl.textContent = v;
@@ -2600,6 +2694,7 @@ function renderExplorerSpecifics(p, yearOverride) {
       const t = createSVGEl('text', {
         x: margin.left - 14, y: startY + li * lineHeight,
         'text-anchor': 'end',
+        class: 'chart-category',
         style: 'font-family: var(--font-display); font-size: 14px; font-weight: 700; fill: var(--brand-primary-dark);'
       });
       t.textContent = ln;
@@ -2622,6 +2717,7 @@ function renderExplorerSpecifics(p, yearOverride) {
     // Etiqueta numérica al final de la barra Programa
     const lblProg = createSVGEl('text', {
       x: xZero + wProg + 7, y: yProg + barH / 2 + 4,
+      class: 'chart-value',
       style: `font-family: var(--font-display); font-weight: 800; font-size: 12px; fill: ${COLOR_PROG};`
     });
     lblProg.textContent = spec.puntaje_programa;
@@ -2639,6 +2735,7 @@ function renderExplorerSpecifics(p, yearOverride) {
 
     const lblNbc = createSVGEl('text', {
       x: xZero + wNbc + 7, y: yNbc + barH / 2 + 4,
+      class: 'chart-value',
       style: `font-family: var(--font-display); font-weight: 700; font-size: 12px; fill: ${COLOR_NBC};`
     });
     lblNbc.textContent = spec.puntaje_nbc_nacional;
@@ -2654,11 +2751,11 @@ function renderExplorerSpecifics(p, yearOverride) {
   if (isLongProgName) {
     svg.appendChild(createLegend(legendItems, (w / 2) - 180, h + 20, {
       fontSize: 14, rectW: 22, rectH: 12, textGap: 32, fontWeight: 700,
-      direction: 'vertical', lineHeight: 22
+      direction: 'vertical', lineHeight: 22, textClass: 'chart-legend'
     }));
   } else {
     svg.appendChild(createLegend(legendItems, (w / 2) - 200, h - 22, {
-      fontSize: 14, rectW: 22, rectH: 12, gap: 280, textGap: 32, fontWeight: 700
+      fontSize: 14, rectW: 22, rectH: 12, gap: 280, textGap: 32, fontWeight: 700, textClass: 'chart-legend'
     }));
   }
 
@@ -2728,6 +2825,7 @@ function renderExplorerHistory(p) {
     svg.appendChild(line);
     const text = createSVGEl('text', {
       x: margin.left - 10, y: y + 4, 'text-anchor': 'end',
+      class: 'chart-tick',
       style: 'font-family: var(--font-display); font-size: 12px; fill: var(--muted); font-weight: 600;'
     });
     text.textContent = Math.round(val);
@@ -2739,6 +2837,7 @@ function renderExplorerHistory(p) {
     const x = getX(idx);
     const text = createSVGEl('text', {
       x, y: margin.top + innerH + 22, 'text-anchor': 'middle',
+      class: 'chart-tick',
       style: 'font-family: var(--font-display); font-size: 13px; fill: var(--text); font-weight: 700;'
     });
     text.textContent = s.anio;
@@ -2791,15 +2890,36 @@ function renderExplorerHistory(p) {
     const valNbc = s.nbc;
     if (valProg == null && valNbc == null) return;
 
-    // progAbove = programa esta arriba (mayor o igual) que NBC nacional
-    const progAbove = (valProg != null && valNbc != null)
-      ? valProg >= valNbc
-      : (valProg != null);
+    const yProg = getY(valProg);
+    const yNbc = getY(valNbc);
+    const progHigher = valProg >= valNbc;
+    let yProg_lbl, yNbc_lbl;
+    const isPres = document.body.classList.contains('is-presentation-mode');
+    const scale = isPres ? 1.76 : 1.0;
+    const verticalDist = Math.abs(yProg - yNbc);
+    if (verticalDist < 25 * scale) {
+      if (progHigher) {
+        yProg_lbl = yProg - 14 * scale;
+        yNbc_lbl = yNbc + 22 * scale;
+      } else {
+        yProg_lbl = yProg + 22 * scale;
+        yNbc_lbl = yNbc - 14 * scale;
+      }
+    } else {
+      if (progHigher) {
+        yProg_lbl = yProg - 11 * scale;
+        yNbc_lbl = yNbc + 19 * scale;
+      } else {
+        yProg_lbl = yProg + 19 * scale;
+        yNbc_lbl = yNbc - 11 * scale;
+      }
+    }
 
     if (valProg != null) {
       const lblProg = createSVGEl('text', {
-        x: x, y: getY(valProg) + (progAbove ? -11 : 19),
+        x: x, y: yProg_lbl,
         'text-anchor': 'middle',
+        class: 'chart-value',
         style: `font-family: var(--font-display); font-size: 12px; fill: ${COLOR_PROG}; font-weight: 800;`
       });
       lblProg.textContent = valProg;
@@ -2807,8 +2927,9 @@ function renderExplorerHistory(p) {
     }
     if (valNbc != null) {
       const lblNbc = createSVGEl('text', {
-        x: x, y: getY(valNbc) + (progAbove ? 19 : -11),
+        x: x, y: yNbc_lbl,
         'text-anchor': 'middle',
+        class: 'chart-value',
         style: `font-family: var(--font-display); font-size: 12px; fill: ${COLOR_NBC}; font-weight: 800;`
       });
       lblNbc.textContent = valNbc;
@@ -2825,11 +2946,11 @@ function renderExplorerHistory(p) {
   if (isLongProgName) {
     svg.appendChild(createLegend(legendItems, (w / 2) - 140, h + 14, {
       fontSize: 12, rectW: 18, rectH: 10, textGap: 26, fontWeight: 700,
-      direction: 'vertical', lineHeight: 18
+      direction: 'vertical', lineHeight: 18, textClass: 'chart-legend'
     }));
   } else {
     svg.appendChild(createLegend(legendItems, (w / 2) - 160, h - 16, {
-      fontSize: 12, rectW: 18, rectH: 10, gap: 210, textGap: 26, fontWeight: 700
+      fontSize: 12, rectW: 18, rectH: 10, gap: 210, textGap: 26, fontWeight: 700, textClass: 'chart-legend'
     }));
   }
 
@@ -2925,6 +3046,7 @@ function renderExplorerLevels(p) {
     svg.appendChild(line);
     const text = createSVGEl('text', {
       x: margin.left - 8, y: y + 4, 'text-anchor': 'end',
+      class: 'chart-tick',
       style: 'font-family: var(--font-display); font-size: 12px; fill: var(--muted); font-weight: 600;'
     });
     text.textContent = Math.round(val);
@@ -2961,41 +3083,42 @@ function renderExplorerLevels(p) {
       rect.addEventListener('mouseleave', hideTooltip);
       svg.appendChild(rect);
 
-      // Valor encima de la barra
-      const valTxt = createSVGEl('text', {
-        x: x + (barW - 1) / 2, y: yBar - 4, 'text-anchor': 'middle',
-        style: `font-family: var(--font-display); font-size: 10px; fill: ${color}; font-weight: 800;`
-      });
-      valTxt.textContent = val;
-      svg.appendChild(valTxt);
+      // Valor encima de la barra (solo en la barra 2025 para evitar encimamientos ilegibles)
+      if (yr === 2025) {
+        const valTxt = createSVGEl('text', {
+          x: x + (barW - 1) / 2, y: yBar - 4, 'text-anchor': 'middle',
+          class: 'chart-value',
+          style: `font-family: var(--font-display); font-size: 10px; fill: ${color}; font-weight: 800;`
+        });
+        valTxt.textContent = val;
+        svg.appendChild(valTxt);
+      }
     });
 
     // Etiqueta del grupo (competencia)
     const gx = margin.left + gi * groupSlot + groupSlot / 2;
-    const gText = createSVGEl('text', {
-      x: gx, y: margin.top + innerH + 18, 'text-anchor': 'middle',
-      style: 'font-family: var(--font-display); font-size: 12px; fill: var(--text); font-weight: 700;'
+    const labelLines = m.label.split(' ');
+    const isPres = document.body.classList.contains('is-presentation-mode');
+    const sepY = isPres ? 22 : 14;
+    labelLines.forEach((line, idx) => {
+      const gText = createSVGEl('text', {
+        x: gx, y: margin.top + innerH + 18 + idx * sepY,
+        'text-anchor': 'middle',
+        class: 'chart-tick',
+        style: 'font-family: var(--font-display); font-size: 12px; fill: var(--text); font-weight: 700;'
+      });
+      gText.textContent = line;
+      svg.appendChild(gText);
     });
-    gText.textContent = m.label;
-    svg.appendChild(gText);
   });
 
-  // Leyenda inferior: una píldora por año (centrada bajo el eje X de la columna estrecha)
+  // Leyenda inferior centrada con helper createLegend
   const legendItems = yearsAll.map(yr => ({ color: YEAR_COLORS[yr] || PANORAMA_UM, text: String(yr) }));
-  const itemW = 60;
-  const totalLegendW = legendItems.length * itemW;
-  const legendStartX = (w - totalLegendW) / 2;
-  legendItems.forEach((item, i) => {
-    const x = legendStartX + i * itemW;
-    const lr = createSVGEl('rect', { x, y: h - 28, width: 12, height: 9, fill: item.color, rx: 1 });
-    const lt = createSVGEl('text', {
-      x: x + 17, y: h - 19,
-      style: 'font-family: var(--font-display); font-size: 12px; fill: var(--text); font-weight: 700;'
-    });
-    lt.textContent = item.text;
-    svg.appendChild(lr);
-    svg.appendChild(lt);
-  });
+  const gap = 80;
+  const legendStartX = (w - (legendItems.length - 1) * gap) / 2 - 8;
+  svg.appendChild(createLegend(legendItems, legendStartX, h - 12, {
+    fontSize: 11, rectW: 14, rectH: 9, gap, textGap: 20, fontWeight: 700, textClass: 'chart-legend'
+  }));
 
   container.innerHTML = '';
   container.appendChild(svg);
@@ -3155,7 +3278,7 @@ function drawTop10Plot(d) {
   for (let val = minVal; val <= maxVal; val += 10) {
     const x = margin.left + getWidth(val);
     const line = createSVGEl('line', { x1: x, y1: margin.top, x2: x, y2: h - margin.bottom, class: 'grid-line' });
-    const text = createSVGEl('text', { x: x, y: h - margin.bottom + 12, 'text-anchor': 'middle', class: 'axis-label' });
+    const text = createSVGEl('text', { x: x, y: h - margin.bottom + 12, 'text-anchor': 'middle', class: 'chart-tick axis-label' });
     text.textContent = val;
     svg.appendChild(line);
     svg.appendChild(text);
@@ -3194,8 +3317,9 @@ function drawTop10Plot(d) {
       const nt = createSVGEl('text', {
         x: margin.left - 8, y: startY + li * lineH,
         'text-anchor': 'end',
-        class: 'axis-label',
-        style: `font-weight: 700; font-size: 11.5px; fill: ${color};`
+        class: 'chart-category axis-label',
+        'font-size': '11.5px',
+        style: `font-weight: 700; fill: ${color};`
       });
       nt.textContent = ln;
       svg.appendChild(nt);
@@ -3203,8 +3327,9 @@ function drawTop10Plot(d) {
 
     const scoreText = createSVGEl('text', {
       x: margin.left + barW + 6, y: centerY,
-      class: 'axis-label',
-      style: `font-weight: 800; font-size: 12px; fill: ${color};`
+      class: 'chart-value axis-label',
+      'font-size': '12px',
+      style: `font-weight: 800; fill: ${color};`
     });
     scoreText.textContent = item.puntaje.toFixed(1);
 

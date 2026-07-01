@@ -62,7 +62,7 @@
     },
     {
       id: 'programas-a',
-      title: 'Programas — Competencias 2025',
+      title: 'Programas',
       subtitle: 'Genéricas y específicas del programa vs. promedio nacional del NBC',
       eyebrow: 'Slide 05',
       // Splitteamos Programas en 2 slides para no comprimir los charts.
@@ -71,7 +71,7 @@
     },
     {
       id: 'programas-b',
-      title: 'Programas — Histórico',
+      title: 'Programas',
       subtitle: 'Evolución temporal del programa seleccionado',
       eyebrow: 'Slide 06',
       // Slide B: card con histórico de competencias + histórico de puntaje global
@@ -248,10 +248,33 @@
       const slide = this.slides[idx]?.wrapper;
       if (!slide) return;
       const slideId = this.slides[idx]?.group.id;
+      
       if (slideId === 'facultades') {
         setTimeout(() => {
           const yearSel = document.getElementById('selAnioFacultad');
           if (yearSel) yearSel.dispatchEvent(new Event('change', { bubbles: true }));
+        }, 650);
+      } else if (slideId === 'posicionamiento') {
+        setTimeout(() => {
+          const selSue = document.getElementById('selAnioSue');
+          if (selSue) selSue.dispatchEvent(new Event('change', { bubbles: true }));
+          const selDept = document.getElementById('selAnioUnivDept');
+          if (selDept) selDept.dispatchEvent(new Event('change', { bubbles: true }));
+        }, 650);
+      } else if (slideId === 'panorama') {
+        setTimeout(() => {
+          const selRadar = document.getElementById('selAnioRadar');
+          if (selRadar) selRadar.dispatchEvent(new Event('change', { bubbles: true }));
+        }, 650);
+      } else if (slideId === 'competencias') {
+        setTimeout(() => {
+          const selTop = document.getElementById('selAnioTop');
+          if (selTop) selTop.dispatchEvent(new Event('change', { bubbles: true }));
+        }, 650);
+      } else if (slideId === 'programas-a' || slideId === 'programas-b') {
+        setTimeout(() => {
+          const selProg = document.getElementById('selPrograma');
+          if (selProg) selProg.dispatchEvent(new Event('change', { bubbles: true }));
         }, 650);
       }
     }
@@ -428,6 +451,7 @@
       const programasA = this.slides.find(s => s.group.id === 'programas-a');
       if (programasA) {
         const conv = programasA.content.querySelector('.convenciones');
+        const filters = programasA.content.querySelector('.explorer-controls');
         const head = programasA.wrapper.querySelector('.slide__head');
         if (conv && head) {
           // Insertarlo ANTES del slide__number para que quede a la izquierda del badge
@@ -435,32 +459,28 @@
           if (number) head.insertBefore(conv, number);
           else head.appendChild(conv);
         }
-      }
-
-      // Caso especial: filtros de programa son COMPARTIDOS entre slide 5 y 6.
-      // Los movemos a un container fixed posicionado encima del slide-area; asi
-      // siguen visibles cuando navegas entre programas-a (Competencias) y
-      // programas-b (Histórico) sin necesidad de duplicarlos.
-      if (programasA) {
-        const filters = programasA.content.querySelector('.explorer-controls');
-        if (filters && this.frame) {
+        if (filters) {
           this._programasFiltersOriginal = {
             node: filters,
             parent: filters.parentNode,
             nextSibling: filters.nextSibling
           };
-          this.frame.appendChild(filters);
-          filters.classList.add('presentation-programas-tools');
+          if (head) head.appendChild(filters);
         }
       }
     }
 
     /* Mostrar/ocultar el container compartido de filtros segun el slide activo */
     _updateProgramasTools(activeId) {
-      const filters = this.frame?.querySelector('.presentation-programas-tools');
+      const filters = this._programasFiltersOriginal?.node;
       if (!filters) return;
-      const visible = (activeId === 'programas-a' || activeId === 'programas-b');
-      filters.classList.toggle('is-visible', visible);
+      if (activeId === 'programas-a' || activeId === 'programas-b') {
+        const slide = this.slides.find(s => s.group.id === activeId);
+        const head = slide?.wrapper.querySelector('.slide__head');
+        if (head && filters.parentNode !== head) {
+          head.appendChild(filters);
+        }
+      }
     }
 
     /* Devuelve cada nodo a su parent original en el mismo orden. */

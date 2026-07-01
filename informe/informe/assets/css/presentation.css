@@ -487,10 +487,13 @@ body.is-presentation-mode .charts-grid--stacked {
   width: 100% !important;
 }
 
-/* SVG TEXT LABELS GLOBALES — visibilidad para presentacion (todos los charts)
-   TAMAÑOS GRANDES: el publico debe leer los valores desde distancia.
-   Se aplica a TODO texto SVG en modo presentacion.
-   IMPORTANTE: uso [style] attribute selectors para override inline styles */
+/* Variables SVG que consume el bloque semántico (definidas arriba en el nivel
+   body.is-presentation-mode más abajo) — ajustar toda la escala desde ahí.
+   El bloque semántico va DESPUÉS del fallback para ganar por source order. */
+
+/* SVG TEXT LABELS GLOBALES — FALLBACK para charts no migrados aún.
+   Cuando un chart migre a clases semánticas, sus <text>.chart-* ganarán
+   por source order (bloque semántico definido después de este). */
 body.is-presentation-mode .chart-container text,
 body.is-presentation-mode .slide__content svg text {
   font-size: 20px !important;
@@ -519,16 +522,58 @@ body.is-presentation-mode .chart-container .legend-item text {
   font-size: 20px !important;
   font-weight: 700 !important;
 }
-/* Override para textos con font-size inline (via style attribute).
-   Los charts JS usan style="font-size: 11.5px" o similar — forzamos grande */
-body.is-presentation-mode .chart-container text[style*="font-size"] {
-  font-size: 20px !important;
+
+
+
+/* ----------------------------------------------------------------------------
+   JERARQUÍA TIPOGRÁFICA SEMÁNTICA PARA CHARTS SVG (Modo Presentación)
+   Va DESPUÉS del fallback para ganar por source order cuando los charts
+   migren y sus <text> tengan las clases .chart-*.
+   ---------------------------------------------------------------------------- */
+
+body.is-presentation-mode {
+  /* Escala tipográfica SVG — ajustar TODO desde aquí */
+  --pres-fs-axis-title: 18px;   /* "Puntaje", "Año" ... */
+  --pres-fs-tick:       20px;   /* 100, 110, 120 */
+  --pres-fs-category:   22px;   /* facultad / programa / universidad */
+  --pres-fs-value:      27px;   /* 165.0, 62%, 2.982 — DATO CLAVE */
+  --pres-fs-legend:     22px;   /* Unimagdalena, Nacional, ... */
+
+  --pres-fw-axis-title: 600;
+  --pres-fw-tick:       500;
+  --pres-fw-category:   700;
+  --pres-fw-value:      800;
+  --pres-fw-legend:     700;
 }
-/* Etiquetas numericas (valores sobre barras) — patron text-anchor start/end
-   con font-weight 700 o 800 en style: forzamos aun mas grande */
-body.is-presentation-mode .chart-container text[style*="font-weight: 700"],
-body.is-presentation-mode .chart-container text[style*="font-weight: 800"] {
-  font-size: 22px !important;
+
+body.is-presentation-mode .chart-container .chart-axis-title,
+body.is-presentation-mode .chart-container text.chart-axis-title {
+  font-size: var(--pres-fs-axis-title) !important;
+  font-weight: var(--pres-fw-axis-title) !important;
+}
+body.is-presentation-mode .chart-container .chart-tick,
+body.is-presentation-mode .chart-container text.chart-tick {
+  font-size: var(--pres-fs-tick) !important;
+  font-weight: var(--pres-fw-tick) !important;
+}
+body.is-presentation-mode .chart-container .chart-category,
+body.is-presentation-mode .chart-container text.chart-category {
+  font-size: var(--pres-fs-category) !important;
+  font-weight: var(--pres-fw-category) !important;
+}
+/* Valores/data labels con HALO blanco para no perderse sobre líneas o fills */
+body.is-presentation-mode .chart-container .chart-value,
+body.is-presentation-mode .chart-container text.chart-value {
+  font-size: var(--pres-fs-value) !important;
+  font-weight: var(--pres-fw-value) !important;
+  stroke: #ffffff;
+  stroke-width: 4;
+  paint-order: stroke fill;
+}
+body.is-presentation-mode .chart-container .chart-legend,
+body.is-presentation-mode .chart-container text.chart-legend {
+  font-size: var(--pres-fs-legend) !important;
+  font-weight: var(--pres-fw-legend) !important;
 }
 
 
@@ -807,6 +852,64 @@ body.is-presentation-mode .chart-container text[style*="font-weight: 800"] {
   font-size: clamp(1rem, 1.3vw, 1.25rem) !important;
 }
 
+/* Overrides con alta especificidad para el Radar y Línea de Slide 02 */
+body.is-presentation-mode .slide[data-slide="panorama"] .chart-container text.chart-category {
+  font-size: 14.5px !important;
+  font-weight: 700 !important;
+}
+body.is-presentation-mode .slide[data-slide="panorama"] .chart-container text.chart-value {
+  font-size: 13.5px !important;
+  font-weight: 800 !important;
+}
+body.is-presentation-mode .slide[data-slide="panorama"] .chart-container text.chart-tick {
+  font-size: 13px !important;
+  font-weight: 600 !important;
+}
+body.is-presentation-mode .slide[data-slide="panorama"] .chart-container text.chart-legend {
+  font-size: 15px !important;
+  font-weight: 700 !important;
+}
+
+/* Overrides con alta especificidad para Slide 03 - Comparativo Departamento */
+body.is-presentation-mode .slide[data-slide="posicionamiento"] #chartUnivDept text.chart-category {
+  font-size: 14.5px !important;
+  font-weight: 700 !important;
+}
+body.is-presentation-mode .slide[data-slide="posicionamiento"] #chartUnivDept text.chart-value {
+  font-size: 15px !important;
+  font-weight: 800 !important;
+}
+body.is-presentation-mode .slide[data-slide="posicionamiento"] #chartUnivDept text.chart-tick {
+  font-size: 13.5px !important;
+  font-weight: 600 !important;
+}
+body.is-presentation-mode .slide[data-slide="posicionamiento"] #chartUnivDept text.chart-legend {
+  font-size: 15px !important;
+  font-weight: 700 !important;
+}
+
+/* Overrides con alta especificidad para Slide 03 - Ranking SUE (Derecho) */
+body.is-presentation-mode .slide[data-slide="posicionamiento"] #chartSue text.chart-value {
+  font-size: 11px !important;
+  font-weight: 700 !important;
+}
+body.is-presentation-mode .slide[data-slide="posicionamiento"] #chartSue text.chart-value--um {
+  font-size: 14px !important;
+  font-weight: 900 !important;
+}
+body.is-presentation-mode .slide[data-slide="posicionamiento"] #chartSue text.chart-tick {
+  font-size: 11px !important;
+  font-weight: 600 !important;
+}
+body.is-presentation-mode .slide[data-slide="posicionamiento"] #chartSue text.chart-tick--um {
+  font-size: 13.5px !important;
+  font-weight: 900 !important;
+}
+body.is-presentation-mode .slide[data-slide="posicionamiento"] #chartSue text.chart-legend {
+  font-size: 15px !important;
+  font-weight: 700 !important;
+}
+
 
 /* ----------------------------------------------------------------------------
    9. SLIDE 03 — POSICIONAMIENTO: SUE ranking protagonista (vertical bars)
@@ -1032,6 +1135,36 @@ body.is-presentation-mode .chart-container text[style*="font-weight: 800"] {
   min-height: 0;
 }
 
+/* Estilos específicos para la matriz de calor en modo presentación (Slide 4) */
+body.is-presentation-mode .slide[data-slide="facultades"] .heatmap {
+  table-layout: fixed !important;
+  width: 100% !important;
+  border-spacing: 6px clamp(3px, 0.5vh, 4px) !important;
+}
+body.is-presentation-mode .slide[data-slide="facultades"] .heatmap th,
+body.is-presentation-mode .slide[data-slide="facultades"] .heatmap td {
+  padding: clamp(4px, 0.8vh, 8px) clamp(2px, 0.4vw, 5px) !important;
+  font-size: clamp(0.72rem, 1vh, 0.95rem) !important;
+}
+body.is-presentation-mode .slide[data-slide="facultades"] .heatmap th {
+  white-space: normal !important;
+  line-height: 1.25 !important;
+  word-wrap: break-word !important;
+  padding-bottom: 8px !important;
+}
+body.is-presentation-mode .slide[data-slide="facultades"] .heatmap th:first-child,
+body.is-presentation-mode .slide[data-slide="facultades"] .heatmap td:first-child {
+  width: 28% !important;
+  text-align: left;
+}
+body.is-presentation-mode .slide[data-slide="facultades"] .heatmap th:not(:first-child),
+body.is-presentation-mode .slide[data-slide="facultades"] .heatmap td:not(:first-child) {
+  width: 14.4% !important;
+}
+body.is-presentation-mode .slide[data-slide="facultades"] .heatmap__legend {
+  margin-top: clamp(6px, 1vh, 10px) !important;
+  padding-top: 0 !important;
+}
 
 /* ----------------------------------------------------------------------------
    11. SLIDES 05-06 — PROGRAMAS (split en 2 slides para que cada chart respire)
@@ -1042,6 +1175,39 @@ body.is-presentation-mode .chart-container text[style*="font-weight: 800"] {
   display: flex;
   flex-direction: column;
   gap: clamp(10px, 1.4vh, 16px);
+}
+
+/* Overrides con alta especificidad para Slide 05 - Programas A - Radar Genéricas (Izquierdo) */
+body.is-presentation-mode .slide[data-slide="programas-a"] #progRadar text.chart-value {
+  font-size: 23px !important;
+  font-weight: 800 !important;
+}
+body.is-presentation-mode .slide[data-slide="programas-a"] #progRadar text.chart-category {
+  font-size: 24px !important;
+  font-weight: 700 !important;
+}
+body.is-presentation-mode .slide[data-slide="programas-a"] #progRadar text.chart-legend {
+  font-size: 24px !important;
+  font-weight: 700 !important;
+}
+
+/* Overrides con alta especificidad para Slide 05 - Programas A - Barras Específicas (Derecho) */
+body.is-presentation-mode .slide[data-slide="programas-a"] #progSpecBar text.chart-value {
+  font-size: 20px !important;
+  font-weight: 800 !important;
+}
+body.is-presentation-mode .slide[data-slide="programas-a"] #progSpecBar text.chart-category {
+  font-size: 16px !important;
+  font-weight: 700 !important;
+  line-height: 1.25 !important;
+}
+body.is-presentation-mode .slide[data-slide="programas-a"] #progSpecBar text.chart-tick {
+  font-size: 20px !important;
+  font-weight: 600 !important;
+}
+body.is-presentation-mode .slide[data-slide="programas-a"] #progSpecBar text.chart-legend {
+  font-size: 22px !important;
+  font-weight: 700 !important;
 }
 
 /* Mantener compatibilidad con selectores antiguos (.slide[data-slide^="programas"]) */
@@ -1059,10 +1225,7 @@ body.is-presentation-mode .chart-container text[style*="font-weight: 800"] {
   position: relative;
 }
 .slide[data-slide="programas-a"] .convenciones {
-  position: absolute !important;
-  top: 50%;
-  right: clamp(70px, 8vw, 110px);  /* antes del badge SLIDE 05 */
-  transform: translateY(-50%);
+  margin-left: auto !important;
   background: rgba(15, 79, 168, 0.06) !important;
   border: 1px solid rgba(15, 79, 168, 0.08) !important;
   border-radius: 999px !important;
@@ -1070,7 +1233,9 @@ body.is-presentation-mode .chart-container text[style*="font-weight: 800"] {
   display: flex !important;
   align-items: center !important;
   gap: 10px !important;
-  margin: 0 !important;
+  margin-top: 0 !important;
+  margin-bottom: 0 !important;
+  margin-right: 0 !important;
   z-index: 5;
 }
 .slide[data-slide="programas-a"] .convenciones__title {
@@ -1150,75 +1315,64 @@ body.is-presentation-mode .chart-container text[style*="font-weight: 800"] {
 
 /* slide__head para programas: bordes redondeados SOLO arriba + sin shadow
    inferior (la sombra unica se aplica al filtros card pegado debajo) */
-.slide[data-slide="programas-a"] .slide__head,
-.slide[data-slide="programas-b"] .slide__head {
-  border-radius: 16px 16px 0 0 !important;
-  margin-bottom: 0 !important;
-  box-shadow: 0 -1px 0 transparent !important;
-  border-bottom: 1px solid rgba(15, 79, 168, 0.08) !important;
+body.is-presentation-mode .slide[data-slide="programas-a"] .slide__head,
+body.is-presentation-mode .slide[data-slide="programas-b"] .slide__head {
+  display: grid !important;
+  grid-template-columns: 1fr auto auto;
+  grid-template-rows: auto auto;
+  gap: 10px 24px !important;
+  align-items: center !important;
+  padding: 14px 24px 10px 24px !important;
+  border-radius: 16px !important;
+  margin-bottom: 12px !important;
+  box-shadow: 0 6px 20px rgba(0, 30, 80, 0.05) !important;
 }
 
-/* Filters card pegado al slide__head con bordes redondeados SOLO abajo */
-.presentation-programas-tools {
-  position: fixed !important;
-  /* Top: justo donde termina el slide__head (slide.padding-top + head height) */
-  top: clamp(140px, 16.5vh, 160px);
-  /* Mismas margenes horizontales que el .slide para alinear con el slide__head */
-  left: clamp(48px, 6vw, 120px);
-  right: clamp(48px, 6vw, 120px);
-  z-index: 108;
-  display: none !important;
+body.is-presentation-mode .slide[data-slide^="programas"] .slide__head-text {
+  grid-column: 1;
+  grid-row: 1;
+}
+
+body.is-presentation-mode .slide[data-slide="programas-a"] .convenciones {
+  grid-column: 2;
+  grid-row: 1;
+  margin-left: 0 !important;
+}
+
+body.is-presentation-mode .slide[data-slide^="programas"] .slide__number {
+  grid-column: 3;
+  grid-row: 1;
+}
+
+/* Los filtros en la segunda fila, ocupando el ancho completo de la tarjeta */
+body.is-presentation-mode .slide[data-slide^="programas"] .explorer-controls {
+  grid-column: 1 / span 3;
+  grid-row: 2;
+  border-top: 1px solid rgba(15, 79, 168, 0.08) !important;
+  padding-top: 10px !important;
+  padding-bottom: 0 !important;
+  margin-top: 0 !important;
+  margin-bottom: 0 !important;
+  display: flex !important;
   flex-direction: row !important;
   align-items: center !important;
   gap: clamp(14px, 1.6vw, 24px) !important;
-  padding: 10px clamp(20px, 2.2vw, 30px) 12px !important;
-  background: #ffffff !important;
-  border-radius: 0 0 16px 16px !important;
-  border-left: 1px solid rgba(15, 79, 168, 0.04) !important;
-  border-right: 1px solid rgba(15, 79, 168, 0.04) !important;
-  border-bottom: 1px solid rgba(15, 79, 168, 0.04) !important;
-  box-shadow: 0 8px 22px rgba(0, 30, 80, 0.05) !important;
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity .25s ease, left .3s ease, right .3s ease;
-}
-.presentation-programas-tools.is-visible {
-  display: flex !important;
-  opacity: 1;
-  pointer-events: auto;
-}
-/* Cuando el drawer esta abierto, los filtros se mueven con el contenido */
-body.is-presentation-mode.nav-open .presentation-programas-tools {
-  left: calc(330px + clamp(20px, 2vw, 40px)) !important;
-}
-body.is-presentation-mode.nav-open .slide[data-slide^="programas"] .slide__head {
-  /* slide__head ya tiene padding-left via .slide */
+  background: transparent !important;
+  border-left: none !important;
+  border-right: none !important;
+  border-bottom: none !important;
+  box-shadow: none !important;
 }
 
-/* Etiqueta "FILTROS" antes de los dropdowns (como en el dashboard ref) */
-.presentation-programas-tools::before {
-  content: 'FILTROS';
-  display: flex;
-  align-items: center;
-  font-family: var(--font-display);
-  font-size: 0.68rem;
-  font-weight: 700;
-  letter-spacing: 0.18em;
-  color: rgba(15, 79, 168, 0.55);
-  padding-right: clamp(10px, 1.2vw, 16px);
-  border-right: 1px solid rgba(15, 79, 168, 0.10);
-  white-space: nowrap;
-  flex-shrink: 0;
-}
-
-.presentation-programas-tools .control-group {
+body.is-presentation-mode .slide[data-slide^="programas"] .explorer-controls .control-group {
   display: flex !important;
   flex-direction: column !important;
   gap: 2px !important;
   margin: 0 !important;
   min-width: 0;
 }
-.presentation-programas-tools .control-group label {
+
+body.is-presentation-mode .slide[data-slide^="programas"] .explorer-controls .control-group label {
   font-size: 0.66rem !important;
   font-weight: 700 !important;
   color: #0F4FA8 !important;
@@ -1227,9 +1381,13 @@ body.is-presentation-mode.nav-open .slide[data-slide^="programas"] .slide__head 
   text-transform: uppercase;
   white-space: nowrap;
 }
-.presentation-programas-tools .control-select,
-.presentation-programas-tools .select-wrapper { display: block !important; }
-.presentation-programas-tools .control-select {
+
+body.is-presentation-mode .slide[data-slide^="programas"] .explorer-controls .control-select,
+body.is-presentation-mode .slide[data-slide^="programas"] .explorer-controls .select-wrapper { 
+  display: block !important; 
+}
+
+body.is-presentation-mode .slide[data-slide^="programas"] .explorer-controls .control-select {
   font-size: 0.82rem !important;
   padding: 6px 26px 6px 10px !important;
   border: 1px solid rgba(15, 79, 168, 0.15) !important;
@@ -1240,13 +1398,15 @@ body.is-presentation-mode.nav-open .slide[data-slide^="programas"] .slide__head 
   min-width: 120px;
   max-width: 220px;
 }
-.presentation-programas-tools .control-group--year .control-select { min-width: 80px; }
 
-/* Charts area se empuja hacia abajo para no chocar con los filtros fixed.
-   El gap considera: filters height (~74px) + breathing gap (~16px) = 90px */
+body.is-presentation-mode .slide[data-slide^="programas"] .explorer-controls .control-group--year .control-select { 
+  min-width: 80px; 
+}
+
+/* En modo presentación el contenido fluye naturalmente sin padding superior fixed */
 body.is-presentation-mode .slide[data-slide="programas-a"] .slide__content,
 body.is-presentation-mode .slide[data-slide="programas-b"] .slide__content {
-  padding-top: clamp(82px, 10vh, 100px) !important;
+  padding-top: 0 !important;
 }
 /* Titulos cards mas pequenos para dar espacio a charts */
 .slide[data-slide^="programas"] .card__title {
@@ -1288,6 +1448,27 @@ body.is-presentation-mode .slide[data-slide="programas-b"] .slide__content {
 .slide[data-slide="programas-b"] .prog-history-side .chart-container {
   flex: 1 1 auto;
   min-height: 0;
+}
+
+/* Overrides con alta especificidad para Slide 06 - Programas B - Histórico y Niveles */
+body.is-presentation-mode .slide[data-slide="programas-b"] .chart-container text.chart-value {
+  font-size: 20px !important;
+  font-weight: 800 !important;
+}
+body.is-presentation-mode .slide[data-slide="programas-b"] .chart-container text.chart-tick {
+  font-size: 20px !important;
+  font-weight: 600 !important;
+}
+body.is-presentation-mode .slide[data-slide="programas-b"] .chart-container text.chart-legend {
+  font-size: 22px !important;
+  font-weight: 700 !important;
+}
+body.is-presentation-mode .slide[data-slide="programas-b"] .card__program-label {
+  font-size: 20px !important;
+  padding: 8px 20px !important;
+  margin-bottom: 16px !important;
+  border-radius: 999px !important;
+  display: inline-block !important;
 }
 
 
@@ -1367,6 +1548,14 @@ body.is-presentation-mode .slide[data-slide="programas-b"] .slide__content {
 .slide[data-slide="competencias"] .chart-container {
   flex: 1 1 auto;
   min-height: 0;
+}
+
+/* Overrides de tamaño para evitar desbordamiento y colisiones en Slide 07 (Top 10) */
+.slide[data-slide="competencias"] .chart-category {
+  font-size: 14.5px !important;
+}
+.slide[data-slide="competencias"] .chart-value {
+  font-size: 15px !important;
 }
 
 
