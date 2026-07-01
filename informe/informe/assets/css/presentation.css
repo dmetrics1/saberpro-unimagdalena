@@ -1464,9 +1464,9 @@ body.is-presentation-mode .slide[data-slide="programas-b"] .chart-container text
   font-weight: 700 !important;
 }
 body.is-presentation-mode .slide[data-slide="programas-b"] .card__program-label {
-  font-size: 20px !important;
-  padding: 8px 20px !important;
-  margin-bottom: 16px !important;
+  font-size: 15px !important;
+  padding: 6px 16px !important;
+  margin-bottom: 12px !important;
   border-radius: 999px !important;
   display: inline-block !important;
 }
