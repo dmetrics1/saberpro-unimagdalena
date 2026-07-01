@@ -3310,7 +3310,8 @@ function drawTop10Plot(d) {
     const prog = titleCase(item.programa);
     const lines = wrapName(prog, 36);
     if (lines.length > 0) lines[0] = `${idx + 1}. ${lines[0]}`;
-    const lineH = 13;
+    const isPres = document.body.classList.contains('is-presentation-mode');
+    const lineH = isPres ? 19 : 13;
     const centerY = y + barHeight / 2 + 4;
     const startY = centerY - ((lines.length - 1) * lineH) / 2;
     lines.forEach((ln, li) => {

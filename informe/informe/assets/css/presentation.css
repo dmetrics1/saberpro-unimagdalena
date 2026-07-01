@@ -1552,10 +1552,12 @@ body.is-presentation-mode .slide[data-slide="programas-b"] .card__program-label 
 
 /* Overrides de tamaño para evitar desbordamiento y colisiones en Slide 07 (Top 10) */
 .slide[data-slide="competencias"] .chart-category {
-  font-size: 14.5px !important;
+  font-size: 16px !important;
+  font-weight: 700 !important;
 }
 .slide[data-slide="competencias"] .chart-value {
-  font-size: 15px !important;
+  font-size: 18px !important;
+  font-weight: 800 !important;
 }
 
 
