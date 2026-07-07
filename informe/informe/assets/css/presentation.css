@@ -16,6 +16,10 @@
 /* ----------------------------------------------------------------------------
    1. BOTON FLOTANTE TRIGGER (visible solo en modo informe)
    ---------------------------------------------------------------------------- */
+/* Respetar el atributo `hidden`: display: inline-flex más abajo lo sobrescribe
+   sin este override. Necesario mientras el Modo Presentación no esté listo. */
+.presentation-trigger[hidden] { display: none !important; }
+
 .presentation-trigger {
   position: absolute;
   top: 22px;
