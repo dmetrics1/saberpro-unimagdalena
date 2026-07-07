@@ -1918,13 +1918,49 @@ function initFacultadYearPicker(d) {
   }
 }
 
+// Diccionario de correccion de tildes: las bases del ICFES publican los
+// nombres de programa/NBC de forma inconsistente — unos con tilde y otros
+// sin ella (BIOLOGIA, ECONOMIA, INGENIERIA...). Clave = palabra en minuscula
+// SIN tilde; valor = misma palabra con la tilde correcta. Solo se incluyen
+// palabras que en espanol SIEMPRE llevan tilde en esa forma, para evitar
+// falsos positivos.
+const ACCENT_FIXES = {
+  administracion: 'administración', publica: 'pública', publico: 'público',
+  economia: 'economía', biologia: 'biología', antropologia: 'antropología',
+  contaduria: 'contaduría', enfermeria: 'enfermería', ingenieria: 'ingeniería',
+  agronomica: 'agronómica', electronica: 'electrónica', educacion: 'educación',
+  informatica: 'informática', odontologia: 'odontología', psicologia: 'psicología',
+  turisticas: 'turísticas', matematicas: 'matemáticas', quimica: 'química',
+  espanol: 'español', tecnologia: 'tecnología', comunicacion: 'comunicación',
+  gestion: 'gestión', etnoeducacion: 'etnoeducación', enfasis: 'énfasis',
+  ingles: 'inglés', critica: 'crítica', matematica: 'matemática',
+  atencion: 'atención', formacion: 'formación', produccion: 'producción',
+  geografia: 'geografía', musica: 'música', pedagogia: 'pedagogía'
+};
+
+// Conectores que van en minuscula dentro de un titulo (excepto si son la
+// primera palabra). Mejora la lectura: 'Licenciatura en Quimica' vs
+// 'Licenciatura En Quimica'.
+const TITLE_LOWER_WORDS = new Set(['de', 'del', 'la', 'el', 'los', 'las', 'y', 'e', 'en', 'con', 'a', 'al', 'o', 'u', 'para']);
+
 function titleCase(s) {
   if (!s) return '';
-  // Convertir a minúsculas y capitalizar solo la primera letra de cada palabra,
-  // preservando los acentos que ya vienen en el dato fuente.
+  // 1. minusculas, 2. colapsar espacios multiples, 3. corregir tildes por
+  // palabra, 4. capitalizar (respetando conectores y saltando parentesis).
+  const capitalize = (w) =>
+    w.replace(/^([^\p{L}]*)(\p{L})/u, (m, pre, ch) => pre + ch.toUpperCase());
+
   return s.toLowerCase()
+    .replace(/\s+/g, ' ')
+    .trim()
     .split(' ')
-    .map(w => w ? w.charAt(0).toUpperCase() + w.slice(1) : w)
+    .map((w, i) => {
+      if (!w) return w;
+      const fixed = ACCENT_FIXES[w] || w;
+      // Conectores en minuscula salvo la primera palabra del titulo
+      if (i > 0 && TITLE_LOWER_WORDS.has(w)) return fixed;
+      return capitalize(fixed);
+    })
     .join(' ');
 }
 
@@ -2110,12 +2146,12 @@ function renderProgramExplorer(d) {
   // Obtener lista única de facultades
   const facs = [...new Set(progs.map(p => p.facultad))].sort();
 
-  // Poblar Facultad selector
+  // Poblar Facultad selector (value crudo para el filtrado; texto normalizado)
   if (selFac && selFac.children.length === 1) { // Solo tiene "Todas las facultades"
     facs.forEach(f => {
       const opt = document.createElement('option');
       opt.value = f;
-      opt.textContent = f;
+      opt.textContent = titleCase(f);
       selFac.appendChild(opt);
     });
 
@@ -2146,8 +2182,8 @@ function populateProgramsList(d) {
   const filtered = progs.filter(p => selectedFac === 'TODAS' || p.facultad === selectedFac);
   filtered.forEach((p, idx) => {
     const opt = document.createElement('option');
-    opt.value = p.programa;
-    opt.textContent = p.programa;
+    opt.value = p.programa;                 // valor crudo: lo usa el filtrado/lookup
+    opt.textContent = titleCase(p.programa); // texto normalizado con tildes
     if (idx === 0 && activeProgClean === '') {
       activeProgClean = p.programa;
     }
