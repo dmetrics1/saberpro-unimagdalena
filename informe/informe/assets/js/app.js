@@ -2336,7 +2336,9 @@ function renderExplorerRadar(p, yearOverride) {
     })),
     {
       full: 'Puntaje Global',
-      label: 'Puntaje Global',
+      // 2 lineas para que el nombre no se salga por la izquierda del viewBox
+      // ahora que las etiquetas van mas cerca del radar.
+      label: 'Puntaje\nGlobal',
       prog: globalProg,
       nbc: globalNbc
     }
@@ -2350,11 +2352,12 @@ function renderExplorerRadar(p, yearOverride) {
   const rMax = 195;
   const n = axes.length;
 
-  // Si el nombre del programa es largo, extendemos el viewBox abajo para
-  // acomodar la leyenda vertical sin que pise las etiquetas del radar.
+  // La leyenda SIEMPRE vive en una franja extra debajo del radar para que
+  // nunca pise la etiqueta inferior ('Comunicacion Escrita'). Si el nombre
+  // del programa es largo se apila vertical y necesita mas alto.
   const progNameTitled = titleCase(p.programa);
   const isLongProgName = progNameTitled.length > 22;
-  const extraBottom = isLongProgName ? 60 : 0;
+  const extraBottom = isLongProgName ? 60 : 30;
   const vbH = h + extraBottom;
 
   const svg = createSVGEl('svg', { viewBox: `0 0 ${w} ${vbH}`, class: 'svg-chart' });
@@ -2403,9 +2406,11 @@ function renderExplorerRadar(p, yearOverride) {
 
   // Nombres de competencias (afuera de los valores). Font-size aumentado de 11
   // a 14px para que se lean bien en screenshots y al imprimir.
+  // labelDist cercano al radar (antes rMax+75 dejaba los nombres pegados a los
+  // bordes del card, lejos del hexagono).
   for (let a = 0; a < n; a++) {
     const angle = a * (2 * Math.PI / n) - Math.PI / 2;
-    const labelDist = rMax + 75;
+    const labelDist = rMax + 45;
     const lx = cx + labelDist * Math.cos(angle);
     const ly = cy + labelDist * Math.sin(angle);
     const anchor = Math.abs(Math.cos(angle)) < 0.15 ? 'middle' : (Math.cos(angle) > 0 ? 'start' : 'end');
@@ -2531,9 +2536,9 @@ function renderExplorerRadar(p, yearOverride) {
     svg.appendChild(nbcLbl);
   }
 
-  // Leyenda inferior. Si el nombre del programa es largo apilamos vertical en
-  // la zona extra del viewBox (mas abajo del radar) para evitar overlap con las
-  // etiquetas 'Comunicacion Escrita' y demas.
+  // Leyenda inferior: SIEMPRE en la franja extra del viewBox (debajo del
+  // radar) para que nunca pise la etiqueta 'Comunicacion Escrita'. Si el
+  // nombre del programa es largo se apila vertical (mas alto disponible).
   const legendItems = [
     { color: COLOR_PROG, text: progNameTitled },
     { color: COLOR_NBC, text: 'NBC nacional' }
@@ -2544,7 +2549,7 @@ function renderExplorerRadar(p, yearOverride) {
       direction: 'vertical', lineHeight: 22, textClass: 'chart-legend'
     }));
   } else {
-    svg.appendChild(createLegend(legendItems, cx - 200, h - 22, {
+    svg.appendChild(createLegend(legendItems, cx - 200, h + 14, {
       fontSize: 14, rectW: 22, rectH: 12, gap: 280, textGap: 32, fontWeight: 700, textClass: 'chart-legend'
     }));
   }
