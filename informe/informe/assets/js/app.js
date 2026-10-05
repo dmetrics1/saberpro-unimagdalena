@@ -2402,9 +2402,12 @@ function renderExplorerRadar(p, yearOverride) {
   const COLOR_PROG = PANORAMA_UM;
   const COLOR_NBC = PANORAMA_NAT;
 
-  // Escala fija 100-160 (como el institucional)
-  const minScale = 100;
-  const maxScale = 160;
+  // Escala base 100-160 (como el institucional), ampliada en decenas cuando
+  // los datos la superan. Antes se recortaba en 160 y valores como 173 vs 167
+  // o 176 vs 160 quedaban en el mismo vertice.
+  const radarVals = axes.flatMap(ax => [ax.prog, ax.nbc]).filter(v => v != null && !isNaN(v));
+  const minScale = Math.min(100, Math.floor((Math.min(...radarVals) - 5) / 10) * 10);
+  const maxScale = Math.max(160, Math.ceil(Math.max(...radarVals) / 10) * 10);
   const scoreToRadius = (s) => Math.max(0, Math.min(1, (s - minScale) / (maxScale - minScale))) * rMax;
 
   // Polígonos concéntricos
