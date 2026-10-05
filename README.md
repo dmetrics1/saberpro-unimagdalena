@@ -77,6 +77,7 @@ proyecto_informe_saberpro/
 │   ├── 01_construir_cuadrantes.py
 │   ├── 02_construir_agregados.py
 │   ├── 03_consolidar_json.py
+│   ├── 04_auditar_programas.py   # valida el JSON contra el Icfes (NBC, puntajes, n)
 │   ├── 16_generar_graficos_cuadrantes_2022_2024.py
 │   └── 17_generar_grafico_trayectoria_unimagdalena.py
 ├── resultados/           # gráficos estáticos opcionales (scripts 16 y 17)
@@ -92,7 +93,7 @@ Opción recomendada en Windows:
 .\ejecutar_proyecto.bat
 ```
 
-Ese script crea o activa `venv`, instala dependencias, ejecuta los scripts 01-03 y copia el JSON maestro al informe HTML.
+Ese script crea o activa `venv`, instala dependencias, ejecuta los scripts 01-03, audita el resultado contra las bases del Icfes (script 04) y copia el JSON maestro al informe HTML.
 
 Para detalles del flujo, ejecución manual, instalación inicial y actualización con un año nuevo, ver la [guía operativa](./docs/guia_operativa.md).
 

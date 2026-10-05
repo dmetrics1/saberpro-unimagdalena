@@ -3440,16 +3440,16 @@
       },
       {
         "facultad": "Facultad de Ciencias Empresariales y Económicas",
-        "puntaje_global": 139.81,
-        "n": 837,
+        "puntaje_global": 141.02,
+        "n": 1038,
         "competencias": [
           {
             "competencia": "LECTURA CRÍTICA",
-            "puntaje": 141.43
+            "puntaje": 142.9
           },
           {
             "competencia": "RAZONAMIENTO CUANTITATIVO",
-            "puntaje": 135.05
+            "puntaje": 138.34
           },
           {
             "competencia": "COMPETENCIAS CIUDADANAS",
@@ -3457,7 +3457,7 @@
           },
           {
             "competencia": "COMUNICACIÓN ESCRITA",
-            "puntaje": 128.1
+            "puntaje": 129.43
           },
           {
             "competencia": "INGLÉS",
@@ -3949,11 +3949,11 @@
           },
           {
             "competencia": "COMUNICACIÓN ESCRITA",
-            "puntaje": 144.21
+            "puntaje": 142.78
           },
           {
             "competencia": "INGLÉS",
-            "puntaje": 158.0
+            "puntaje": 156.12
           }
         ]
       },
@@ -3964,15 +3964,15 @@
         "competencias": [
           {
             "competencia": "LECTURA CRÍTICA",
-            "puntaje": 136.46
+            "puntaje": 137.18
           },
           {
             "competencia": "RAZONAMIENTO CUANTITATIVO",
-            "puntaje": 118.06
+            "puntaje": 118.37
           },
           {
             "competencia": "COMPETENCIAS CIUDADANAS",
-            "puntaje": 121.85
+            "puntaje": 123.19
           },
           {
             "competencia": "COMUNICACIÓN ESCRITA",
@@ -4132,19 +4132,19 @@
           },
           {
             "competencia": "RAZONAMIENTO CUANTITATIVO",
-            "puntaje": 117.72
+            "puntaje": 118.47
           },
           {
             "competencia": "COMPETENCIAS CIUDADANAS",
-            "puntaje": 128.16
+            "puntaje": 128.59
           },
           {
             "competencia": "COMUNICACIÓN ESCRITA",
-            "puntaje": 130.55
+            "puntaje": 131.29
           },
           {
             "competencia": "INGLÉS",
-            "puntaje": 131.47
+            "puntaje": 132.01
           }
         ]
       },
@@ -4260,8 +4260,8 @@
       },
       {
         "facultad": "Facultad de Ciencias Empresariales y Económicas",
-        "puntaje_global": 147.3,
-        "n": 649,
+        "puntaje_global": 148.0,
+        "n": 805,
         "competencias": [
           {
             "competencia": "LECTURA CRÍTICA",
@@ -4269,7 +4269,7 @@
           },
           {
             "competencia": "RAZONAMIENTO CUANTITATIVO",
-            "puntaje": 135.2
+            "puntaje": 138.22
           },
           {
             "competencia": "COMPETENCIAS CIUDADANAS",
@@ -4277,7 +4277,7 @@
           },
           {
             "competencia": "COMUNICACIÓN ESCRITA",
-            "puntaje": 150.16
+            "puntaje": 151.17
           },
           {
             "competencia": "INGLÉS",
@@ -4296,19 +4296,19 @@
           },
           {
             "competencia": "RAZONAMIENTO CUANTITATIVO",
-            "puntaje": 127.97
+            "puntaje": 128.21
           },
           {
             "competencia": "COMPETENCIAS CIUDADANAS",
-            "puntaje": 137.44
+            "puntaje": 138.35
           },
           {
             "competencia": "COMUNICACIÓN ESCRITA",
-            "puntaje": 151.64
+            "puntaje": 151.65
           },
           {
             "competencia": "INGLÉS",
-            "puntaje": 143.05
+            "puntaje": 144.01
           }
         ]
       },
@@ -5387,44 +5387,44 @@
     {
       "programa": "ADMINISTRACIÓN DE LA SEGURIDAD Y SALUD   EN EL TRABAJO",
       "facultad": "Facultad de Ciencias Empresariales y Económicas",
-      "nbc_id": 9,
-      "nbc_nombre": "ADMINISTRACIÓN",
+      "nbc_id": 50,
+      "nbc_nombre": "SALUD PÚBLICA",
       "acreditado": false,
       "n_2025": 107,
       "global_2025": 127,
-      "global_nbc_nacional_2025": 142,
-      "n_nbc_nacional_2025": 58194,
+      "global_nbc_nacional_2025": 130,
+      "n_nbc_nacional_2025": 3883,
       "n_bajo": false,
       "competencias_2025": [
         {
           "prueba": "LECTURA CRÍTICA",
           "puntaje_programa": 129,
-          "puntaje_nbc_nacional": 145,
-          "n_nbc_nacional": 58194
+          "puntaje_nbc_nacional": 134,
+          "n_nbc_nacional": 3883
         },
         {
           "prueba": "INGLÉS",
           "puntaje_programa": 124,
-          "puntaje_nbc_nacional": 146,
-          "n_nbc_nacional": 58194
+          "puntaje_nbc_nacional": 130,
+          "n_nbc_nacional": 3883
         },
         {
           "prueba": "RAZONAMIENTO CUANTITATIVO",
           "puntaje_programa": 117,
-          "puntaje_nbc_nacional": 135,
-          "n_nbc_nacional": 58194
+          "puntaje_nbc_nacional": 122,
+          "n_nbc_nacional": 3883
         },
         {
           "prueba": "COMPETENCIAS CIUDADANAS",
           "puntaje_programa": 123,
-          "puntaje_nbc_nacional": 138,
-          "n_nbc_nacional": 58194
+          "puntaje_nbc_nacional": 125,
+          "n_nbc_nacional": 3883
         },
         {
           "prueba": "COMUNICACIÓN ESCRITA",
           "puntaje_programa": 142,
-          "puntaje_nbc_nacional": 146,
-          "n_nbc_nacional": 58194
+          "puntaje_nbc_nacional": 140,
+          "n_nbc_nacional": 3883
         }
       ],
       "especificas_2025": [],
@@ -5439,10 +5439,10 @@
             0.0
           ],
           "distribucion_nbc_nacional": [
-            24.0,
-            42.0,
-            32.0,
-            2.0,
+            36.0,
+            48.0,
+            17.0,
+            0.0,
             0.0
           ]
         },
@@ -5456,10 +5456,10 @@
             0.0
           ],
           "distribucion_nbc_nacional": [
-            21.0,
-            53.0,
-            19.0,
-            8.0,
+            34.0,
+            59.0,
+            6.0,
+            0.0,
             0.0
           ]
         },
@@ -5473,10 +5473,10 @@
             0.0
           ],
           "distribucion_nbc_nacional": [
-            36.0,
-            38.0,
-            26.0,
-            1.0,
+            55.0,
+            35.0,
+            10.0,
+            0.0,
             0.0
           ]
         },
@@ -5490,10 +5490,10 @@
             0.0
           ],
           "distribucion_nbc_nacional": [
-            35.0,
+            51.0,
             36.0,
-            27.0,
-            2.0,
+            13.0,
+            0.0,
             0.0
           ]
         },
@@ -5507,10 +5507,10 @@
             0.0
           ],
           "distribucion_nbc_nacional": [
-            8.0,
-            41.0,
+            11.0,
             44.0,
-            8.0,
+            40.0,
+            4.0,
             0.0
           ]
         }
@@ -5553,228 +5553,228 @@
             {
               "competencia": "LECTURA CRÍTICA",
               "puntaje_programa": 126,
-              "puntaje_nbc_nacional": 143,
-              "n_nbc_nacional": 52931
+              "puntaje_nbc_nacional": 134,
+              "n_nbc_nacional": 1390
             },
             {
               "competencia": "RAZONAMIENTO CUANTITATIVO",
               "puntaje_programa": 120,
-              "puntaje_nbc_nacional": 141,
-              "n_nbc_nacional": 52931
+              "puntaje_nbc_nacional": 129,
+              "n_nbc_nacional": 1390
             },
             {
               "competencia": "COMPETENCIAS CIUDADANAS",
               "puntaje_programa": 128,
-              "puntaje_nbc_nacional": 145,
-              "n_nbc_nacional": 52931
+              "puntaje_nbc_nacional": 135,
+              "n_nbc_nacional": 1390
             },
             {
               "competencia": "COMUNICACIÓN ESCRITA",
               "puntaje_programa": 116,
-              "puntaje_nbc_nacional": 131,
-              "n_nbc_nacional": 52930
+              "puntaje_nbc_nacional": 121,
+              "n_nbc_nacional": 1390
             },
             {
               "competencia": "INGLÉS",
               "puntaje_programa": 131,
-              "puntaje_nbc_nacional": 149,
-              "n_nbc_nacional": 52931
+              "puntaje_nbc_nacional": 135,
+              "n_nbc_nacional": 1390
             }
           ],
           "global_programa": 124,
           "n_programa": 220,
-          "global_nbc_nacional": 142,
-          "n_nbc_nacional": 52931
+          "global_nbc_nacional": 131,
+          "n_nbc_nacional": 1390
         },
         "2021": {
           "competencias": [
             {
               "competencia": "LECTURA CRÍTICA",
               "puntaje_programa": 121,
-              "puntaje_nbc_nacional": 138,
-              "n_nbc_nacional": 50935
+              "puntaje_nbc_nacional": 129,
+              "n_nbc_nacional": 2659
             },
             {
               "competencia": "RAZONAMIENTO CUANTITATIVO",
               "puntaje_programa": 112,
-              "puntaje_nbc_nacional": 136,
-              "n_nbc_nacional": 50935
+              "puntaje_nbc_nacional": 124,
+              "n_nbc_nacional": 2659
             },
             {
               "competencia": "COMPETENCIAS CIUDADANAS",
               "puntaje_programa": 120,
-              "puntaje_nbc_nacional": 135,
-              "n_nbc_nacional": 50935
+              "puntaje_nbc_nacional": 127,
+              "n_nbc_nacional": 2659
             },
             {
               "competencia": "COMUNICACIÓN ESCRITA",
               "puntaje_programa": 125,
-              "puntaje_nbc_nacional": 133,
-              "n_nbc_nacional": 50935
+              "puntaje_nbc_nacional": 125,
+              "n_nbc_nacional": 2659
             },
             {
               "competencia": "INGLÉS",
               "puntaje_programa": 129,
-              "puntaje_nbc_nacional": 148,
-              "n_nbc_nacional": 50935
+              "puntaje_nbc_nacional": 133,
+              "n_nbc_nacional": 2659
             }
           ],
           "global_programa": 122,
           "n_programa": 86,
-          "global_nbc_nacional": 138,
-          "n_nbc_nacional": 50935
+          "global_nbc_nacional": 128,
+          "n_nbc_nacional": 2659
         },
         "2022": {
           "competencias": [
             {
               "competencia": "LECTURA CRÍTICA",
               "puntaje_programa": 125,
-              "puntaje_nbc_nacional": 142,
-              "n_nbc_nacional": 44583
+              "puntaje_nbc_nacional": 132,
+              "n_nbc_nacional": 2790
             },
             {
               "competencia": "RAZONAMIENTO CUANTITATIVO",
               "puntaje_programa": 121,
-              "puntaje_nbc_nacional": 138,
-              "n_nbc_nacional": 44583
+              "puntaje_nbc_nacional": 126,
+              "n_nbc_nacional": 2790
             },
             {
               "competencia": "COMPETENCIAS CIUDADANAS",
               "puntaje_programa": 121,
-              "puntaje_nbc_nacional": 136,
-              "n_nbc_nacional": 44583
+              "puntaje_nbc_nacional": 128,
+              "n_nbc_nacional": 2790
             },
             {
               "competencia": "COMUNICACIÓN ESCRITA",
               "puntaje_programa": 111,
-              "puntaje_nbc_nacional": 124,
-              "n_nbc_nacional": 44583
+              "puntaje_nbc_nacional": 116,
+              "n_nbc_nacional": 2790
             },
             {
               "competencia": "INGLÉS",
               "puntaje_programa": 135,
-              "puntaje_nbc_nacional": 149,
-              "n_nbc_nacional": 44583
+              "puntaje_nbc_nacional": 135,
+              "n_nbc_nacional": 2790
             }
           ],
           "global_programa": 123,
           "n_programa": 92,
-          "global_nbc_nacional": 138,
-          "n_nbc_nacional": 44583
+          "global_nbc_nacional": 127,
+          "n_nbc_nacional": 2790
         },
         "2023": {
           "competencias": [
             {
               "competencia": "LECTURA CRÍTICA",
               "puntaje_programa": 125,
-              "puntaje_nbc_nacional": 141,
-              "n_nbc_nacional": 46987
+              "puntaje_nbc_nacional": 131,
+              "n_nbc_nacional": 4032
             },
             {
               "competencia": "RAZONAMIENTO CUANTITATIVO",
               "puntaje_programa": 119,
-              "puntaje_nbc_nacional": 136,
-              "n_nbc_nacional": 46987
+              "puntaje_nbc_nacional": 124,
+              "n_nbc_nacional": 4032
             },
             {
               "competencia": "COMPETENCIAS CIUDADANAS",
               "puntaje_programa": 118,
-              "puntaje_nbc_nacional": 133,
-              "n_nbc_nacional": 46987
+              "puntaje_nbc_nacional": 123,
+              "n_nbc_nacional": 4032
             },
             {
               "competencia": "COMUNICACIÓN ESCRITA",
               "puntaje_programa": 140,
-              "puntaje_nbc_nacional": 139,
-              "n_nbc_nacional": 46987
+              "puntaje_nbc_nacional": 132,
+              "n_nbc_nacional": 4032
             },
             {
               "competencia": "INGLÉS",
               "puntaje_programa": 126,
-              "puntaje_nbc_nacional": 148,
-              "n_nbc_nacional": 46987
+              "puntaje_nbc_nacional": 131,
+              "n_nbc_nacional": 4032
             }
           ],
           "global_programa": 126,
           "n_programa": 108,
-          "global_nbc_nacional": 139,
-          "n_nbc_nacional": 46987
+          "global_nbc_nacional": 128,
+          "n_nbc_nacional": 4032
         },
         "2024": {
           "competencias": [
             {
               "competencia": "LECTURA CRÍTICA",
               "puntaje_programa": 134,
-              "puntaje_nbc_nacional": 145,
-              "n_nbc_nacional": 52203
+              "puntaje_nbc_nacional": 134,
+              "n_nbc_nacional": 4276
             },
             {
               "competencia": "RAZONAMIENTO CUANTITATIVO",
               "puntaje_programa": 122,
-              "puntaje_nbc_nacional": 136,
-              "n_nbc_nacional": 52203
+              "puntaje_nbc_nacional": 123,
+              "n_nbc_nacional": 4276
             },
             {
               "competencia": "COMPETENCIAS CIUDADANAS",
               "puntaje_programa": 123,
-              "puntaje_nbc_nacional": 139,
-              "n_nbc_nacional": 52203
+              "puntaje_nbc_nacional": 127,
+              "n_nbc_nacional": 4276
             },
             {
               "competencia": "COMUNICACIÓN ESCRITA",
               "puntaje_programa": 121,
-              "puntaje_nbc_nacional": 131,
-              "n_nbc_nacional": 52203
+              "puntaje_nbc_nacional": 122,
+              "n_nbc_nacional": 4276
             },
             {
               "competencia": "INGLÉS",
               "puntaje_programa": 130,
-              "puntaje_nbc_nacional": 149,
-              "n_nbc_nacional": 52203
+              "puntaje_nbc_nacional": 133,
+              "n_nbc_nacional": 4276
             }
           ],
           "global_programa": 126,
           "n_programa": 38,
-          "global_nbc_nacional": 140,
-          "n_nbc_nacional": 52203
+          "global_nbc_nacional": 128,
+          "n_nbc_nacional": 4276
         },
         "2025": {
           "competencias": [
             {
               "competencia": "LECTURA CRÍTICA",
               "puntaje_programa": 129,
-              "puntaje_nbc_nacional": 145,
-              "n_nbc_nacional": 58194
+              "puntaje_nbc_nacional": 134,
+              "n_nbc_nacional": 3883
             },
             {
               "competencia": "RAZONAMIENTO CUANTITATIVO",
               "puntaje_programa": 117,
-              "puntaje_nbc_nacional": 135,
-              "n_nbc_nacional": 58194
+              "puntaje_nbc_nacional": 122,
+              "n_nbc_nacional": 3883
             },
             {
               "competencia": "COMPETENCIAS CIUDADANAS",
               "puntaje_programa": 123,
-              "puntaje_nbc_nacional": 138,
-              "n_nbc_nacional": 58194
+              "puntaje_nbc_nacional": 125,
+              "n_nbc_nacional": 3883
             },
             {
               "competencia": "COMUNICACIÓN ESCRITA",
               "puntaje_programa": 142,
-              "puntaje_nbc_nacional": 146,
-              "n_nbc_nacional": 58194
+              "puntaje_nbc_nacional": 140,
+              "n_nbc_nacional": 3883
             },
             {
               "competencia": "INGLÉS",
               "puntaje_programa": 124,
-              "puntaje_nbc_nacional": 146,
-              "n_nbc_nacional": 58194
+              "puntaje_nbc_nacional": 130,
+              "n_nbc_nacional": 3883
             }
           ],
           "global_programa": 127,
           "n_programa": 107,
-          "global_nbc_nacional": 142,
-          "n_nbc_nacional": 58194
+          "global_nbc_nacional": 130,
+          "n_nbc_nacional": 3883
         }
       },
       "especificas_historico": {}
@@ -7602,11 +7602,6 @@
       "historico": [
         {
           "anio": 2020,
-          "puntaje": 142,
-          "n": 2
-        },
-        {
-          "anio": 2020,
           "puntaje": 146,
           "n": 203
         },
@@ -7626,19 +7621,9 @@
           "n": 223
         },
         {
-          "anio": 2023,
-          "puntaje": 125,
-          "n": 1
-        },
-        {
           "anio": 2024,
           "puntaje": 153,
           "n": 183
-        },
-        {
-          "anio": 2025,
-          "puntaje": 159,
-          "n": 2
         },
         {
           "anio": 2025,
@@ -7651,13 +7636,13 @@
           "competencias": [
             {
               "competencia": "LECTURA CRÍTICA",
-              "puntaje_programa": 148,
+              "puntaje_programa": 149,
               "puntaje_nbc_nacional": 143,
               "n_nbc_nacional": 16965
             },
             {
               "competencia": "RAZONAMIENTO CUANTITATIVO",
-              "puntaje_programa": 148,
+              "puntaje_programa": 152,
               "puntaje_nbc_nacional": 146,
               "n_nbc_nacional": 16965
             },
@@ -7669,7 +7654,7 @@
             },
             {
               "competencia": "COMUNICACIÓN ESCRITA",
-              "puntaje_programa": 140,
+              "puntaje_programa": 135,
               "puntaje_nbc_nacional": 130,
               "n_nbc_nacional": 16965
             },
@@ -7783,19 +7768,19 @@
             },
             {
               "competencia": "COMUNICACIÓN ESCRITA",
-              "puntaje_programa": 149,
+              "puntaje_programa": 139,
               "puntaje_nbc_nacional": 137,
               "n_nbc_nacional": 16877
             },
             {
               "competencia": "INGLÉS",
-              "puntaje_programa": 131,
+              "puntaje_programa": 151,
               "puntaje_nbc_nacional": 140,
               "n_nbc_nacional": 16877
             }
           ],
-          "global_programa": 125,
-          "n_programa": 1,
+          "global_programa": 148,
+          "n_programa": 223,
           "global_nbc_nacional": 138,
           "n_nbc_nacional": 16877
         },
@@ -7847,7 +7832,7 @@
             },
             {
               "competencia": "RAZONAMIENTO CUANTITATIVO",
-              "puntaje_programa": 168,
+              "puntaje_programa": 151,
               "puntaje_nbc_nacional": 140,
               "n_nbc_nacional": 18282
             },
@@ -7859,7 +7844,7 @@
             },
             {
               "competencia": "COMUNICACIÓN ESCRITA",
-              "puntaje_programa": 128,
+              "puntaje_programa": 155,
               "puntaje_nbc_nacional": 146,
               "n_nbc_nacional": 18282
             },
@@ -9407,44 +9392,44 @@
     {
       "programa": "GESTIÓN CULTURAL Y DE INDUSTRIAS CREATIVAS",
       "facultad": "Facultad de Ciencias Empresariales y Económicas",
-      "nbc_id": 4,
-      "nbc_nombre": "ARTES PLÁSTICAS, VISUALES Y AFINES",
+      "nbc_id": 9,
+      "nbc_nombre": "ADMINISTRACIÓN",
       "acreditado": false,
       "n_2025": 11,
       "global_2025": 129,
-      "global_nbc_nacional_2025": 159,
-      "n_nbc_nacional_2025": 2062,
+      "global_nbc_nacional_2025": 142,
+      "n_nbc_nacional_2025": 58194,
       "n_bajo": false,
       "competencias_2025": [
         {
           "prueba": "RAZONAMIENTO CUANTITATIVO",
           "puntaje_programa": 107,
-          "puntaje_nbc_nacional": 144,
-          "n_nbc_nacional": 2062
+          "puntaje_nbc_nacional": 135,
+          "n_nbc_nacional": 58194
         },
         {
           "prueba": "LECTURA CRÍTICA",
           "puntaje_programa": 133,
-          "puntaje_nbc_nacional": 167,
-          "n_nbc_nacional": 2062
+          "puntaje_nbc_nacional": 145,
+          "n_nbc_nacional": 58194
         },
         {
           "prueba": "COMPETENCIAS CIUDADANAS",
           "puntaje_programa": 132,
-          "puntaje_nbc_nacional": 153,
-          "n_nbc_nacional": 2062
+          "puntaje_nbc_nacional": 138,
+          "n_nbc_nacional": 58194
         },
         {
           "prueba": "INGLÉS",
           "puntaje_programa": 136,
-          "puntaje_nbc_nacional": 178,
-          "n_nbc_nacional": 2062
+          "puntaje_nbc_nacional": 146,
+          "n_nbc_nacional": 58194
         },
         {
           "prueba": "COMUNICACIÓN ESCRITA",
           "puntaje_programa": 139,
-          "puntaje_nbc_nacional": 150,
-          "n_nbc_nacional": 2062
+          "puntaje_nbc_nacional": 146,
+          "n_nbc_nacional": 58194
         }
       ],
       "especificas_2025": [],
@@ -9459,10 +9444,10 @@
             0.0
           ],
           "distribucion_nbc_nacional": [
-            5.0,
-            28.0,
-            36.0,
-            32.0,
+            21.0,
+            53.0,
+            19.0,
+            8.0,
             0.0
           ]
         },
@@ -9476,10 +9461,10 @@
             0.0
           ],
           "distribucion_nbc_nacional": [
-            21.0,
-            30.0,
-            43.0,
-            6.0,
+            35.0,
+            36.0,
+            27.0,
+            2.0,
             0.0
           ]
         },
@@ -9494,9 +9479,9 @@
           ],
           "distribucion_nbc_nacional": [
             8.0,
-            38.0,
-            45.0,
-            10.0,
+            41.0,
+            44.0,
+            8.0,
             0.0
           ]
         },
@@ -9510,10 +9495,10 @@
             0.0
           ],
           "distribucion_nbc_nacional": [
-            8.0,
-            25.0,
-            56.0,
-            11.0,
+            24.0,
+            42.0,
+            32.0,
+            2.0,
             0.0
           ]
         },
@@ -9527,9 +9512,9 @@
             0.0
           ],
           "distribucion_nbc_nacional": [
-            25.0,
-            34.0,
-            40.0,
+            36.0,
+            38.0,
+            26.0,
             1.0,
             0.0
           ]
@@ -9558,114 +9543,114 @@
             {
               "competencia": "LECTURA CRÍTICA",
               "puntaje_programa": 124,
-              "puntaje_nbc_nacional": 162,
-              "n_nbc_nacional": 1295
+              "puntaje_nbc_nacional": 141,
+              "n_nbc_nacional": 46987
             },
             {
               "competencia": "RAZONAMIENTO CUANTITATIVO",
               "puntaje_programa": 116,
-              "puntaje_nbc_nacional": 143,
-              "n_nbc_nacional": 1295
+              "puntaje_nbc_nacional": 136,
+              "n_nbc_nacional": 46987
             },
             {
               "competencia": "COMPETENCIAS CIUDADANAS",
               "puntaje_programa": 108,
-              "puntaje_nbc_nacional": 146,
-              "n_nbc_nacional": 1295
+              "puntaje_nbc_nacional": 133,
+              "n_nbc_nacional": 46987
             },
             {
               "competencia": "COMUNICACIÓN ESCRITA",
               "puntaje_programa": 114,
-              "puntaje_nbc_nacional": 144,
-              "n_nbc_nacional": 1295
+              "puntaje_nbc_nacional": 139,
+              "n_nbc_nacional": 46987
             },
             {
               "competencia": "INGLÉS",
               "puntaje_programa": 127,
-              "puntaje_nbc_nacional": 176,
-              "n_nbc_nacional": 1295
+              "puntaje_nbc_nacional": 148,
+              "n_nbc_nacional": 46987
             }
           ],
           "global_programa": 118,
           "n_programa": 12,
-          "global_nbc_nacional": 154,
-          "n_nbc_nacional": 1295
+          "global_nbc_nacional": 139,
+          "n_nbc_nacional": 46987
         },
         "2024": {
           "competencias": [
             {
               "competencia": "LECTURA CRÍTICA",
               "puntaje_programa": 146,
-              "puntaje_nbc_nacional": 168,
-              "n_nbc_nacional": 1605
+              "puntaje_nbc_nacional": 145,
+              "n_nbc_nacional": 52203
             },
             {
               "competencia": "RAZONAMIENTO CUANTITATIVO",
               "puntaje_programa": 136,
-              "puntaje_nbc_nacional": 144,
-              "n_nbc_nacional": 1605
+              "puntaje_nbc_nacional": 136,
+              "n_nbc_nacional": 52203
             },
             {
               "competencia": "COMPETENCIAS CIUDADANAS",
               "puntaje_programa": 140,
-              "puntaje_nbc_nacional": 154,
-              "n_nbc_nacional": 1605
+              "puntaje_nbc_nacional": 139,
+              "n_nbc_nacional": 52203
             },
             {
               "competencia": "COMUNICACIÓN ESCRITA",
               "puntaje_programa": 126,
-              "puntaje_nbc_nacional": 138,
-              "n_nbc_nacional": 1605
+              "puntaje_nbc_nacional": 131,
+              "n_nbc_nacional": 52203
             },
             {
               "competencia": "INGLÉS",
               "puntaje_programa": 146,
-              "puntaje_nbc_nacional": 181,
-              "n_nbc_nacional": 1605
+              "puntaje_nbc_nacional": 149,
+              "n_nbc_nacional": 52203
             }
           ],
           "global_programa": 139,
           "n_programa": 20,
-          "global_nbc_nacional": 157,
-          "n_nbc_nacional": 1605
+          "global_nbc_nacional": 140,
+          "n_nbc_nacional": 52203
         },
         "2025": {
           "competencias": [
             {
               "competencia": "LECTURA CRÍTICA",
               "puntaje_programa": 133,
-              "puntaje_nbc_nacional": 167,
-              "n_nbc_nacional": 2062
+              "puntaje_nbc_nacional": 145,
+              "n_nbc_nacional": 58194
             },
             {
               "competencia": "RAZONAMIENTO CUANTITATIVO",
               "puntaje_programa": 107,
-              "puntaje_nbc_nacional": 144,
-              "n_nbc_nacional": 2062
+              "puntaje_nbc_nacional": 135,
+              "n_nbc_nacional": 58194
             },
             {
               "competencia": "COMPETENCIAS CIUDADANAS",
               "puntaje_programa": 132,
-              "puntaje_nbc_nacional": 153,
-              "n_nbc_nacional": 2062
+              "puntaje_nbc_nacional": 138,
+              "n_nbc_nacional": 58194
             },
             {
               "competencia": "COMUNICACIÓN ESCRITA",
               "puntaje_programa": 139,
-              "puntaje_nbc_nacional": 150,
-              "n_nbc_nacional": 2062
+              "puntaje_nbc_nacional": 146,
+              "n_nbc_nacional": 58194
             },
             {
               "competencia": "INGLÉS",
               "puntaje_programa": 136,
-              "puntaje_nbc_nacional": 178,
-              "n_nbc_nacional": 2062
+              "puntaje_nbc_nacional": 146,
+              "n_nbc_nacional": 58194
             }
           ],
           "global_programa": 129,
           "n_programa": 11,
-          "global_nbc_nacional": 159,
-          "n_nbc_nacional": 2062
+          "global_nbc_nacional": 142,
+          "n_nbc_nacional": 58194
         }
       },
       "especificas_historico": {}
@@ -13081,58 +13066,58 @@
     {
       "programa": "INGENIERIA PESQUERA",
       "facultad": "Facultad de Ingeniería",
-      "nbc_id": 33,
-      "nbc_nombre": "OTRAS INGENIERÍAS",
+      "nbc_id": 24,
+      "nbc_nombre": "INGENIERÍA AGRONÓMICA, PECUARIA Y AFINES",
       "acreditado": false,
       "n_2025": 22,
       "global_2025": 147,
-      "global_nbc_nacional_2025": 167,
-      "n_nbc_nacional_2025": 979,
+      "global_nbc_nacional_2025": 149,
+      "n_nbc_nacional_2025": 1242,
       "n_bajo": false,
       "competencias_2025": [
         {
           "prueba": "RAZONAMIENTO CUANTITATIVO",
           "puntaje_programa": 160,
-          "puntaje_nbc_nacional": 176,
-          "n_nbc_nacional": 979
+          "puntaje_nbc_nacional": 151,
+          "n_nbc_nacional": 1242
         },
         {
           "prueba": "COMPETENCIAS CIUDADANAS",
           "puntaje_programa": 138,
-          "puntaje_nbc_nacional": 158,
-          "n_nbc_nacional": 979
+          "puntaje_nbc_nacional": 144,
+          "n_nbc_nacional": 1242
         },
         {
           "prueba": "INGLÉS",
           "puntaje_programa": 142,
-          "puntaje_nbc_nacional": 179,
-          "n_nbc_nacional": 979
+          "puntaje_nbc_nacional": 147,
+          "n_nbc_nacional": 1242
         },
         {
           "prueba": "LECTURA CRÍTICA",
           "puntaje_programa": 148,
-          "puntaje_nbc_nacional": 167,
-          "n_nbc_nacional": 979
+          "puntaje_nbc_nacional": 154,
+          "n_nbc_nacional": 1242
         },
         {
           "prueba": "COMUNICACIÓN ESCRITA",
           "puntaje_programa": 148,
-          "puntaje_nbc_nacional": 156,
-          "n_nbc_nacional": 979
+          "puntaje_nbc_nacional": 147,
+          "n_nbc_nacional": 1242
         }
       ],
       "especificas_2025": [
         {
           "prueba": "FORMULACIÓN DE PROYECTOS DE INGENIERÍA",
           "puntaje_programa": 148,
-          "puntaje_nbc_nacional": 158,
-          "n_nbc_nacional": 217
+          "puntaje_nbc_nacional": 140,
+          "n_nbc_nacional": 437
         },
         {
           "prueba": "PENSAMIENTO CIENTÍFICO - CIENCIAS BIOLÓGICAS",
           "puntaje_programa": 131,
-          "puntaje_nbc_nacional": 153,
-          "n_nbc_nacional": 18
+          "puntaje_nbc_nacional": 133,
+          "n_nbc_nacional": 437
         }
       ],
       "niveles_2025": [
@@ -13146,10 +13131,10 @@
             0.0
           ],
           "distribucion_nbc_nacional": [
-            6.0,
             18.0,
-            58.0,
-            18.0,
+            35.0,
+            43.0,
+            4.0,
             0.0
           ]
         },
@@ -13163,10 +13148,10 @@
             0.0
           ],
           "distribucion_nbc_nacional": [
-            19.0,
-            26.0,
-            44.0,
-            11.0,
+            29.0,
+            34.0,
+            36.0,
+            2.0,
             0.0
           ]
         },
@@ -13180,10 +13165,10 @@
             0.0
           ],
           "distribucion_nbc_nacional": [
+            18.0,
+            57.0,
+            21.0,
             4.0,
-            28.0,
-            35.0,
-            32.0,
             0.0
           ]
         },
@@ -13197,10 +13182,10 @@
             0.0
           ],
           "distribucion_nbc_nacional": [
-            10.0,
-            24.0,
-            51.0,
             15.0,
+            37.0,
+            44.0,
+            3.0,
             0.0
           ]
         },
@@ -13214,10 +13199,10 @@
             0.0
           ],
           "distribucion_nbc_nacional": [
-            4.0,
-            33.0,
-            50.0,
-            13.0,
+            9.0,
+            39.0,
+            43.0,
+            9.0,
             0.0
           ]
         }
@@ -13260,228 +13245,228 @@
             {
               "competencia": "LECTURA CRÍTICA",
               "puntaje_programa": 139,
-              "puntaje_nbc_nacional": 164,
-              "n_nbc_nacional": 1061
+              "puntaje_nbc_nacional": 148,
+              "n_nbc_nacional": 887
             },
             {
               "competencia": "RAZONAMIENTO CUANTITATIVO",
               "puntaje_programa": 142,
-              "puntaje_nbc_nacional": 174,
-              "n_nbc_nacional": 1061
+              "puntaje_nbc_nacional": 153,
+              "n_nbc_nacional": 887
             },
             {
               "competencia": "COMPETENCIAS CIUDADANAS",
               "puntaje_programa": 131,
-              "puntaje_nbc_nacional": 163,
-              "n_nbc_nacional": 1061
+              "puntaje_nbc_nacional": 149,
+              "n_nbc_nacional": 887
             },
             {
               "competencia": "COMUNICACIÓN ESCRITA",
               "puntaje_programa": 124,
-              "puntaje_nbc_nacional": 141,
-              "n_nbc_nacional": 1061
+              "puntaje_nbc_nacional": 130,
+              "n_nbc_nacional": 887
             },
             {
               "competencia": "INGLÉS",
               "puntaje_programa": 142,
-              "puntaje_nbc_nacional": 173,
-              "n_nbc_nacional": 1061
+              "puntaje_nbc_nacional": 145,
+              "n_nbc_nacional": 887
             }
           ],
           "global_programa": 136,
           "n_programa": 32,
-          "global_nbc_nacional": 163,
-          "n_nbc_nacional": 1061
+          "global_nbc_nacional": 145,
+          "n_nbc_nacional": 887
         },
         "2021": {
           "competencias": [
             {
               "competencia": "LECTURA CRÍTICA",
               "puntaje_programa": 131,
-              "puntaje_nbc_nacional": 159,
-              "n_nbc_nacional": 953
+              "puntaje_nbc_nacional": 143,
+              "n_nbc_nacional": 1024
             },
             {
               "competencia": "RAZONAMIENTO CUANTITATIVO",
               "puntaje_programa": 132,
-              "puntaje_nbc_nacional": 175,
-              "n_nbc_nacional": 953
+              "puntaje_nbc_nacional": 148,
+              "n_nbc_nacional": 1024
             },
             {
               "competencia": "COMPETENCIAS CIUDADANAS",
               "puntaje_programa": 118,
-              "puntaje_nbc_nacional": 156,
-              "n_nbc_nacional": 953
+              "puntaje_nbc_nacional": 141,
+              "n_nbc_nacional": 1024
             },
             {
               "competencia": "COMUNICACIÓN ESCRITA",
               "puntaje_programa": 120,
-              "puntaje_nbc_nacional": 143,
-              "n_nbc_nacional": 953
+              "puntaje_nbc_nacional": 132,
+              "n_nbc_nacional": 1024
             },
             {
               "competencia": "INGLÉS",
               "puntaje_programa": 135,
-              "puntaje_nbc_nacional": 174,
-              "n_nbc_nacional": 953
+              "puntaje_nbc_nacional": 145,
+              "n_nbc_nacional": 1024
             }
           ],
           "global_programa": 127,
           "n_programa": 39,
-          "global_nbc_nacional": 161,
-          "n_nbc_nacional": 953
+          "global_nbc_nacional": 142,
+          "n_nbc_nacional": 1024
         },
         "2022": {
           "competencias": [
             {
               "competencia": "LECTURA CRÍTICA",
               "puntaje_programa": 140,
-              "puntaje_nbc_nacional": 165,
-              "n_nbc_nacional": 849
+              "puntaje_nbc_nacional": 150,
+              "n_nbc_nacional": 1150
             },
             {
               "competencia": "RAZONAMIENTO CUANTITATIVO",
               "puntaje_programa": 147,
-              "puntaje_nbc_nacional": 175,
-              "n_nbc_nacional": 849
+              "puntaje_nbc_nacional": 152,
+              "n_nbc_nacional": 1150
             },
             {
               "competencia": "COMPETENCIAS CIUDADANAS",
               "puntaje_programa": 132,
-              "puntaje_nbc_nacional": 157,
-              "n_nbc_nacional": 849
+              "puntaje_nbc_nacional": 141,
+              "n_nbc_nacional": 1150
             },
             {
               "competencia": "COMUNICACIÓN ESCRITA",
               "puntaje_programa": 117,
-              "puntaje_nbc_nacional": 137,
-              "n_nbc_nacional": 849
+              "puntaje_nbc_nacional": 124,
+              "n_nbc_nacional": 1150
             },
             {
               "competencia": "INGLÉS",
               "puntaje_programa": 143,
-              "puntaje_nbc_nacional": 175,
-              "n_nbc_nacional": 849
+              "puntaje_nbc_nacional": 147,
+              "n_nbc_nacional": 1150
             }
           ],
           "global_programa": 136,
           "n_programa": 54,
-          "global_nbc_nacional": 162,
-          "n_nbc_nacional": 849
+          "global_nbc_nacional": 143,
+          "n_nbc_nacional": 1150
         },
         "2023": {
           "competencias": [
             {
               "competencia": "LECTURA CRÍTICA",
               "puntaje_programa": 139,
-              "puntaje_nbc_nacional": 164,
-              "n_nbc_nacional": 850
+              "puntaje_nbc_nacional": 148,
+              "n_nbc_nacional": 1041
             },
             {
               "competencia": "RAZONAMIENTO CUANTITATIVO",
               "puntaje_programa": 147,
-              "puntaje_nbc_nacional": 175,
-              "n_nbc_nacional": 850
+              "puntaje_nbc_nacional": 152,
+              "n_nbc_nacional": 1041
             },
             {
               "competencia": "COMPETENCIAS CIUDADANAS",
               "puntaje_programa": 129,
-              "puntaje_nbc_nacional": 152,
-              "n_nbc_nacional": 850
+              "puntaje_nbc_nacional": 138,
+              "n_nbc_nacional": 1041
             },
             {
               "competencia": "COMUNICACIÓN ESCRITA",
               "puntaje_programa": 135,
-              "puntaje_nbc_nacional": 148,
-              "n_nbc_nacional": 850
+              "puntaje_nbc_nacional": 137,
+              "n_nbc_nacional": 1041
             },
             {
               "competencia": "INGLÉS",
               "puntaje_programa": 139,
-              "puntaje_nbc_nacional": 178,
-              "n_nbc_nacional": 850
+              "puntaje_nbc_nacional": 145,
+              "n_nbc_nacional": 1041
             }
           ],
           "global_programa": 138,
           "n_programa": 52,
-          "global_nbc_nacional": 164,
-          "n_nbc_nacional": 850
+          "global_nbc_nacional": 144,
+          "n_nbc_nacional": 1041
         },
         "2024": {
           "competencias": [
             {
               "competencia": "LECTURA CRÍTICA",
               "puntaje_programa": 149,
-              "puntaje_nbc_nacional": 163,
-              "n_nbc_nacional": 940
+              "puntaje_nbc_nacional": 152,
+              "n_nbc_nacional": 1149
             },
             {
               "competencia": "RAZONAMIENTO CUANTITATIVO",
               "puntaje_programa": 153,
-              "puntaje_nbc_nacional": 171,
-              "n_nbc_nacional": 940
+              "puntaje_nbc_nacional": 152,
+              "n_nbc_nacional": 1149
             },
             {
               "competencia": "COMPETENCIAS CIUDADANAS",
               "puntaje_programa": 138,
-              "puntaje_nbc_nacional": 154,
-              "n_nbc_nacional": 940
+              "puntaje_nbc_nacional": 146,
+              "n_nbc_nacional": 1149
             },
             {
               "competencia": "COMUNICACIÓN ESCRITA",
               "puntaje_programa": 126,
-              "puntaje_nbc_nacional": 138,
-              "n_nbc_nacional": 940
+              "puntaje_nbc_nacional": 127,
+              "n_nbc_nacional": 1149
             },
             {
               "competencia": "INGLÉS",
               "puntaje_programa": 141,
-              "puntaje_nbc_nacional": 174,
-              "n_nbc_nacional": 940
+              "puntaje_nbc_nacional": 148,
+              "n_nbc_nacional": 1149
             }
           ],
           "global_programa": 141,
           "n_programa": 56,
-          "global_nbc_nacional": 160,
-          "n_nbc_nacional": 940
+          "global_nbc_nacional": 145,
+          "n_nbc_nacional": 1149
         },
         "2025": {
           "competencias": [
             {
               "competencia": "LECTURA CRÍTICA",
               "puntaje_programa": 148,
-              "puntaje_nbc_nacional": 167,
-              "n_nbc_nacional": 979
+              "puntaje_nbc_nacional": 154,
+              "n_nbc_nacional": 1242
             },
             {
               "competencia": "RAZONAMIENTO CUANTITATIVO",
               "puntaje_programa": 160,
-              "puntaje_nbc_nacional": 176,
-              "n_nbc_nacional": 979
+              "puntaje_nbc_nacional": 151,
+              "n_nbc_nacional": 1242
             },
             {
               "competencia": "COMPETENCIAS CIUDADANAS",
               "puntaje_programa": 138,
-              "puntaje_nbc_nacional": 158,
-              "n_nbc_nacional": 979
+              "puntaje_nbc_nacional": 144,
+              "n_nbc_nacional": 1242
             },
             {
               "competencia": "COMUNICACIÓN ESCRITA",
               "puntaje_programa": 148,
-              "puntaje_nbc_nacional": 156,
-              "n_nbc_nacional": 979
+              "puntaje_nbc_nacional": 147,
+              "n_nbc_nacional": 1242
             },
             {
               "competencia": "INGLÉS",
               "puntaje_programa": 142,
-              "puntaje_nbc_nacional": 179,
-              "n_nbc_nacional": 979
+              "puntaje_nbc_nacional": 147,
+              "n_nbc_nacional": 1242
             }
           ],
           "global_programa": 147,
           "n_programa": 22,
-          "global_nbc_nacional": 167,
-          "n_nbc_nacional": 979
+          "global_nbc_nacional": 149,
+          "n_nbc_nacional": 1242
         }
       },
       "especificas_historico": {
@@ -13489,42 +13474,42 @@
           {
             "prueba": "FORMULACIÓN DE PROYECTOS DE INGENIERÍA",
             "puntaje_programa": 130,
-            "puntaje_nbc_nacional": 162,
-            "n_nbc_nacional": 330
+            "puntaje_nbc_nacional": 137,
+            "n_nbc_nacional": 356
           },
           {
             "prueba": "PENSAMIENTO CIENTÍFICO - CIENCIAS BIOLÓGICAS",
             "puntaje_programa": 119,
-            "puntaje_nbc_nacional": 121,
-            "n_nbc_nacional": 4
+            "puntaje_nbc_nacional": 126,
+            "n_nbc_nacional": 356
           }
         ],
         "2024": [
           {
             "prueba": "FORMULACIÓN DE PROYECTOS DE INGENIERÍA",
             "puntaje_programa": 144,
-            "puntaje_nbc_nacional": 156,
-            "n_nbc_nacional": 307
+            "puntaje_nbc_nacional": 142,
+            "n_nbc_nacional": 346
           },
           {
             "prueba": "PENSAMIENTO CIENTÍFICO - CIENCIAS BIOLÓGICAS",
             "puntaje_programa": 137,
-            "puntaje_nbc_nacional": 132,
-            "n_nbc_nacional": 19
+            "puntaje_nbc_nacional": 129,
+            "n_nbc_nacional": 346
           }
         ],
         "2025": [
           {
             "prueba": "FORMULACIÓN DE PROYECTOS DE INGENIERÍA",
             "puntaje_programa": 148,
-            "puntaje_nbc_nacional": 158,
-            "n_nbc_nacional": 217
+            "puntaje_nbc_nacional": 140,
+            "n_nbc_nacional": 437
           },
           {
             "prueba": "PENSAMIENTO CIENTÍFICO - CIENCIAS BIOLÓGICAS",
             "puntaje_programa": 131,
-            "puntaje_nbc_nacional": 153,
-            "n_nbc_nacional": 18
+            "puntaje_nbc_nacional": 133,
+            "n_nbc_nacional": 437
           }
         ]
       }
@@ -14136,29 +14121,14 @@
           "n": 15
         },
         {
-          "anio": 2023,
-          "puntaje": 129,
-          "n": 8
-        },
-        {
           "anio": 2024,
           "puntaje": 139,
           "n": 35
         },
         {
-          "anio": 2024,
-          "puntaje": 140,
-          "n": 5
-        },
-        {
           "anio": 2025,
           "puntaje": 150,
           "n": 33
-        },
-        {
-          "anio": 2025,
-          "puntaje": 150,
-          "n": 1
         }
       ],
       "radar_historico": {
@@ -14242,19 +14212,19 @@
           "competencias": [
             {
               "competencia": "LECTURA CRÍTICA",
-              "puntaje_programa": 134,
+              "puntaje_programa": 146,
               "puntaje_nbc_nacional": 147,
               "n_nbc_nacional": 19363
             },
             {
               "competencia": "RAZONAMIENTO CUANTITATIVO",
-              "puntaje_programa": 117,
+              "puntaje_programa": 122,
               "puntaje_nbc_nacional": 132,
               "n_nbc_nacional": 19363
             },
             {
               "competencia": "COMPETENCIAS CIUDADANAS",
-              "puntaje_programa": 111,
+              "puntaje_programa": 136,
               "puntaje_nbc_nacional": 133,
               "n_nbc_nacional": 19363
             },
@@ -14271,8 +14241,8 @@
               "n_nbc_nacional": 19363
             }
           ],
-          "global_programa": 129,
-          "n_programa": 8,
+          "global_programa": 133,
+          "n_programa": 15,
           "global_nbc_nacional": 140,
           "n_nbc_nacional": 19363
         },
@@ -14286,31 +14256,31 @@
             },
             {
               "competencia": "RAZONAMIENTO CUANTITATIVO",
-              "puntaje_programa": 117,
+              "puntaje_programa": 129,
               "puntaje_nbc_nacional": 133,
               "n_nbc_nacional": 23392
             },
             {
               "competencia": "COMPETENCIAS CIUDADANAS",
-              "puntaje_programa": 152,
+              "puntaje_programa": 138,
               "puntaje_nbc_nacional": 141,
               "n_nbc_nacional": 23392
             },
             {
               "competencia": "COMUNICACIÓN ESCRITA",
-              "puntaje_programa": 117,
+              "puntaje_programa": 140,
               "puntaje_nbc_nacional": 134,
               "n_nbc_nacional": 23392
             },
             {
               "competencia": "INGLÉS",
-              "puntaje_programa": 155,
+              "puntaje_programa": 143,
               "puntaje_nbc_nacional": 152,
               "n_nbc_nacional": 23392
             }
           ],
-          "global_programa": 140,
-          "n_programa": 5,
+          "global_programa": 139,
+          "n_programa": 35,
           "global_nbc_nacional": 142,
           "n_nbc_nacional": 23392
         },
@@ -14324,31 +14294,31 @@
             },
             {
               "competencia": "RAZONAMIENTO CUANTITATIVO",
-              "puntaje_programa": 113,
+              "puntaje_programa": 131,
               "puntaje_nbc_nacional": 131,
               "n_nbc_nacional": 25846
             },
             {
               "competencia": "COMPETENCIAS CIUDADANAS",
-              "puntaje_programa": 168,
+              "puntaje_programa": 152,
               "puntaje_nbc_nacional": 137,
               "n_nbc_nacional": 25846
             },
             {
               "competencia": "COMUNICACIÓN ESCRITA",
-              "puntaje_programa": 124,
+              "puntaje_programa": 151,
               "puntaje_nbc_nacional": 148,
               "n_nbc_nacional": 25846
             },
             {
               "competencia": "INGLÉS",
-              "puntaje_programa": 161,
+              "puntaje_programa": 158,
               "puntaje_nbc_nacional": 147,
               "n_nbc_nacional": 25846
             }
           ],
           "global_programa": 150,
-          "n_programa": 1,
+          "n_programa": 33,
           "global_nbc_nacional": 142,
           "n_nbc_nacional": 25846
         }
@@ -14385,13 +14355,13 @@
         "2023": [
           {
             "prueba": "ENSEÑAR",
-            "puntaje_programa": 147,
+            "puntaje_programa": 166,
             "puntaje_nbc_nacional": 156,
             "n_nbc_nacional": 6560
           },
           {
             "prueba": "FORMAR",
-            "puntaje_programa": 145,
+            "puntaje_programa": 149,
             "puntaje_nbc_nacional": 148,
             "n_nbc_nacional": 6560
           },
@@ -14405,13 +14375,13 @@
         "2024": [
           {
             "prueba": "ENSEÑAR",
-            "puntaje_programa": 151,
+            "puntaje_programa": 163,
             "puntaje_nbc_nacional": 156,
             "n_nbc_nacional": 8175
           },
           {
             "prueba": "FORMAR",
-            "puntaje_programa": 116,
+            "puntaje_programa": 152,
             "puntaje_nbc_nacional": 145,
             "n_nbc_nacional": 8175
           },

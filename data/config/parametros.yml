@@ -185,8 +185,8 @@ programas_unimagdalena:
     nbc_nombre: "ADMINISTRACIÓN"
   - nombre: "ADMINISTRACIÒN DE LA SEGURIDAD Y SALUD   EN EL TRABAJO"
     facultad: "Facultad de Ciencias Empresariales y Económicas"
-    nbc_id: 9
-    nbc_nombre: "ADMINISTRACIÓN"
+    nbc_id: 50
+    nbc_nombre: "SALUD PÚBLICA"
   - nombre: "ADMINISTRACIÒN PÙBLICA"
     facultad: "Facultad de Ciencias Empresariales y Económicas"
     nbc_id: 9
@@ -221,8 +221,8 @@ programas_unimagdalena:
     nbc_nombre: "ENFERMERÍA"
   - nombre: "GESTIÒN CULTURAL Y DE INDUSTRIAS CREATIVAS"
     facultad: "Facultad de Ciencias Empresariales y Económicas"
-    nbc_id: 4
-    nbc_nombre: "ARTES PLÁSTICAS, VISUALES Y AFINES"
+    nbc_id: 9
+    nbc_nombre: "ADMINISTRACIÓN"
   - nombre: "HISTORIA Y PATRIMONIO"
     facultad: "Facultad de Humanidades"
     nbc_id: 62
@@ -253,8 +253,8 @@ programas_unimagdalena:
     nbc_nombre: "INGENIERÍA INDUSTRIAL Y AFINES"
   - nombre: "INGENIERIA PESQUERA"
     facultad: "Facultad de Ingeniería"
-    nbc_id: 33
-    nbc_nombre: "OTRAS INGENIERÍAS"
+    nbc_id: 24
+    nbc_nombre: "INGENIERÍA AGRONÓMICA, PECUARIA Y AFINES"
   - nombre: "LICENCIATURA EN ARTES"
     facultad: "Facultad de Ciencias de la Educación"
     nbc_id: 13

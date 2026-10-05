@@ -23,23 +23,30 @@ python -m pip install -r requirements.txt
 
 echo.
 echo =======================================================
-echo    1/3 Construyendo cuadrantes de valor agregado
+echo    1/4 Construyendo cuadrantes de valor agregado
 echo =======================================================
 python scripts\01_construir_cuadrantes.py
 IF ERRORLEVEL 1 GOTO error
 
 echo.
 echo =======================================================
-echo    2/3 Construyendo indicadores agregados Saber Pro
+echo    2/4 Construyendo indicadores agregados Saber Pro
 echo =======================================================
 python scripts\02_construir_agregados.py
 IF ERRORLEVEL 1 GOTO error
 
 echo.
 echo =======================================================
-echo    3/3 Consolidando JSON maestro
+echo    3/4 Consolidando JSON maestro
 echo =======================================================
 python scripts\03_consolidar_json.py
+IF ERRORLEVEL 1 GOTO error
+
+echo.
+echo =======================================================
+echo    4/4 Auditando programas contra las bases del Icfes
+echo =======================================================
+python scripts\04_auditar_programas.py
 IF ERRORLEVEL 1 GOTO error
 
 echo.

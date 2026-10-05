@@ -661,6 +661,37 @@ def main() -> None:
 
         nbc_refs_por_anio[year] = {}
 
+        def _nombre_programa(r):
+            # Renombrado por ID interno del Icfes: separar modalidades del mismo nombre
+            prog_name = r.get('NOMBRE_PROGRAMA_ACAD')
+            _id_icfes_raw = r.get('ID_PROGRAMA_ACAD')
+            if _id_icfes_raw is not None:
+                try:
+                    _id_icfes_int = int(_id_icfes_raw)
+                    if _id_icfes_int in programas_por_id_icfes:
+                        prog_name = programas_por_id_icfes[_id_icfes_int]
+                except (TypeError, ValueError):
+                    pass
+            return prog_name
+
+        # Mismo criterio que el bloque del año vigente: si un programa aparece con
+        # varios ID_PROGRAMA_ACAD (p. ej. un código viejo con n=1), solo se usa el
+        # registro de MAYOR n. Sin esto, el histórico mezclaba ambos códigos
+        # (dos puntos por año y competencias del código pequeño en el radar).
+        id_principal = {}
+        for r in df.iter_rows(named=True):
+            if sp.clean_text(r['MEDIDA_AGREGACION']) != "PUNTAJE_GLOBAL" or sp.clean_text(r['AGREGACION']) == "NBC":
+                continue
+            if sp.normalize_ies_name(r['NOMBRE_INSTITUCION'], "agregados", norm_mapping) != "UNIVERSIDAD DEL MAGDALENA":
+                continue
+            prog_name = _nombre_programa(r)
+            if not prog_name:
+                continue
+            n = sp.safe_num(r.get('CANTIDADEVALUADOS')) or 0
+            prog_clean = sp.clean_text(prog_name)
+            if prog_clean not in id_principal or n > id_principal[prog_clean][1]:
+                id_principal[prog_clean] = (r.get('ID_PROGRAMA_ACAD'), n)
+
         for r in df.iter_rows(named=True):
             agreg = sp.clean_text(r['AGREGACION'])
             medida = sp.clean_text(r['MEDIDA_AGREGACION'])
@@ -699,20 +730,13 @@ def main() -> None:
             inst = sp.normalize_ies_name(r['NOMBRE_INSTITUCION'], "agregados", norm_mapping)
             if inst != "UNIVERSIDAD DEL MAGDALENA":
                 continue
-            prog_name = r.get('NOMBRE_PROGRAMA_ACAD')
+            prog_name = _nombre_programa(r)
             if not prog_name:
                 continue
-            # Renombrado por ID interno del Icfes: separar modalidades del mismo nombre
-            _id_icfes_raw = r.get('ID_PROGRAMA_ACAD')
-            if _id_icfes_raw is not None:
-                try:
-                    _id_icfes_int = int(_id_icfes_raw)
-                    if _id_icfes_int in programas_por_id_icfes:
-                        prog_name = programas_por_id_icfes[_id_icfes_int]
-                except (TypeError, ValueError):
-                    pass
             prog_clean = sp.clean_text(prog_name)
             if prog_clean not in programas_2025:
+                continue
+            if prog_clean in id_principal and r.get('ID_PROGRAMA_ACAD') != id_principal[prog_clean][0]:
                 continue
 
             if medida == "PUNTAJE_GLOBAL":

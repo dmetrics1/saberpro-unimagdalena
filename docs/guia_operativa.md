@@ -43,7 +43,7 @@ Opción recomendada en Windows:
 .\ejecutar_proyecto.bat
 ```
 
-Este script crea o activa el entorno virtual, instala dependencias, ejecuta los scripts 01-03 y copia `data/processed/datos_informe.json` a `informe/informe/data/datos_informe.json`.
+Este script crea o activa el entorno virtual, instala dependencias, ejecuta los scripts 01-03, audita el resultado (script 04) y copia `data/processed/datos_informe.json` a `informe/informe/data/datos_informe.json`.
 
 Opción manual:
 
@@ -53,6 +53,7 @@ Ejecutar desde la raíz del proyecto:
 venv\Scripts\python.exe scripts\01_construir_cuadrantes.py
 venv\Scripts\python.exe scripts\02_construir_agregados.py
 venv\Scripts\python.exe scripts\03_consolidar_json.py
+venv\Scripts\python.exe scripts\04_auditar_programas.py
 ```
 
 Salidas esperadas:
@@ -105,7 +106,7 @@ Nota: si el nuevo año no existe en la base de cruce Saber 11 - Saber Pro, los c
 
 ## 6. Scripts principales
 
-### Pipeline obligatorio (01-03)
+### Pipeline obligatorio (01-04)
 
 | Script | Entrada | Salida | Función |
 |---|---|---|---|
@@ -113,6 +114,7 @@ Nota: si el nuevo año no existe en la base de cruce Saber 11 - Saber Pro, los c
 | `scripts/01_construir_cuadrantes.py` | parquet de cruce (Fuente A) | `cuadrantes_procesados.json` | Calcula instituciones, NBC de UNIMAGDALENA y trayectoria de valor agregado. |
 | `scripts/02_construir_agregados.py` | Excel anuales Saber Pro (Fuente B) | `agregados_procesados.json` | Calcula panorama institucional, SUE, departamento, facultades, programas, Top 10 y niveles de desempeño. |
 | `scripts/03_consolidar_json.py` | JSON intermedios | `datos_informe.json` | Une todas las piezas y crea el bloque `meta`. |
+| `scripts/04_auditar_programas.py` | `datos_informe.json` + Excel del Icfes | reporte en consola | Reconstruye desde el Icfes el NBC, los puntajes y los n de cada programa por año y los compara con el JSON. Sale con error si algo no coincide (p. ej. un `nbc_id` del yml distinto al que asigna el Icfes, o dos códigos Icfes mezclados en un mismo programa). |
 
 ### Scripts auxiliares opcionales (no parte del pipeline)
 
@@ -140,6 +142,7 @@ Ejecutar:
 venv\Scripts\python.exe scripts\01_construir_cuadrantes.py
 venv\Scripts\python.exe scripts\02_construir_agregados.py
 venv\Scripts\python.exe scripts\03_consolidar_json.py
+venv\Scripts\python.exe scripts\04_auditar_programas.py
 Copy-Item data\processed\datos_informe.json informe\informe\data\datos_informe.json -Force
 ```
 
