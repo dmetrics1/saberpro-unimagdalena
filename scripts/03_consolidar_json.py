@@ -32,7 +32,8 @@ def main() -> None:
     meta = {
         "anio_vigente": params["anio_vigente"],
         "fecha_generacion": datetime.now().astimezone().isoformat(),
-        "convencion_n": "Base de cruce (Fuente A) utiliza 'crossed_n' con umbral >= 25. Bases agregadas (Fuente B) utiliza 'CANTIDADEVALUADOS'.",
+        "convencion_n": f"Base de cruce (Fuente A) utiliza 'crossed_n' con umbral >= {params['umbral_n_cuadrantes']}. Bases agregadas (Fuente B) utiliza 'CANTIDADEVALUADOS'.",
+        "umbral_n_cuadrantes": params["umbral_n_cuadrantes"],
         "fuentes": {
             "fuente_a_cruce": {
                 "archivo": Path(params["parquet_path"]).name,

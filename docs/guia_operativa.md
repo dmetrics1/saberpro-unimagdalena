@@ -21,7 +21,7 @@ venv\Scripts\python.exe -m pip install -r requirements.txt
 El archivo [data/config/parametros.yml](../data/config/parametros.yml) controla:
 
 - `anio_vigente`: año que se toma como corte actual del informe.
-- `umbral_n_cuadrantes`: mínimo de `crossed_n` para incluir registros en valor agregado.
+- `umbral_n_cuadrantes`: mínimo de `crossed_n` (estudiantes cruzados Saber 11 - Saber Pro) que debe tener cada IES-NBC en un año para entrar a cuadrantes y trayectoria. Valor actual: **15**. Era 25 hasta octubre de 2026; se bajó para no excluir NBC con cohortes pequeñas (p. ej. Artes plásticas 2022, con 23 cruzados de 35 evaluados). Cambiarlo mueve los límites de los cuadrantes de todos los años, así que debe ser una decisión de Planeación.
 - `umbral_n_bajo_programa`: mínimo de evaluados para marcar alertas por n bajo.
 - Rutas de datos crudos y procesados.
 - Competencias genéricas oficiales.

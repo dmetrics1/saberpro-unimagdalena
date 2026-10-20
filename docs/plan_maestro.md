@@ -18,7 +18,7 @@ El proyecto trabaja con dos fuentes que no deben mezclarse. La nomenclatura **Fu
 
 | Fuente | Archivo o carpeta | Periodo | Medida de n | Uso |
 |---|---|---:|---|---|
-| **Fuente A** — Base de cruce Saber 11 - Saber Pro | `data/Perfiles_INBC_Anuales_2016_2024.parquet` | 2018-2024 | `crossed_n` con umbral >= 25 | Cuadrantes, trayectoria y valor agregado. |
+| **Fuente A** — Base de cruce Saber 11 - Saber Pro | `data/Perfiles_INBC_Anuales_2016_2024.parquet` | 2018-2024 | `crossed_n` con umbral >= 15 (antes 25) | Cuadrantes, trayectoria y valor agregado. |
 | **Fuente B** — Bases agregadas Saber Pro Icfes | `data/saberpro_agregados/*.xlsx` | 2020-2025 | `CANTIDADEVALUADOS` | Panorama, SUE, departamentos, facultades, programas, Top 10 y niveles. |
 
 Los cuadrantes y la trayectoria se reportan hasta 2024 porque la base de cruce no contiene 2025. Adicionalmente, el front filtra 2018 y 2019 porque tienen n muy bajo (≈30 evaluados). El resto del informe llega hasta 2025.

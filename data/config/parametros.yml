@@ -1,6 +1,6 @@
 # PARAMETROS GENERALES DEL PIPELINE
 anio_vigente: 2025
-umbral_n_cuadrantes: 25
+umbral_n_cuadrantes: 15  # minimo de estudiantes cruzados Saber 11 - Saber Pro por IES-NBC (antes 25; ajustado oct-2026 por decision de Planeacion)
 umbral_n_bajo_programa: 5
 
 # RUTAS DE DATOS

@@ -131,7 +131,7 @@ http://localhost:8000
 
 El proyecto usa dos fuentes con universos distintos. La nomenclatura **Fuente A / Fuente B** es la canónica y está fijada en `meta.convencion_n` del JSON maestro:
 
-- **Fuente A** — Base de cruce Saber 11 - Saber Pro: se usa solo para cuadrantes, trayectoria y valor agregado. La medida de n es `crossed_n` con umbral mínimo 25.
+- **Fuente A** — Base de cruce Saber 11 - Saber Pro: se usa solo para cuadrantes, trayectoria y valor agregado. La medida de n es `crossed_n` con umbral mínimo 15 (era 25 hasta oct-2026; ver `umbral_n_cuadrantes` en `parametros.yml`).
 - **Fuente B** — Bases agregadas oficiales Saber Pro: se usan para puntajes institucionales, competencias, SUE, departamentos, facultades, programas, Top 10 y niveles de desempeño. La medida de n es `CANTIDADEVALUADOS`.
 
 No se deben mezclar los n de ambas fuentes en una misma lectura.

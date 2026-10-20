@@ -130,6 +130,11 @@ function renderMeta(d) {
     document.getElementById('footGen').textContent =
       'Generado: ' + gen.toLocaleDateString('es-CO', { day: '2-digit', month: 'short', year: 'numeric' });
   }
+  // Mínimo de cruzados de la metodología: viene de parametros.yml vía el JSON
+  const umbral = d.meta?.umbral_n_cuadrantes;
+  if (umbral != null) {
+    document.querySelectorAll('[data-umbral-cruce]').forEach(el => { el.textContent = umbral; });
+  }
 }
 
 /* ---------- Hero ---------- */

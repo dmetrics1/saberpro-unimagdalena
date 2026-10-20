@@ -72,7 +72,7 @@ directo** a su facultad o programa vía la navegación lateral.
 - **Historia:** "Recibimos estudiantes con cierto nivel de entrada y los graduamos por encima de la media: este es nuestro aporte, y cómo ha evolucionado de Alto Aporte a Alto Desempeño."
 - **Preguntas:** ¿La universidad agrega valor frente al perfil de ingreso? ¿En qué cuadrante estamos cada año? ¿Cómo se mueven nuestros NBC?
 - **Indicadores:** scatter de cuadrantes con filtro por año (2020-2024); trayectoria histórica de UM; brechas de entrada/salida vs. media.
-- **Fuente:** cruce (parquet, `crossed_n ≥ 25`). **Nota: llega solo hasta 2024.**
+- **Fuente:** cruce (parquet, `crossed_n ≥ 15`; antes 25). **Nota: llega solo hasta 2024.**
 - **Perfil:** vicerrectoría / planeación.
 
 ### Sección 5 — Facultades
